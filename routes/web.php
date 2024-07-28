@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\adminDashboardController;
+use App\Http\Controllers\Controller;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', [adminDashboardController::class, 'dashboard'])->name('dashboard');
+Route::get('/dashboard', [adminDashboardController::class, 'dashboard'])->name('dashboard');
+Route::get('/monitoring', [Controller::class, 'monitoring'])->name('monitoring');
