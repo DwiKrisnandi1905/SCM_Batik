@@ -9,18 +9,18 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         body {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-    }
-    .content {
-        flex: 1 0 auto;
-        display: flex;
-    }
-    .main-content {
-        flex: 1;
-        padding: 20px;
-    }
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1 0 auto;
+            display: flex;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
