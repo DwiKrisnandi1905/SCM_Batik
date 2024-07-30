@@ -11,10 +11,12 @@ use App\Http\Controllers\{
     HarvestController,
     MonitoringController,
     WasteManagementController,
+    RoleController,
     Auth\RegisterController,
     Auth\LoginController,
     Auth\ForgotPasswordController,
     Auth\ResetPasswordController
+
 };
 
 Route::get('/home', function () {
@@ -35,6 +37,18 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+
+Route::middleware(['auth', 'harvest'])->group(function () {
+    Route::prefix('harvest')->group(function () {
+        Route::get('/', [HarvestController::class, 'index'])->name('harvest.index');
+        Route::get('/create', [HarvestController::class, 'create'])->name('harvest.create');
+        Route::post('/', [HarvestController::class, 'store'])->name('harvest.store');
+        Route::get('/{id}', [HarvestController::class, 'show'])->name('harvest.show');
+        Route::get('/{id}/edit', [HarvestController::class, 'edit'])->name('harvest.edit');
+        Route::put('/{id}', [HarvestController::class, 'update'])->name('harvest.update');
+        Route::delete('/{id}', [HarvestController::class, 'destroy'])->name('harvest.destroy');
+    });
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('certification')->group(function () {
@@ -85,18 +99,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('harvest')->group(function () {
-        Route::get('/', [HarvestController::class, 'index'])->name('harvest.index');
-        Route::get('/create', [HarvestController::class, 'create'])->name('harvest.create');
-        Route::post('/', [HarvestController::class, 'store'])->name('harvest.store');
-        Route::get('/{id}', [HarvestController::class, 'show'])->name('harvest.show');
-        Route::get('/{id}/edit', [HarvestController::class, 'edit'])->name('harvest.edit');
-        Route::put('/{id}', [HarvestController::class, 'update'])->name('harvest.update');
-        Route::delete('/{id}', [HarvestController::class, 'destroy'])->name('harvest.destroy');
-    });
-});
-
-Route::middleware(['auth'])->group(function () {
     Route::prefix('monitoring')->group(function () {
         Route::get('/', [MonitoringController::class, 'index'])->name('monitoring.index');
         Route::get('/create', [MonitoringController::class, 'create'])->name('monitoring.create');
@@ -117,5 +119,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/edit', [WasteManagementController::class, 'edit'])->name('waste-management.edit');
         Route::put('/{id}', [WasteManagementController::class, 'update'])->name('waste-management.update');
         Route::delete('/{id}', [WasteManagementController::class, 'destroy'])->name('waste-management.destroy');
+    });
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('role')->group(function () {
+        Route::get('/select', [RoleController::class, 'select'])->name('roles.select');
+        Route::get('/', [RoleController::class, 'index'])->name('role.index');
+        Route::get('/create', [RoleController::class, 'create'])->name('role.create');
+        Route::post('/', [RoleController::class, 'store'])->name('roles.store');
+        Route::get('/{id}', [RoleController::class, 'show'])->name('role.show');
+        Route::get('/{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
+        Route::put('/{id}', [RoleController::class, 'update'])->name('role.update');
+        Route::delete('/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
     });
 });

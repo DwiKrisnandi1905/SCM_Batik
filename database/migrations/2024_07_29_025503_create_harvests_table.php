@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('quality');
             $table->string('delivery_info');
             $table->dateTime('delivery_date');
+            $table->string('image');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
