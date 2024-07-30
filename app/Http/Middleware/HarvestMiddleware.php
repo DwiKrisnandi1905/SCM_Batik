@@ -16,7 +16,7 @@ class HarvestMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->hasRole('Harvest')) {
+        if ($request->user()->roleuser('Harvester')) {
             return $next($request);
         }
 
