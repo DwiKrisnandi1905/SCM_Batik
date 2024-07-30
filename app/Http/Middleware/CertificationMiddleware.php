@@ -16,6 +16,10 @@ class CertificationMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        if ($request->user()->hasRole('Certification')) {
+            return $next($request);
+        }
+
+        return redirect()->route('unauthorized');
     }
 }

@@ -16,6 +16,10 @@ class MonitoringMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        if ($request->user()->hasRole('Monitoring')) {
+            return $next($request);
+        }
+
+        return redirect()->route('unauthorized');
     }
 }

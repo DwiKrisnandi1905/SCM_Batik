@@ -16,6 +16,10 @@ class WasteManagementMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        if ($request->user()->hasRole('WasteManagement')) {
+            return $next($request);
+        }
+
+        return redirect()->route('unauthorized');
     }
 }
