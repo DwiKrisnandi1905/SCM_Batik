@@ -22,6 +22,18 @@ class FactoryController extends Controller
         return response()->json($factory, 201);
     }
 
+    public function index()
+    {
+        $userId = auth()->id();
+        $harvests = Factory::where('user_id', $userId)->get();
+        return view('factory.index', compact('harvests'));
+    }
+
+    public function create()
+    {
+        return view('factory.create');
+    }
+
     public function show($id)
     {
         $factory = Factory::findOrFail($id);
