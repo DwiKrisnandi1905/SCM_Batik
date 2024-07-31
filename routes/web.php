@@ -24,7 +24,7 @@ Route::get('/home', function () {
 })->middleware('auth');
 
 
-// Route::get('/', [adminDashboardController::class, 'dashboard'])->name('dashboard');
+Route::get('/', [Controller::class, 'landingPage'])->name('landingPage');
 // Route::get('/dashboard', [adminDashboardController::class, 'dashboard'])->name('dashboard');
 // Route::get('/monitoring', [Controller::class, 'monitoring'])->name('monitoring');
 

@@ -18,4 +18,11 @@ class Controller extends BaseController
             'title' => 'monitoring',
         ]);
     }
+    public function landingpage()
+    {
+        return view('landingpage.landingpage' ,[
+            'name' => 'landingpage',
+            'title' => 'landingpage',
+        ]);
+    }
 }
