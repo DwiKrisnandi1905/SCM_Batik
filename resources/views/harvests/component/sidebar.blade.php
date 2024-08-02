@@ -8,7 +8,7 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="#" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('harvest.index') }}" class="nav-link {{ request()->routeIs('harvest.index') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2"></i>
                 Dashboard
             </a>
