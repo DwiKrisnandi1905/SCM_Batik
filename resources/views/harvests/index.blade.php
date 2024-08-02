@@ -1,70 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harvests</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <style>
-        .table thead th {
-            background-color: #343a40;
-            color: #ffffff;
-        }
-        .table tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-        .actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .btn-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-        }
-        .btn-icon i {
-            font-size: 1rem;
-        }
-        .img-link {
-            color: #007bff;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-            position: relative;
-            display: inline-block;
-            transition: color 0.3s ease;
-        }
-        .img-link:hover {
-            color: #0056b3;
-        }
-        .img-link::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            transform: scaleX(0);
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: #007bff;
-            transform-origin: bottom right;
-            transition: transform 0.3s ease-out;
-        }
-        .img-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Harvests</h1>
-            <a href="{{ route('harvest.create') }}" class="btn btn-primary">Create New Harvest</a>
-        </div>
+@extends('harvests.layout.app')
+
+@section('content')
+    
+<style>
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 800px; /* Set to a value that ensures the table does not shrink */
+    }
+</style>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Harvests</h1>
+        <a href="{{ route('harvest.create') }}" class="btn btn-primary">Create New Harvest</a>
+    </div>
+    <div class="table-wrapper">
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -129,8 +80,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
         var imageModal = document.getElementById('imageModal');
         imageModal.addEventListener('show.bs.modal', function (event) {
@@ -140,5 +89,5 @@
             modalImage.src = imageUrl;
         });
     </script>
-</body>
-</html>
+@endsection
+
