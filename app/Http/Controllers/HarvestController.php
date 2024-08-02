@@ -88,5 +88,14 @@ class HarvestController extends Controller
         $harvest->delete();
         return response()->json(null, 204);
     }
+
+    // profile
+    public function profileIndex()
+    {
+        return view('harvests.profile.index' ,[
+            'name' => 'profile',
+            'title' => 'profile',
+        ]);
+    }
     
 }

@@ -1,7 +1,7 @@
 <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+    <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
         <i class="bi bi-emoji-smile ms-1 mx-2" style="font-size: 30px;"></i>
         <span class="fs-4">SCM Batik</span>
     </a>
@@ -14,9 +14,9 @@
             </a>
         </li>
         <li class="mb-2">
-            <a href="#" class="nav-link {{ request()->routeIs('monitoring') ? 'active' : 'link-dark' }}">
-                <i class="bi bi-table"></i>
-                Monitoring
+            <a href="{{ route('profile.index') }}" class="nav-link {{ request()->routeIs('profile.index') ? 'active' : 'link-dark' }}">
+                <i class="bi bi-speedometer2"></i>
+                Profile
             </a>
         </li>
     </ul>

@@ -219,7 +219,7 @@
                     <a href="{{ route('login') }}" class="btn btn-primary">Mulai Sekarang</a>
                 </div>
                 <div class="col-md-6">
-                    <img src="{{ asset('img/batik.png') }}" alt="Home" class="img-fluid custom-img-size">
+                    <img src="{{ asset('img/batik.png') }}" alt="Home" class="img-fluid custom-img-size" style="width: 80%;">
                 </div>
             </div>
         </div>
@@ -228,10 +228,10 @@
     <!-- About Section -->
     <section id="about" class="py-5">
         <div class="container">
-            <h2 class="text-center fw-bold">Tentang Kami</h2>
+            <h2 class="text-center fw-bold" style="margin-top: 20px;">Tentang Kami</h2>
             <div class="row d-flex align-items-center">
                 <div class="col-md-6">
-                    <img src="img/batik2.png" class="img-fluid rounded mb-4 mb-md-0" alt="Tentang Kami" style="margin-top: -20px;">
+                    <img src="img/batik3.png" class="img-fluid rounded mb-4 mb-md-0" alt="Tentang Kami" style="width: 80%;">
                 </div>
                 <div class="col-md-6">
                     <p class="text-justify">SCM Batik adalah sebuah toko pakaian dan penyedia jasa konveksi batik yang terletak di daerah Tembalang, sebuah kawasan yang dinamis di Kota Semarang. Kami tidak hanya menyediakan berbagai pilihan batik berkualitas tinggi, tetapi juga menawarkan layanan konveksi yang handal dan profesional. Lokasi kami yang strategis memudahkan pelanggan untuk mengakses toko kami, baik dari pusat kota maupun dari daerah sekitarnya.</p>

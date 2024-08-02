@@ -48,6 +48,10 @@ Route::middleware(['auth', 'harvest'])->group(function () {
         Route::put('/{id}', [HarvestController::class, 'update'])->name('harvest.update');
         Route::delete('/{id}', [HarvestController::class, 'destroy'])->name('harvest.destroy');
     });
+    //profile
+    Route::get('/profile', [HarvestController::class, 'profileIndex'])->name('profile.index');
+    Route::get('/profile/edit', [HarvestController::class, 'profileEdit'])->name('profile.edit');
+    Route::put('/profile', [HarvestController::class, 'profileUpdate'])->name('profile.update');
 });
 
 Route::middleware(['auth'])->group(function () {
