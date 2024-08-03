@@ -86,5 +86,14 @@ class HarvestController extends Controller
             return redirect('/harvest')->with('error', 'Failed to delete harvest.');
         }
     }
+
+    // profile
+    public function profileIndex()
+    {
+        return view('harvests.profile.index' ,[
+            'name' => 'profile',
+            'title' => 'profile',
+        ]);
+    }
     
 }

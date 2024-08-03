@@ -57,6 +57,34 @@
 
         .form-control {
             border-radius: 0.25rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            border: 1.5px solid rgb(163, 163, 163);
+        }
+
+        .form-control:focus {
+            border-color: #ffb347;
+            box-shadow: 0 0 10px rgba(255, 179, 71, 0.5);
+        }
+
+        .form-outline {
+            position: relative;
+        }
+
+        .form-outline label {
+            position: absolute;
+            top: 0;
+            left: 0.75rem;
+            font-size: 1rem;
+            color: #999;
+            transition: all 0.3s;
+        }
+
+        .form-outline input:focus + label,
+        .form-outline input:not(:placeholder-shown) + label {
+            top: -1.5rem;
+            left: 0.75rem;
+            font-size: 0.65rem;
+            color: #ff8c00;
         }
 
         .text-white p {
@@ -104,31 +132,33 @@
 
                                 <form method="POST" action="{{ route('register') }}">
                                     @csrf
-                                    <p>Please create your account</p>
-
                                     <div data-mdb-input-init class="form-outline mb-4">
-                                        <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}" required placeholder="Name">
+                                        <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}" required placeholder=" ">
+                                        <label for="name" class="mt-1">Name</label>
                                         @error('name')
                                         <div>{{ $message }}</div>
                                         @enderror
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-4">
-                                        <input type="email" id="email" class="form-control" name="email" value="{{ old('email') }}" required placeholder="Email address">
+                                        <input type="email" id="email" class="form-control" name="email" value="{{ old('email') }}" required placeholder=" ">
+                                        <label for="email" class="mt-1">Email address</label>
                                         @error('email')
                                         <div>{{ $message }}</div>
                                         @enderror
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-4">
-                                        <input type="password" id="password" class="form-control" name="password" required placeholder="Password">
+                                        <input type="password" id="password" class="form-control" name="password" required placeholder=" ">
+                                        <label for="password" class="mt-1">Password</label>
                                         @error('password')
                                         <div>{{ $message }}</div>
                                         @enderror
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-4">
-                                        <input type="password" id="password-confirm" class="form-control" name="password_confirmation" required placeholder="Confirm Password">
+                                        <input type="password" id="password-confirm" class="form-control" name="password_confirmation" required placeholder=" ">
+                                        <label for="password-confirm" class="mt-1">Confirm Password</label>
                                     </div>
 
                                     <div class="text-center">
