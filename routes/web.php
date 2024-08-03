@@ -15,8 +15,8 @@ use App\Http\Controllers\{
     Auth\RegisterController,
     Auth\LoginController,
     Auth\ForgotPasswordController,
-    Auth\ResetPasswordController
-
+    Auth\ResetPasswordController,
+    HomeController
 };
 
 Route::get('/home', function () {
@@ -26,7 +26,6 @@ Route::get('/home', function () {
 
 // Route::get('/', [adminDashboardController::class, 'dashboard'])->name('dashboard');
 // Route::get('/dashboard', [adminDashboardController::class, 'dashboard'])->name('dashboard');
-// Route::get('/monitoring', [Controller::class, 'monitoring'])->name('monitoring');
 
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
@@ -37,6 +36,13 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('role')->group(function () {
+        Route::get('/select', [RoleController::class, 'select'])->name('roles.select');
+        Route::post('/', [RoleController::class, 'store'])->name('roles.store');
+    });
+});
 
 Route::middleware(['auth', 'harvest'])->group(function () {
     Route::prefix('harvest')->group(function () {
@@ -50,43 +56,7 @@ Route::middleware(['auth', 'harvest'])->group(function () {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('certification')->group(function () {
-        Route::get('/', [CertificationController::class, 'index'])->name('certification.index');
-        Route::get('/create', [CertificationController::class, 'create'])->name('certification.create');
-        Route::post('/', [CertificationController::class, 'store'])->name('certification.store');
-        Route::get('/{id}', [CertificationController::class, 'show'])->name('certification.show');
-        Route::get('/{id}/edit', [CertificationController::class, 'edit'])->name('certification.edit');
-        Route::put('/{id}', [CertificationController::class, 'update'])->name('certification.update');
-        Route::delete('/{id}', [CertificationController::class, 'destroy'])->name('certification.destroy');
-    });
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('craftsman')->group(function () {
-        Route::get('/', [CraftsmanController::class, 'index'])->name('craftsman.index');
-        Route::get('/create', [CraftsmanController::class, 'create'])->name('craftsman.create');
-        Route::post('/', [CraftsmanController::class, 'store'])->name('craftsman.store');
-        Route::get('/{id}', [CraftsmanController::class, 'show'])->name('craftsman.show');
-        Route::get('/{id}/edit', [CraftsmanController::class, 'edit'])->name('craftsman.edit');
-        Route::put('/{id}', [CraftsmanController::class, 'update'])->name('craftsman.update');
-        Route::delete('/{id}', [CraftsmanController::class, 'destroy'])->name('craftsman.destroy');
-    });
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('distribution')->group(function () {
-        Route::get('/', [DistributionController::class, 'index'])->name('distribution.index');
-        Route::get('/create', [DistributionController::class, 'create'])->name('distribution.create');
-        Route::post('/', [DistributionController::class, 'store'])->name('distribution.store');
-        Route::get('/{id}', [DistributionController::class, 'show'])->name('distribution.show');
-        Route::get('/{id}/edit', [DistributionController::class, 'edit'])->name('distribution.edit');
-        Route::put('/{id}', [DistributionController::class, 'update'])->name('distribution.update');
-        Route::delete('/{id}', [DistributionController::class, 'destroy'])->name('distribution.destroy');
-    });
-});
-
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'factory'])->group(function () {
     Route::prefix('factory')->group(function () {
         Route::get('/', [FactoryController::class, 'index'])->name('factory.index');
         Route::get('/create', [FactoryController::class, 'create'])->name('factory.create');
@@ -98,19 +68,31 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('monitoring')->group(function () {
-        Route::get('/', [MonitoringController::class, 'index'])->name('monitoring.index');
-        Route::get('/create', [MonitoringController::class, 'create'])->name('monitoring.create');
-        Route::post('/', [MonitoringController::class, 'store'])->name('monitoring.store');
-        Route::get('/{id}', [MonitoringController::class, 'show'])->name('monitoring.show');
-        Route::get('/{id}/edit', [MonitoringController::class, 'edit'])->name('monitoring.edit');
-        Route::put('/{id}', [MonitoringController::class, 'update'])->name('monitoring.update');
-        Route::delete('/{id}', [MonitoringController::class, 'destroy'])->name('monitoring.destroy');
+Route::middleware(['auth', 'craftsman'])->group(function () {
+    Route::prefix('craftsman')->group(function () {
+        Route::get('/', [CraftsmanController::class, 'index'])->name('craftsman.index');
+        Route::get('/create', [CraftsmanController::class, 'create'])->name('craftsman.create');
+        Route::post('/', [CraftsmanController::class, 'store'])->name('craftsman.store');
+        Route::get('/{id}', [CraftsmanController::class, 'show'])->name('craftsman.show');
+        Route::get('/{id}/edit', [CraftsmanController::class, 'edit'])->name('craftsman.edit');
+        Route::put('/{id}', [CraftsmanController::class, 'update'])->name('craftsman.update');
+        Route::delete('/{id}', [CraftsmanController::class, 'destroy'])->name('craftsman.destroy');
     });
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth' ,'certification'])->group(function () {
+    Route::prefix('certification')->group(function () {
+        Route::get('/', [CertificationController::class, 'index'])->name('certification.index');
+        Route::get('/create', [CertificationController::class, 'create'])->name('certification.create');
+        Route::post('/', [CertificationController::class, 'store'])->name('certification.store');
+        Route::get('/{id}', [CertificationController::class, 'show'])->name('certification.show');
+        Route::get('/{id}/edit', [CertificationController::class, 'edit'])->name('certification.edit');
+        Route::put('/{id}', [CertificationController::class, 'update'])->name('certification.update');
+        Route::delete('/{id}', [CertificationController::class, 'destroy'])->name('certification.destroy');
+    });
+});
+
+Route::middleware(['auth', 'waste_management'])->group(function () {
     Route::prefix('waste-management')->group(function () {
         Route::get('/', [WasteManagementController::class, 'index'])->name('waste-management.index');
         Route::get('/create', [WasteManagementController::class, 'create'])->name('waste-management.create');
@@ -122,15 +104,28 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('role')->group(function () {
-        Route::get('/select', [RoleController::class, 'select'])->name('roles.select');
-        Route::get('/', [RoleController::class, 'index'])->name('role.index');
-        Route::get('/create', [RoleController::class, 'create'])->name('role.create');
-        Route::post('/', [RoleController::class, 'store'])->name('roles.store');
-        Route::get('/{id}', [RoleController::class, 'show'])->name('role.show');
-        Route::get('/{id}/edit', [RoleController::class, 'edit'])->name('role.edit');
-        Route::put('/{id}', [RoleController::class, 'update'])->name('role.update');
-        Route::delete('/{id}', [RoleController::class, 'destroy'])->name('role.destroy');
+Route::middleware(['auth','distribution'])->group(function () {
+    Route::prefix('distribution')->group(function () {
+        Route::get('/', [DistributionController::class, 'index'])->name('distribution.index');
+        Route::get('/create', [DistributionController::class, 'create'])->name('distribution.create');
+        Route::post('/', [DistributionController::class, 'store'])->name('distribution.store');
+        Route::get('/{id}', [DistributionController::class, 'show'])->name('distribution.show');
+        Route::get('/{id}/edit', [DistributionController::class, 'edit'])->name('distribution.edit');
+        Route::put('/{id}', [DistributionController::class, 'update'])->name('distribution.update');
+        Route::delete('/{id}', [DistributionController::class, 'destroy'])->name('distribution.destroy');
     });
 });
+
+Route::middleware(['auth' ,'monitoring'])->group(function () {
+    Route::prefix('monitoring')->group(function () {
+        Route::get('/', [MonitoringController::class, 'index'])->name('monitoring.index');
+        Route::get('/create', [MonitoringController::class, 'create'])->name('monitoring.create');
+        Route::post('/', [MonitoringController::class, 'store'])->name('monitoring.store');
+        Route::get('/{id}', [MonitoringController::class, 'show'])->name('monitoring.show');
+        Route::get('/{id}/edit', [MonitoringController::class, 'edit'])->name('monitoring.edit');
+        Route::put('/{id}', [MonitoringController::class, 'update'])->name('monitoring.update');
+        Route::delete('/{id}', [MonitoringController::class, 'destroy'])->name('monitoring.destroy');
+    });
+});
+
+Route::get('/unauthorized', [HomeController::class, 'unauthorized'])->name('unauthorized');

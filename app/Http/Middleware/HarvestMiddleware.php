@@ -7,16 +7,9 @@ use Illuminate\Http\Request;
 
 class HarvestMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->roleuser('Harvester')) {
+        if ($request->user()->hasRole(3)) {
             return $next($request);
         }
 

@@ -18,7 +18,7 @@
                     <th>Delivery Info</th>
                     <th>Delivery Date</th>
                     <th>Image</th>
-                    <th>Actions</th> <!-- New column for actions -->
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>

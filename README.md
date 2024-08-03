@@ -1,81 +1,45 @@
+<h1 align="center">Batik Supply Chain Management App. </h1>
 
-```sql
-Table Users {
-    user_id INT [pk, increment]
-    name VARCHAR
-    role VARCHAR
-    address VARCHAR
-    registration_date DATE
-}
+<p align="center">
+Blockchain application on a web based supply chain management system
+</p>
 
-Table Harvest {
-    harvest_id INT [pk, increment]
-    user_id INT [ref: > Users.user_id]
-    material_type VARCHAR
-    quantity FLOAT
-    quality VARCHAR
-    delivery_info VARCHAR
-    delivery_date DATETIME
-}
+<p align="center">
+    <img src="https://media1.tenor.com/m/phXC2y9QVa0AAAAd/bocchi-the-rock-kita-ikuyo.gif" alt="Wife" width="400">
+</p>
 
-Table Factory {
-    factory_id INT [pk, increment]
-    user_id INT [ref: > Users.user_id]
-    harvest_id INT [ref: > Harvest.harvest_id]
-    received_date DATETIME
-    initial_process VARCHAR
-    semi_finished_quantity FLOAT
-    semi_finished_quality VARCHAR
-}
+### Installation
 
-Table Craftsman {
-    craftsman_id INT [pk, increment]
-    user_id INT [ref: > Users.user_id]
-    factory_id INT [ref: > Factory.factory_id]
-    production_details VARCHAR
-    finished_quantity FLOAT
-    completion_date DATETIME
-}
+To set up the project locally, follow these steps:
 
-Table Certification {
-    certification_id INT [pk, increment]
-    user_id INT [ref: > Users.user_id]
-    craftsman_id INT [ref: > Craftsman.craftsman_id]
-    test_results VARCHAR
-    certificate_number VARCHAR
-    issue_date DATE
-}
+1. **Clone the repository**:
+    ```sh
+    git clone https://github.com/DwiKrisnandi1905/SCM_Batik.git
+    cd SCM_Batik
+    ```
 
-Table WasteManagement {
-    waste_id INT [pk, increment]
-    user_id INT [ref: > Users.user_id]
-    waste_type VARCHAR
-    management_method VARCHAR
-    management_results VARCHAR
-}
+2. **Install Dependencies**:
+    ```sh
+    composer install
+    ```
 
-Table Distribution {
-    distribution_id INT [pk, increment]
-    user_id INT [ref: > Users.user_id]
-    craftsman_id INT [ref: > Craftsman.craftsman_id]
-    destination VARCHAR
-    quantity FLOAT
-    shipment_date DATETIME
-    tracking_number VARCHAR
-    received_date DATETIME
-    receiver_name VARCHAR
-    received_condition VARCHAR
-}
+3. **Set Up Environment Variables**:
+    ```sh
+    mv .env.example .env
+    ```
+    > Edit the `.env` file to include your specific environment variables, such as database connection details.
 
-Table Monitoring {
-    monitoring_id INT [pk, increment]
-    harvest_id INT [ref: > Harvest.harvest_id]
-    factory_id INT [ref: > Factory.factory_id]
-    craftsman_id INT [ref: > Craftsman.craftsman_id]
-    certification_id INT [ref: > Certification.certification_id]
-    waste_id INT [ref: > WasteManagement.waste_id]
-    distribution_id INT [ref: > Distribution.distribution_id]
-    status VARCHAR
-    last_updated DATETIME
-}
-```
+4. **Run Migrations**:
+    ```sh
+    php artisan migrate
+    ```
+
+5. **Start the Server**:
+    ```sh
+    php artisan serve
+    ```
+    > The server will start on the default port 8000. You can now access your web application by navigating to [http://localhost:8000](http://localhost:8000) in your web browser.
+
+
+### Documentation
+For database design, you can find it [here](https://dbdiagram.io/d/SCM-Batik-66ac8c9c8b4bb5230e09df06).

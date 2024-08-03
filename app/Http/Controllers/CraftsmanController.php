@@ -4,63 +4,82 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
+use App\Models\Factory;
 
 class CraftsmanController extends Controller
 {
     public function index()
     {
         $craftsmen = Craftsman::all();
-        return view('craftsmen.index', compact('craftsmen'));
+        return view('craftsman.index', compact('craftsmen'));
     }
 
     public function create()
     {
-        return view('craftsmen.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            // Add validation rules for other fields
-        ]);
-
-        Craftsman::create($request->all());
-
-        return redirect()->route('craftsmen.index')
-            ->with('success', 'Craftsman created successfully.');
+        Factory::all();
+        return view('craftsman.create');
     }
 
     public function show(Craftsman $craftsman)
     {
-        return view('craftsmen.show', compact('craftsman'));
+        return view('craftsman.show', compact('craftsman'));
     }
 
-    public function edit(Craftsman $craftsman)
+    public function edit($id)
     {
-        return view('craftsmen.edit', compact('craftsman'));
+        $craftsman = Craftsman::findOrFail($id);
+        return view('craftsman.edit', compact('craftsman'));
     }
-
-    public function update(Request $request, Craftsman $craftsman)
+    public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            // Add validation rules for other fields
+        $validated = $request->validate([
+            'factory_id' => 'required|integer|exists:factories,id',
+            'production_details' => 'required|string',
+            'finished_quantity' => 'required|numeric',
+            'completion_date' => 'required|date_format:Y-m-d\TH:i',
         ]);
 
-        $craftsman->update($request->all());
+        $validated['user_id'] = auth()->user()->id;
 
-        return redirect()->route('craftsmen.index')
-            ->with('success', 'Craftsman updated successfully.');
+        $craftsman = Craftsman::create($validated);
+
+        if ($craftsman) {
+            return redirect()->route('craftsman.index')->with('success', 'Craftsman created successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to create craftsman.');
+        }
     }
 
-    public function destroy(Craftsman $craftsman)
+    public function update(Request $request, $id)
     {
-        $craftsman->delete();
+        $craftsman = Craftsman::findOrFail($id);
 
-        return redirect()->route('craftsmen.index')
-            ->with('success', 'Craftsman deleted successfully.');
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'factory_id' => 'required|integer|exists:factories,id',
+            'production_details' => 'required|string',
+            'finished_quantity' => 'required|numeric',
+            'completion_date' => 'required|date_format:Y-m-d\TH:i',
+        ]);
+
+        $success = $craftsman->update($validated);
+
+        if ($success) {
+            return redirect()->route('craftsman.index')->with('success', 'Craftsman updated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update craftsman.');
+        }
+    }
+
+    public function destroy($id)
+    {
+        $craftsman = Craftsman::findOrFail($id);
+        $success = $craftsman->delete();
+
+        if ($success) {
+            return redirect()->route('craftsman.index')->with('success', 'Craftsman deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to delete craftsman.');
+        }
     }
 }

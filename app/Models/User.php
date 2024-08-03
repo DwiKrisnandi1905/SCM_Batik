@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,6 +29,11 @@ class User extends Authenticatable
     public function roleuser()
     {
         return $this->hasOne(RoleUser::class, 'user_id');
+    }
+
+    public function hasRole($roleId)
+    {
+        return $this->roleuser()->where('role_id', $roleId)->exists();
     }
 
     public function craftsman()

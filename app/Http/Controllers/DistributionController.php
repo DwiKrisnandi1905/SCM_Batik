@@ -1,62 +1,79 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Distribution;
+use Illuminate\Http\Request;
 
 class DistributionController extends Controller
 {
     public function index()
     {
-        $distributions = Distribution::all();
-        return view('distributions.index', compact('distributions'));
+        $distribution = Distribution::all();
+        return view('distribution.index', compact('distribution'));
     }
 
     public function create()
     {
-        return view('distributions.create');
+        return view('distribution.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            
+            'craftsman_id' => 'required|integer',
+            'destination' => 'required|string',
+            'quantity' => 'required|numeric',
+            'shipment_date' => 'required|date_format:Y-m-d\TH:i',
+            'tracking_number' => 'required|string',
+            'received_date' => 'required|date',
+            'receiver_name' => 'required|string',
+            'received_condition' => 'required|string',
         ]);
 
-        Distribution::create($request->all());
+        $userId = auth()->user()->id;
 
-        return redirect()->route('distributions.index')
-            ->with('success', 'Distribution created successfully.');
+        $distribution = Distribution::create(array_merge($request->all(), ['user_id' => $userId]));
+
+        if ($distribution) {
+            return redirect()->route('distribution.index')->with('success', 'Distribution record created successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to create distribution record.');
+        }
     }
 
-    public function show(Distribution $distribution)
+    public function show($id)
     {
-        return view('distributions.show', compact('distribution'));
+        $distribution = Distribution::find($id);
+        return view('distribution.show', compact('distribution'));
     }
 
-    public function edit(Distribution $distribution)
+    public function edit($id)
     {
-        return view('distributions.edit', compact('distribution'));
+        $distribution = Distribution::find($id);
+        return view('distribution.edit', compact('distribution'));
     }
 
     public function update(Request $request, Distribution $distribution)
     {
         $request->validate([
-            // Add validation rules for your distribution fields here
+            'user_id' => 'required|integer',
+            'craftsman_id' => 'required|integer',
+            'destination' => 'required|string',
+            'quantity' => 'required|numeric',
+            'shipment_date' => 'required|date',
+            'tracking_number' => 'required|string',
+            'received_date' => 'required|date',
+            'receiver_name' => 'required|string',
+            'received_condition' => 'required|string',
         ]);
 
         $distribution->update($request->all());
-
-        return redirect()->route('distributions.index')
-            ->with('success', 'Distribution updated successfully.');
+        return redirect()->route('distribution.index')->with('success', 'Distribution record updated successfully.');
     }
 
-    public function destroy(Distribution $distribution)
+    public function destroy($id)
     {
-        $distribution->delete();
-
-        return redirect()->route('distributions.index')
-            ->with('success', 'Distribution deleted successfully.');
+        Distribution::destroy($id);
+        return redirect()->route('distribution.index')->with('success', 'Distribution record deleted successfully.');
     }
 }

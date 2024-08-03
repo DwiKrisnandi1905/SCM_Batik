@@ -4,34 +4,44 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Factory;
+use App\Models\Harvest;
 
 class FactoryController extends Controller
 {
     public function store(Request $request)
     {
+        $userId = auth()->id();
         $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
             'harvest_id' => 'required|integer|exists:harvests,id',
-            'received_date' => 'required|date',
+            'received_date' => 'required|date_format:Y-m-d\TH:i', 
             'initial_process' => 'required|string',
             'semi_finished_quantity' => 'required|numeric',
             'semi_finished_quality' => 'required|string',
+            'factory_name' => 'required|string',
+            'factory_address' => 'required|string',
         ]);
 
+        $validated['user_id'] = $userId; 
         $factory = Factory::create($validated);
-        return response()->json($factory, 201);
+
+        if ($factory) {
+            return response()->json(['success' => true, 'message' => 'Factory created successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to create factory']);
+        }
     }
 
     public function index()
     {
         $userId = auth()->id();
-        $harvests = Factory::where('user_id', $userId)->get();
-        return view('factory.index', compact('harvests'));
+        $factory = Factory::where('user_id', $userId)->get();
+        return view('factory.index', compact('factory'));
     }
 
     public function create()
     {
-        return view('factory.create');
+        $harvests = Harvest::all();
+        return view('factory.create', compact('harvests'));
     }
 
     public function show($id)
@@ -50,14 +60,26 @@ class FactoryController extends Controller
             'semi_finished_quality' => 'sometimes|required|string',
         ]);
 
-        $factory->update($validated);
-        return response()->json($factory);
+        if ($factory->update($validated)) {
+            return response()->json(['success' => true, 'message' => 'Factory updated successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to update factory']);
+        }
     }
 
-    public function delete($id)
+    public function edit($id)
     {
         $factory = Factory::findOrFail($id);
-        $factory->delete();
-        return response()->json(null, 204);
+        return view('factory.edit', compact('factory'));
+    }
+
+    public function destroy($id)
+    {
+        $factory = Factory::findOrFail($id);
+        if ($factory->delete()) {
+            return response()->json(['success' => true, 'message' => 'Factory deleted successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to delete factory']);
+        }
     }
 }
