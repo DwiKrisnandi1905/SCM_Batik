@@ -8,7 +8,37 @@
     }
 
     table {
-        min-width: 800px; /* Set to a value that ensures the table does not shrink */
+        min-width: 800px;
+    }
+    .img-link {
+        position: relative;
+        display: inline-block;
+        font-size: 16px;
+        font-weight: bold;
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s, transform 0.3s;
+        cursor: pointer;
+    }
+    .img-link::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #007bff;
+        transform-origin: bottom right;
+        transition: transform 0.25s ease-out;
+    }
+    .img-link:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    .img-link:hover {
+        color: #0056b3; /* Darker shade for hover */
+        transform: scale(1.1);
     }
 </style>
     <div class="d-flex justify-content-between align-items-center mb-4">

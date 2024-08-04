@@ -95,5 +95,13 @@ class HarvestController extends Controller
             'title' => 'profile',
         ]);
     }
-    
+
+    //monitoring
+    public function monitoringIndex()
+    {
+        return view('harvests.monitoring.index' ,[
+            'name' => 'monitoring',
+            'title' => 'monitoring',
+        ]);
+    }
 }

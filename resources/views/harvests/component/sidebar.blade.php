@@ -9,14 +9,20 @@
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
             <a href="{{ route('harvest.index') }}" class="nav-link {{ request()->routeIs('harvest.index') ? 'active' : 'link-dark' }}">
-                <i class="bi bi-speedometer2"></i>
+                <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
         </li>
         <li class="mb-2">
             <a href="{{ route('profile.index') }}" class="nav-link {{ request()->routeIs('profile.index') ? 'active' : 'link-dark' }}">
-                <i class="bi bi-speedometer2"></i>
+                <i class="bi bi-speedometer2 mx-2"></i>
                 Profile
+            </a>
+        </li>
+        <li class="mb-2">
+            <a href="{{ route('monitoring.index') }}" class="nav-link {{ request()->routeIs('monitoring.index') ? 'active' : 'link-dark' }}">
+                <i class="bi bi-speedometer2 mx-2"></i>
+                Monitoring
             </a>
         </li>
     </ul>

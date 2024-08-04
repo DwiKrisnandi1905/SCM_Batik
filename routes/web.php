@@ -58,6 +58,9 @@ Route::middleware(['auth', 'harvest'])->group(function () {
     Route::get('/profile', [HarvestController::class, 'profileIndex'])->name('profile.index');
     Route::get('/profile/edit', [HarvestController::class, 'profileEdit'])->name('profile.edit');
     Route::put('/profile', [HarvestController::class, 'profileUpdate'])->name('profile.update');
+
+    //monitoring
+    Route::get('/monitoring', [HarvestController::class, 'monitoringIndex'])->name('monitoring.index');
 });
 
 Route::middleware(['auth', 'factory'])->group(function () {
