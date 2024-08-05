@@ -11,7 +11,7 @@ class Factory extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'harvest_id', 'received_date', 'initial_process', 'semi_finished_quantity', 'semi_finished_quality', 'factory_name', 'factory_address'
+        'user_id', 'harvest_id', 'received_date', 'initial_process', 'semi_finished_quantity', 'semi_finished_quality', 'factory_name', 'factory_address', 'image'
     ];
 
     public function user()

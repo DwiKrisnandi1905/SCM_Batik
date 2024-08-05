@@ -1,20 +1,27 @@
-<form action="{{ route('certification.store') }}" method="POST">
-    @csrf
-    <div>
-        <label for="test_results">Test Results:</label>
-        <input type="text" id="test_results" name="test_results" value="{{ old('test_results') }}" required>
+@extends('layout.app')
+
+@section('content')
+    <div class="container mt-5">
+        <h1>Create Certification</h1>
+        <form action="{{ route('certification.store') }}" method="POST">
+            @csrf
+
+            <div class="form-group mb-3">
+                <label for="test_results">Test Results:</label>
+                <input type="text" id="test_results" name="test_results" class="form-control" value="{{ old('test_results') }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="certificate_number">Certificate Number:</label>
+                <input type="text" id="certificate_number" name="certificate_number" class="form-control" value="{{ old('certificate_number') }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="issue_date">Issue Date:</label>
+                <input type="datetime-local" id="issue_date" name="issue_date" class="form-control" value="{{ old('issue_date') }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
     </div>
-    <div>
-        <label for="certificate_number">Certificate Number:</label>
-        <input type="text" id="certificate_number" name="certificate_number" value="{{ old('certificate_number') }}" required>
-    </div>
-    <div>
-        <div>
-            <label for="issue_date">Issue Date:</label>
-            <input type="datetime-local" id="issue_date" name="issue_date" value="{{ old('issue_date') }}" required>
-        </div>
-    </div>
-    <div>
-        <button type="submit">Create</button>
-    </div>
-</form>
+@endsection

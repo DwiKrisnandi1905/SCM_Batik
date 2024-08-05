@@ -9,6 +9,13 @@
 
     table {
         min-width: 800px;
+        width: 100%;
+        table-layout: auto; 
+    }
+    th, td {
+        white-space: nowrap;
+        overflow: hidden; 
+        text-overflow: ellipsis;
     }
     .img-link {
         position: relative;

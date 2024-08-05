@@ -1,12 +1,6 @@
-<!-- resources/views/craftsmen/create.blade.php -->
+@extends('layout.app')
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Craftsman</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
+@section('content')
     <div class="container mt-5">
         <h1>Create Craftsman</h1>
         <form action="{{ route('craftsman.store') }}" method="POST">
@@ -35,5 +29,4 @@
             <button type="submit" class="btn btn-primary">Create</button>
         </form>
     </div>
-</body>
-</html>
+@endsection

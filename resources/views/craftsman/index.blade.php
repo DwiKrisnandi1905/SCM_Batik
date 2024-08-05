@@ -9,6 +9,13 @@
 
     table {
         min-width: 800px;
+        width: 100%;
+        table-layout: auto; 
+    }
+    th, td {
+        white-space: nowrap;
+        overflow: hidden; 
+        text-overflow: ellipsis;
     }
     .img-link {
         position: relative;
@@ -37,7 +44,7 @@
         transform-origin: bottom left;
     }
     .img-link:hover {
-        color: #0056b3; /* Darker shade for hover */
+        color: #0056b3;
         transform: scale(1.1);
     }
 </style>
