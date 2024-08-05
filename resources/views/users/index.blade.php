@@ -1,4 +1,4 @@
-@extends('harvests.layout.app')
+@extends('layout.app')
 
 @section('content')
 <style>
@@ -59,6 +59,7 @@
         border-radius: 0.75rem;
         padding: 1rem;
     }
+
     .bg-gold {
         background: #ffcc00;
         background: -webkit-linear-gradient(to right, #ffcc00, #ffb347, #ff8c00, #ff8008);
@@ -94,46 +95,48 @@
                     <h5 class="mb-0">Profile Information</h5>
                 </div>
                 <div class="card-body">
-                    <div class="info-row blur-background">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <p class="mb-0 info-title">Full Name</p>
-                            </div>
-                            <div class="col-sm-8">
-                                <p class="mb-0 text-white fw-bold">Johnatan Smith</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info-row blur-background">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <p class="mb-0 info-title">Email</p>
-                            </div>
-                            <div class="col-sm-8">
-                                <p class="mb-0 text-white fw-bold">example@example.com</p>
+                    @foreach ($users as $user)
+                        <div class="info-row blur-background">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0 info-title">Full Name</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="mb-0 text-white fw-bold">{{ $user->user_name }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="info-row blur-background">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <p class="mb-0 info-title">Phone</p>
-                            </div>
-                            <div class="col-sm-8">
-                                <p class="mb-0 text-white fw-bold">(123) 456-7890</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info-row blur-background">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <p class="mb-0 info-title">Address</p>
-                            </div>
-                            <div class="col-sm-8">
-                                <p class="mb-0 text-white fw-bold">Bay Area, San Francisco, CA</p>
+                        <div class="info-row blur-background">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0 info-title">Email</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="mb-0 text-white fw-bold">{{ $user->user_email }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="info-row blur-background">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0 info-title">Role</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="mb-0 text-white fw-bold">{{ $user->role_name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-row blur-background">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="mb-0 info-title">Address</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="mb-0 text-white fw-bold">Bay Area, San Francisco, CA</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

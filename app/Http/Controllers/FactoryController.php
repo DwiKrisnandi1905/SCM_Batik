@@ -5,26 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Factory;
 use App\Models\Harvest;
+use Illuminate\Support\Facades\DB;
 
 class FactoryController extends Controller
 {
     public function store(Request $request)
     {
         $userId = auth()->id();
-        $validated = $request->validate([
-            'harvest_id' => 'required|integer|exists:harvests,id',
-            'received_date' => 'required|date_format:Y-m-d\TH:i', 
-            'initial_process' => 'required|string',
-            'semi_finished_quantity' => 'required|numeric',
-            'semi_finished_quality' => 'required|string',
-            'factory_name' => 'required|string',
-            'factory_address' => 'required|string',
-        ]);
+        $query = "INSERT INTO factories (user_id, harvest_id, received_date, initial_process, semi_finished_quantity, semi_finished_quality, factory_name, factory_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $bindings = [
+            $userId,
+            $request->input('harvest_id'),
+            $request->input('received_date'),
+            $request->input('initial_process'),
+            $request->input('semi_finished_quantity'),
+            $request->input('semi_finished_quality'),
+            $request->input('factory_name'),
+            $request->input('factory_address')
+        ];
 
-        $validated['user_id'] = $userId; 
-        $factory = Factory::create($validated);
-
-        if ($factory) {
+        if (DB::insert($query, $bindings)) {
             return response()->json(['success' => true, 'message' => 'Factory created successfully']);
         } else {
             return response()->json(['success' => false, 'message' => 'Failed to create factory']);

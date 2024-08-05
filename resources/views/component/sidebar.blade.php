@@ -19,12 +19,6 @@
                 Profile
             </a>
         </li>
-        <li class="mb-2">
-            <a href="{{ route('monitoring.index') }}" class="nav-link {{ request()->routeIs('monitoring.index') ? 'active' : 'link-dark' }}">
-                <i class="bi bi-speedometer2 mx-2"></i>
-                Monitoring
-            </a>
-        </li>
     </ul>
     <hr>
 </div>

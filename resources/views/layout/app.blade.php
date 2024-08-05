@@ -29,12 +29,12 @@
     </style>
 </head>
 <body>
-    @include('harvests.component.navbar')
+    @include('component.navbar')
     <button class="btn sidebar-toggler" type="button">
         <i class="bi bi-list"></i>
     </button>
     <div class="content">
-        @include('harvests.component.sidebar')
+        @include('component.sidebar')
         <div class="main-content">
             @yield('content')
         </div>

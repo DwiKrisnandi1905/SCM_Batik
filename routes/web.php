@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{
-    AdminDashboardController,
-    Controller,
     CertificationController,
     CraftsmanController,
     DistributionController,
@@ -16,32 +14,23 @@ use App\Http\Controllers\{
     Auth\LoginController,
     Auth\ForgotPasswordController,
     Auth\ResetPasswordController,
-    HomeController
+    HomeController,
+    UserController
 };
 
-Route::get('/home', function () {
-    return view('admin.page.dashboard');
-})->middleware('auth');
-
-
-Route::get('/', [Controller::class, 'landingPage'])->name('landingPage');
-// Route::get('/dashboard', [adminDashboardController::class, 'dashboard'])->name('dashboard');
-
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [LoginController::class, 'login']);
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('role')->group(function () {
         Route::get('/select', [RoleController::class, 'select'])->name('roles.select');
         Route::post('/', [RoleController::class, 'store'])->name('roles.store');
     });
+
+    Route::get('/profile', [UserController::class, 'profileIndex'])->name('profile.index');
+    Route::get('/profile/edit', [UserController::class, 'profileEdit'])->name('profile.edit');
+    Route::put('/profile', [UserController::class, 'profileUpdate'])->name('profile.update');
 });
 
 Route::middleware(['auth', 'harvest'])->group(function () {
@@ -54,13 +43,6 @@ Route::middleware(['auth', 'harvest'])->group(function () {
         Route::put('/{id}', [HarvestController::class, 'update'])->name('harvest.update');
         Route::delete('/{id}', [HarvestController::class, 'destroy'])->name('harvest.destroy');
     });
-    //profile
-    Route::get('/profile', [HarvestController::class, 'profileIndex'])->name('profile.index');
-    Route::get('/profile/edit', [HarvestController::class, 'profileEdit'])->name('profile.edit');
-    Route::put('/profile', [HarvestController::class, 'profileUpdate'])->name('profile.update');
-
-    //monitoring
-    Route::get('/monitoring', [HarvestController::class, 'monitoringIndex'])->name('monitoring.index');
 });
 
 Route::middleware(['auth', 'factory'])->group(function () {
@@ -99,7 +81,7 @@ Route::middleware(['auth' ,'certification'])->group(function () {
     });
 });
 
-Route::middleware(['auth', 'waste_management'])->group(function () {
+Route::middleware(['auth', 'waste'])->group(function () {
     Route::prefix('waste-management')->group(function () {
         Route::get('/', [WasteManagementController::class, 'index'])->name('waste-management.index');
         Route::get('/create', [WasteManagementController::class, 'create'])->name('waste-management.create');
@@ -136,3 +118,12 @@ Route::middleware(['auth' ,'monitoring'])->group(function () {
 });
 
 Route::get('/unauthorized', [HomeController::class, 'unauthorized'])->name('unauthorized');
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register']);
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset']);

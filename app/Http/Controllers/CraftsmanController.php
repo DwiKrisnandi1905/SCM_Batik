@@ -10,7 +10,7 @@ class CraftsmanController extends Controller
 {
     public function index()
     {
-        $craftsmen = Craftsman::all();
+        $craftsmen = Craftsman::where('user_id', auth()->user()->id)->get();
         return view('craftsman.index', compact('craftsmen'));
     }
 

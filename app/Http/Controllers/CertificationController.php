@@ -8,7 +8,7 @@ class CertificationController extends Controller
 {
     public function index()
     {
-        $certifications = Certification::all();
+        $certifications = Certification::where('user_id', auth()->id())->get();
         return view('certification.index', compact('certifications'));
     }
 
@@ -19,6 +19,8 @@ class CertificationController extends Controller
 
     public function store(Request $request)
     {
+        $user_id = auth()->id();
+
         $request->validate([
             'user_id' => 'required|integer',
             'craftsman_id' => 'required|integer',
@@ -27,8 +29,19 @@ class CertificationController extends Controller
             'issue_date' => 'required|date',
         ]);
 
-        Certification::create($request->all());
-        return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
+        $certification = Certification::create([
+            'user_id' => $user_id,
+            'craftsman_id' => $request->craftsman_id,
+            'test_results' => $request->test_results,
+            'certificate_number' => $request->certificate_number,
+            'issue_date' => $request->issue_date,
+        ]);
+
+        if ($certification) {
+            return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to create certification.');
+        }
     }
 
     public function show()
@@ -52,7 +65,11 @@ class CertificationController extends Controller
         ]);
 
         $certification = Certification::findOrFail($id);
-        $certification->update($request->all());
+        if ($certification->update($request->all())) {
+            return redirect()->route('certification.index')->with('success', 'Certification updated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update certification.');
+        }
     }
 
     public function destroy($id)

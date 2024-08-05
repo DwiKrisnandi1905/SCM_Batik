@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -26,14 +28,22 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function roleuser()
+    public function rolename()
     {
-        return $this->hasOne(RoleUser::class, 'user_id');
+        $user = Auth::user();
+        $role = DB::table('users')
+        ->select('users.id AS user_id', 'users.name AS user_name', 'users.email AS user_email', 'roles.id AS role_id', 'roles.name AS role_name')
+        ->join('role_user', 'users.id', '=', 'role_user.user_id')
+        ->join('roles', 'role_user.role_id', '=', 'roles.id')
+        ->where('users.id', $user->id)
+        ->get();
+
+        return $role;
     }
 
-    public function hasRole($roleId)
+    public function roles()
     {
-        return $this->roleuser()->where('role_id', $roleId)->exists();
+        return $this->belongsToMany(Role::class);
     }
 
     public function craftsman()

@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Distribution;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DistributionController extends Controller
 {
@@ -19,22 +20,26 @@ class DistributionController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'craftsman_id' => 'required|integer',
-            'destination' => 'required|string',
-            'quantity' => 'required|numeric',
-            'shipment_date' => 'required|date_format:Y-m-d\TH:i',
-            'tracking_number' => 'required|string',
-            'received_date' => 'required|date',
-            'receiver_name' => 'required|string',
-            'received_condition' => 'required|string',
-        ]);
-
         $userId = auth()->user()->id;
 
-        $distribution = Distribution::create(array_merge($request->all(), ['user_id' => $userId]));
+        $query = "INSERT INTO distributions (user_id, craftsman_id, destination, quantity, shipment_date, tracking_number, received_date, receiver_name, received_condition) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        if ($distribution) {
+        $values = [
+            $userId,
+            $request->input('craftsman_id'),
+            $request->input('destination'),
+            $request->input('quantity'),
+            $request->input('shipment_date'),
+            $request->input('tracking_number'),
+            $request->input('received_date'),
+            $request->input('receiver_name'),
+            $request->input('received_condition')
+        ];
+
+        $result = DB::insert($query, $values);
+
+        if ($result) {
             return redirect()->route('distribution.index')->with('success', 'Distribution record created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create distribution record.');
@@ -55,25 +60,41 @@ class DistributionController extends Controller
 
     public function update(Request $request, Distribution $distribution)
     {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'craftsman_id' => 'required|integer',
-            'destination' => 'required|string',
-            'quantity' => 'required|numeric',
-            'shipment_date' => 'required|date',
-            'tracking_number' => 'required|string',
-            'received_date' => 'required|date',
-            'receiver_name' => 'required|string',
-            'received_condition' => 'required|string',
-        ]);
+        $query = "UPDATE distributions SET user_id = ?, craftsman_id = ?, destination = ?, quantity = ?, shipment_date = ?, tracking_number = ?, received_date = ?, receiver_name = ?, received_condition = ? WHERE id = ?";
 
-        $distribution->update($request->all());
-        return redirect()->route('distribution.index')->with('success', 'Distribution record updated successfully.');
+        $values = [
+            $request->input('user_id'),
+            $request->input('craftsman_id'),
+            $request->input('destination'),
+            $request->input('quantity'),
+            $request->input('shipment_date'),
+            $request->input('tracking_number'),
+            $request->input('received_date'),
+            $request->input('receiver_name'),
+            $request->input('received_condition'),
+            $distribution->id
+        ];
+
+        $result = DB::update($query, $values);
+
+        if ($result) {
+            return redirect()->route('distribution.index')->with('success', 'Distribution record updated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update distribution record.');
+        }
     }
 
     public function destroy($id)
     {
-        Distribution::destroy($id);
-        return redirect()->route('distribution.index')->with('success', 'Distribution record deleted successfully.');
+        $query = "DELETE FROM distributions WHERE id = ?";
+        $values = [$id];
+
+        $result = DB::delete($query, $values);
+
+        if ($result) {
+            return redirect()->route('distribution.index')->with('success', 'Distribution record deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to delete distribution record.');
+        }
     }
 }

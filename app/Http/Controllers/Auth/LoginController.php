@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -18,7 +19,13 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('home');
+            $user = Auth::user();
+
+            if ($user->rolename() === 'factory') {
+                return redirect()->intended('admin/dashboard');
+            } else {
+                return redirect()->intended('home');
+            }
         }
 
         return back()->withErrors([

@@ -35,13 +35,13 @@
 
             <div class="mb-3">
                 <label for="delivery_date" class="form-label">Delivery Date:</label>
-                <input type="date" class="form-control" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', $harvest->delivery_date) }}" required>
+                <input type="datetime-local" class="form-control" id="delivery_date" name="delivery_date" value="{{ old('delivery_date', $harvest->delivery_date) }}" required>
             </div>
 
             <div class="mb-3">
                 <label for="image" class="form-label">Image:</label>
                 @if($harvest->image)
-                    <img src="{{ asset('storage/' . $harvest->image) }}" alt="Harvest Image" class="img-thumbnail mb-2" width="100">
+                    <img src="{{ asset('storage/images/' . $harvest->image) }}" alt="Harvest Image" class="img-thumbnail mb-2" width="100">
                 @endif
                 <input type="file" class="form-control" id="image" name="image">
             </div>

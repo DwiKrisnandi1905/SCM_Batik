@@ -1,4 +1,4 @@
-@extends('harvests.layout.app')
+@extends('layout.app')
 
 @section('content')
     
@@ -56,6 +56,7 @@
                     <th>Delivery Info</th>
                     <th>Delivery Date</th>
                     <th>Image</th>
+                    <th>Monitor</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -70,10 +71,13 @@
                         <td>{{ $harvest->delivery_date }}</td>
                         <td>
                             @if($harvest->image)
-                                <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/' . $harvest->image) }}">View Image</span>
+                                <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $harvest->image) }}">View Image</span>
                             @else
                                 No Image
                             @endif
+                        </td>
+                        <td>
+                        <a href="">Monitor</a>
                         </td>
                         <td class="actions">
                             <a href="{{ route('harvest.edit', $harvest->id) }}" class="btn btn-warning btn-sm btn-icon">

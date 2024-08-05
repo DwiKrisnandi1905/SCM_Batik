@@ -29,7 +29,7 @@
             </div>
             <div class="mb-3">
                 <label for="delivery_date" class="form-label">Delivery Date:</label>
-                <input type="date" class="form-control" id="delivery_date" name="delivery_date" required>
+                <input type="datetime-local" class="form-control" id="delivery_date" name="delivery_date" required>
             </div>
             <div class="mb-3">
                 <label for="image" class="form-label">Image:</label>

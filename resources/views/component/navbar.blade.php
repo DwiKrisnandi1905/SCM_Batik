@@ -13,7 +13,12 @@
                         <strong>Username</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item">Sign out</button>
+                            </form>
+                        </li>
                     </ul>
                 </li>
             </ul>

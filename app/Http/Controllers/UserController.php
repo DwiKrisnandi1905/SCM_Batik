@@ -2,63 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function index()
+    public function profileIndex()
     {
-        $users = User::all();
-        return view('users.index', compact('users'));
+        $user = Auth::user();
+
+        $users = DB::table('users')
+            ->select('users.id AS user_id', 'users.name AS user_name', 'users.email AS user_email', 'roles.id AS role_id', 'roles.name AS role_name')
+            ->join('role_user', 'users.id', '=', 'role_user.user_id')
+            ->join('roles', 'role_user.role_id', '=', 'roles.id')
+            ->where('users.id', $user->id)
+            ->get();
+
+        return view('users.index', ['users' => $users]);
+        
     }
 
-    public function create()
+    public function monitoringIndex()
     {
-        return view('users.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
+        return view('harvests.monitoring.index', [
+            'name' => 'monitoring',
+            'title' => 'monitoring',
         ]);
-
-        User::create($request->all());
-
-        return redirect()->route('users.index')
-            ->with('success', 'User created successfully.');
-    }
-
-    public function show(User $user)
-    {
-        return view('users.show', compact('user'));
-    }
-
-    public function edit(User $user)
-    {
-        return view('users.edit', compact('user'));
-    }
-
-    public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-        ]);
-
-        $user->update($request->all());
-
-        return redirect()->route('users.index')
-            ->with('success', 'User updated successfully.');
-    }
-
-    public function destroy(User $user)
-    {
-        $user->delete();
-
-        return redirect()->route('users.index')
-            ->with('success', 'User deleted successfully.');
     }
 }

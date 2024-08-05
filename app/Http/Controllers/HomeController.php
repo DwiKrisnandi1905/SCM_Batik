@@ -12,6 +12,6 @@ class HomeController extends Controller
 
     public function unauthorized()
     {
-        return response()->view('errors.unauthorized', [], 403);
+        echo "bukan punyamu";
     }
 }
