@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +39,7 @@
             color: #fff;
             background-color: #ffcc00;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            border: 2px solid #fff; 
+            border: 2px solid #fff;
         }
 
         .btn:hover {
@@ -121,22 +122,24 @@
                 margin-bottom: 20px;
             }
         }
-    
+
         #home {
             position: relative;
             color: #fff;
         }
 
         .custom-img-size {
-            max-width: 100%; 
+            max-width: 100%;
         }
 
         #products {
-            background-color: #f0f0f0; /* Light gray background for Products section */
+            background-color: #f0f0f0;
+            /* Light gray background for Products section */
         }
 
         #about {
-            background-color: #fff; /* White background for About section */
+            background-color: #fff;
+            /* White background for About section */
         }
 
         #contact {
@@ -155,7 +158,8 @@
         }
 
         #faq {
-            background-color: #f0f0f0; /* Light gray background for Q&A section */
+            background-color: #f0f0f0;
+            /* Light gray background for Q&A section */
         }
 
         #faq .accordion-item {
@@ -176,6 +180,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
@@ -183,7 +188,7 @@
             <a class="navbar-brand" href="/"><img src="{{ asset('img/logo_batiks.png') }}" alt="Home" class="img-fluid custom-img-size" style="width: 45px;"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button>   
+            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -199,8 +204,45 @@
                         <a class="nav-link" href="#faq" onclick="setActive(this)">FAQ</a>
                     </li>
                     <li class="nav-item">
+                        @if(auth()->check())
+                        @if(auth()->user()->getFirstRole() === 'admin')
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Craftsman')
+                        <a class="nav-link" href="{{ route('craftsman.index') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Harvester')
+                        <a class="nav-link" href="{{ route('harvest.index') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Factory')
+                        <a class="nav-link" href="{{ route('factory.index') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Certificator')
+                        <a class="nav-link" href="{{ route('certification.index') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Waste Manager')
+                        <a class="nav-link" href="{{ route('waste-management.index') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Distributor')
+                        <a class="nav-link" href="{{ route('distribution.index') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @else
                         <a class="nav-link" href="{{ route('login') }}">
                             <i class="bi bi-people"></i>
+                        </a>
+                        @endif
+                        @else
+                        <a class="nav-link" href="{{ route('login') }}">
+                            <i class="bi bi-people"></i>
+                        </a>
+                        @endif
                         </a>
                     </li>
                 </ul>
@@ -216,7 +258,47 @@
                     <h1 class="text-black fw-bold"><span style="color: #FFD700;">SCM</span> Batik</h1>
                     <h2 class="text-black fst-italic">Elegance in Every Thread</h2>
                     <p class="text-black text-justify">Di SCM Batik, kami mengutamakan kualitas dan tradisi. Setiap batik dipilih dengan cermat dan diproduksi dengan bahan-bahan terbaik untuk memberikan kenyamanan dan daya tahan maksimal. Tim kami terdiri dari pengrajin berbakat yang terus berinovasi untuk menghadirkan produk-produk batik terkini yang tidak hanya modis tetapi juga sarat makna budaya.</p>
-                    <a href="{{ route('login') }}" class="btn btn-primary">Mulai Sekarang</a>
+                    @if(auth()->check())
+                        @if(auth()->user()->getFirstRole() === 'admin')
+                        <a  class="btn btn-primary" href="{{ route('admin.dashboard') }}">
+                        Mulai Sekarang
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Craftsman')
+                        <a  class="btn btn-primary" href="{{ route('craftsman.index') }}">
+                        Mulai Sekarang
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Harvester')
+                        <a  class="btn btn-primary" href="{{ route('harvest.index') }}">
+                        Mulai Sekarang
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Factory')
+                        <a  class="btn btn-primary" href="{{ route('factory.index') }}">
+                        Mulai Sekarang
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Certificator')
+                        <a  class="btn btn-primary" href="{{ route('certification.index') }}">
+                        Mulai Sekarang
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Waste Manager')
+                        <a  class="btn btn-primary" href="{{ route('waste-management.index') }}">
+                        Mulai Sekarang
+                        </a>
+                        @elseif(auth()->user()->getFirstRole() === 'Distributor')
+                        <a  class="btn btn-primary" href="{{ route('distribution.index') }}">
+                        Mulai Sekarang
+                        </a>
+                        @else
+                        <a  class="btn btn-primary" href="{{ route('login') }}">
+                        Mulai Sekarang
+                        </a>
+                        @endif
+                        @else
+                        <a  class="btn btn-primary" href="{{ route('login') }}">
+                        Mulai Sekarang
+                        </a>
+                        @endif
+                        </a>
+                    </li>
                 </div>
                 <div class="col-md-6">
                     <img src="{{ asset('img/batik.png') }}" alt="Home" class="img-fluid custom-img-size" style="width: 80%;">
@@ -224,7 +306,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- About Section -->
     <section id="about" class="py-5">
         <div class="container">
@@ -283,7 +365,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-headingOne">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                    Dimana letak SCM Batik?
+                        Dimana letak SCM Batik?
                     </button>
                 </h2>
                 <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
@@ -293,7 +375,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-headingTwo">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                    Mengapa harus SCM Batik?
+                        Mengapa harus SCM Batik?
                     </button>
                 </h2>
                 <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
@@ -303,7 +385,7 @@
             <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-headingThree">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                    No. Telepon yang bisa dihubungi?
+                        No. Telepon yang bisa dihubungi?
                     </button>
                 </h2>
                 <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
@@ -333,4 +415,5 @@
         var carousel = new bootstrap.Carousel('#home');
     </script>
 </body>
+
 </html>

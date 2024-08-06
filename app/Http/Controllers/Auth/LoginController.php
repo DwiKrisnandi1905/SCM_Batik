@@ -26,19 +26,27 @@ class LoginController extends Controller
             $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
             $result = DB::select(DB::raw($query));
             $role = $result[0]->role_id;
+            
             if ($role == 1) {
+                auth()->user()->role = 'Admin';
                 return redirect('/');
             } elseif ($role == 2) {
+                auth()->user()->role = 'Harvester';
                 return redirect()->route('harvest.index');
             } elseif ($role == 3) {
+                auth()->user()->role = 'Factory';
                 return redirect()->route('factory.index');
             } elseif ($role == 4) {
+                auth()->user()->role = 'Craftsman';
                 return redirect()->route('craftsman.index');
             } elseif ($role == 5) {
+                auth()->user()->role = 'Certificator';
                 return redirect()->route('certification.index');
             } elseif ($role == 6) {
+                auth()->user()->role = 'Waste Manager';
                 return redirect()->route('waste.index');
             } else {
+                auth()->user()->role = 'Distributor';
                 return redirect()->route('distribution.index');
             }
         }
