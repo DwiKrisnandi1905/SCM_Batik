@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class LoginController extends Controller
 {
@@ -20,11 +21,25 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            $userId = $user->id;
 
-            if ($user->rolename() === 'factory') {
-                return redirect()->intended('admin/dashboard');
+            $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
+            $result = DB::select(DB::raw($query));
+            $role = $result[0]->role_id;
+            if ($role == 1) {
+                return redirect('/');
+            } elseif ($role == 2) {
+                return redirect()->route('harvest.index');
+            } elseif ($role == 3) {
+                return redirect()->route('factory.index');
+            } elseif ($role == 4) {
+                return redirect()->route('craftsman.index');
+            } elseif ($role == 5) {
+                return redirect()->route('certification.index');
+            } elseif ($role == 6) {
+                return redirect()->route('waste.index');
             } else {
-                return redirect()->intended('home');
+                return redirect()->route('distribution.index');
             }
         }
 
