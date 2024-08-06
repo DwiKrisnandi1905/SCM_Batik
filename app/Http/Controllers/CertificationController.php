@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Certification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CertificationController extends Controller
 {
@@ -29,15 +30,24 @@ class CertificationController extends Controller
             'issue_date' => 'required|date',
         ]);
 
-        $certification = Certification::create([
-            'user_id' => $user_id,
-            'craftsman_id' => $request->craftsman_id,
-            'test_results' => $request->test_results,
-            'certificate_number' => $request->certificate_number,
-            'issue_date' => $request->issue_date,
-        ]);
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Image upload failed']);
+        }
 
-        if ($certification) {
+        $query = "INSERT INTO certifications (user_id, craftsman_id, test_results, certificate_number, issue_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
+        $bindings = [
+            $user_id,
+            $request->craftsman_id,
+            $request->test_results,
+            $request->certificate_number,
+            $request->issue_date,
+        ];
+
+        if (DB::insert($query, $bindings)) {
             return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create certification.');

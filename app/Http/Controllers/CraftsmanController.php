@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
 use App\Models\Factory;
+use Illuminate\Support\Facades\DB;
 
 class CraftsmanController extends Controller
 {
@@ -37,13 +38,32 @@ class CraftsmanController extends Controller
             'production_details' => 'required|string',
             'finished_quantity' => 'required|numeric',
             'completion_date' => 'required|date_format:Y-m-d\TH:i',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $validated['user_id'] = auth()->user()->id;
 
-        $craftsman = Craftsman::create($validated);
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Image upload failed']);
+        }
 
-        if ($craftsman) {
+        $query = "INSERT INTO craftsmen (user_id, factory_id, production_details, finished_quantity, completion_date, image) VALUES (?, ?, ?, ?, ?, ?)";
+        $params = [
+            $validated['user_id'],
+            $validated['factory_id'],
+            $validated['production_details'],
+            $validated['finished_quantity'],
+            $validated['completion_date'],
+            $imageName
+        ];
+
+        $success = DB::insert($query, $params);
+
+        if ($success) {
             return redirect()->route('craftsman.index')->with('success', 'Craftsman created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create craftsman.');

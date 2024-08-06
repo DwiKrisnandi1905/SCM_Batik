@@ -24,6 +24,7 @@ return new class extends Migration
             $table->dateTime('received_date');
             $table->string('receiver_name');
             $table->string('received_condition');
+            $table->string('image');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

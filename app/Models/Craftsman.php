@@ -11,7 +11,7 @@ class Craftsman extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'factory_id', 'production_details', 'finished_quantity', 'completion_date'
+        'user_id', 'factory_id', 'production_details', 'finished_quantity', 'completion_date', 'image'
     ];
 
     public function user()

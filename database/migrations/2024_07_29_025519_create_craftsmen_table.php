@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('production_details');
             $table->float('finished_quantity');
             $table->dateTime('completion_date');
+            $table->string('image');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('test_results');
             $table->string('certificate_number');
             $table->date('issue_date');
+            $table->string('image');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
