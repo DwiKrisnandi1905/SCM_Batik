@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container">
         <h1>Create Certification</h1>
         <form action="{{ route('certification.store') }}" method="POST">
             @csrf

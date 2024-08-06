@@ -7,7 +7,7 @@
     <ul class="nav nav-pills flex-column mb-auto">
         @if(auth()->user()->hasRole('harvester'))
         <li class="mb-2">
-            <a href="{{ route('harvest.index') }}" class="nav-link {{ request()->routeIs('harvest.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('harvest.index') }}" class="nav-link {{ request()->routeIs('harvest.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
@@ -16,7 +16,7 @@
 
         @if(auth()->user()->hasRole('factory'))
         <li class="mb-2">
-            <a href="{{ route('factory.index') }}" class="nav-link {{ request()->routeIs('factory.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('factory.index') }}" class="nav-link {{ request()->routeIs('factory.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
@@ -25,7 +25,7 @@
 
         @if(auth()->user()->hasRole('craftsman'))
         <li class="mb-2">
-            <a href="{{ route('craftsman.index') }}" class="nav-link {{ request()->routeIs('craftsman.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('craftsman.index') }}" class="nav-link {{ request()->routeIs('craftsman.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
@@ -34,7 +34,7 @@
 
         @if(auth()->user()->hasRole('certificator'))
         <li class="mb-2">
-            <a href="{{ route('certification.index') }}" class="nav-link {{ request()->routeIs('certification.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('certification.index') }}" class="nav-link {{ request()->routeIs('certification.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
@@ -43,7 +43,7 @@
 
         @if(auth()->user()->hasRole('waste_manager'))
         <li class="mb-2">
-            <a href="{{ route('waste-management.index') }}" class="nav-link {{ request()->routeIs('waste-management.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('waste-management.index') }}" class="nav-link {{ request()->routeIs('waste-management.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
@@ -52,7 +52,7 @@
 
         @if(auth()->user()->hasRole('distributor'))
         <li class="mb-2">
-            <a href="{{ route('distribution.index') }}" class="nav-link {{ request()->routeIs('distribution.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('distribution.index') }}" class="nav-link {{ request()->routeIs('distribution.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
@@ -60,7 +60,7 @@
         @endif
         
         <li class="mb-2">
-            <a href="{{ route('profile.index') }}" class="nav-link {{ request()->routeIs('profile.index') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('profile.index') }}" class="nav-link {{ request()->routeIs('profile.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Profile
             </a>

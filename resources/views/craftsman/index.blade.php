@@ -74,8 +74,16 @@
                         <td>{{ $craftsman->production_details }}</td>
                         <td>{{ $craftsman->finished_quantity }}</td>
                         <td>{{ $craftsman->completion_date }}</td>
-                        <td>image</td>
-                        <td>monitor</td>
+                        <td>
+                            @if($craftsman->image)
+                                <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $craftsman->image) }}">View Image</span>
+                            @else
+                                No Image
+                            @endif
+                        </td>
+                        <td>
+                            <a href="">Monitor</a>
+                        </td>
                         <td>
                             <a href="{{ route('craftsman.edit', $craftsman->id) }}" class="btn btn-warning">Edit</a>
                             <form action="{{ route('craftsman.destroy', $craftsman->id) }}" method="POST" style="display:inline-block;">
