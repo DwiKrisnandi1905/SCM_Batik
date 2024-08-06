@@ -1,9 +1,9 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container">
         <h1>Create Craftsman</h1>
-        <form action="{{ route('craftsman.store') }}" method="POST">
+        <form action="{{ route('craftsman.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="form-group">
@@ -24,6 +24,11 @@
             <div class="form-group">
                 <label for="completion_date">Completion Date:</label>
                 <input type="datetime-local" id="completion_date" name="completion_date" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Craftsman Image:</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Create</button>

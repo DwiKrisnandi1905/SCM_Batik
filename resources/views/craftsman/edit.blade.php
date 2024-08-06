@@ -1,13 +1,7 @@
-<!-- resources/views/craftsmen/edit.blade.php -->
+@extends('layout.app')
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Craftsman</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-5">
+@section('content')
+    <div class="container">
         <h1>Edit Craftsman</h1>
         <!-- <form action="{{ route('craftsman.update', ['id' => $craftsman->id]) }}" method="POST"> -->
 
@@ -37,5 +31,4 @@
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
     </div>
-</body>
-</html>
+@endsection
