@@ -41,11 +41,6 @@ class User extends Authenticatable
         return $role;
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
     public function craftsman()
     {
         return $this->hasOne(Craftsman::class, 'user_id');
@@ -79,6 +74,23 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    // Method to get all role names
+    public function getRoleNames()
+    {
+        return $this->roles ? $this->roles->pluck('name') : collect();
+    }
+
+    // Method to get the first role name
+    public function getFirstRole()
+    {
+        return $this->roles ? $this->roles->first()->name ?? null : null;
     }
 
     public function hasRole($role)
