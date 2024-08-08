@@ -46,24 +46,16 @@ class DistributionController extends Controller
         }
     }
 
-    public function show($id)
-    {
-        $distribution = Distribution::find($id);
-        return view('distribution.show', compact('distribution'));
-    }
-
     public function edit($id)
     {
         $distribution = Distribution::find($id);
         return view('distribution.edit', compact('distribution'));
     }
 
-    public function update(Request $request, Distribution $distribution)
+    public function update(Request $request,$id)
     {
-        $query = "UPDATE distributions SET user_id = ?, craftsman_id = ?, destination = ?, quantity = ?, shipment_date = ?, tracking_number = ?, received_date = ?, receiver_name = ?, received_condition = ? WHERE id = ?";
-
+        $query = "UPDATE distributions SET craftsman_id = ?, destination = ?, quantity = ?, shipment_date = ?, tracking_number = ?, received_date = ?, receiver_name = ?, received_condition = ? WHERE id = ?";
         $values = [
-            $request->input('user_id'),
             $request->input('craftsman_id'),
             $request->input('destination'),
             $request->input('quantity'),
@@ -72,7 +64,7 @@ class DistributionController extends Controller
             $request->input('received_date'),
             $request->input('receiver_name'),
             $request->input('received_condition'),
-            $distribution->id
+            $id
         ];
 
         $result = DB::update($query, $values);

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+
 class DatabaseSeeder extends Seeder
 {
 
@@ -21,7 +22,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 8, 'name' => 'Sarah Johnson', 'email' => 'user@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
 
         ]);
-    
+
         DB::table('roles')->insert([
             ['id' => 1, 'name' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'name' => 'Harvester', 'created_at' => now(), 'updated_at' => now()],
@@ -156,7 +157,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('waste_management')->insert([
             [
-                'user_id' => 1, 
+                'user_id' => 1,
                 'craftsman_id' => 1,
                 'waste_type' => 'Wood Scraps',
                 'management_method' => 'Recycling',
@@ -190,8 +191,8 @@ class DatabaseSeeder extends Seeder
 
         DB::table('certifications')->insert([
             [
-                'user_id' => 1, 
-                'craftsman_id' => 1, 
+                'user_id' => 1,
+                'craftsman_id' => 1,
                 'test_results' => 'Passed with Distinction',
                 'certificate_number' => 'CERT12345',
                 'issue_date' => Carbon::now()->subMonths(3),
@@ -221,5 +222,49 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
+        DB::table('distributions')->insert([
+            [
+                'user_id' => 1, 
+                'craftsman_id' => 1, 
+                'destination' => '123 Elm Street, Springfield',
+                'quantity' => 150.0,
+                'shipment_date' => Carbon::now()->subDays(10),
+                'tracking_number' => 'TRACK123456789',
+                'received_date' => Carbon::now()->subDays(5),
+                'receiver_name' => 'John Doe',
+                'received_condition' => 'Good',
+                'image' => 'distribution1.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'user_id' => 2,
+                'craftsman_id' => 2,
+                'destination' => '456 Oak Avenue, Rivertown',
+                'quantity' => 200.5,
+                'shipment_date' => Carbon::now()->subDays(15),
+                'tracking_number' => 'TRACK987654321',
+                'received_date' => Carbon::now()->subDays(7),
+                'receiver_name' => 'Jane Smith',
+                'received_condition' => 'Fair',
+                'image' => 'distribution2.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'user_id' => 3,
+                'craftsman_id' => 3,
+                'destination' => '789 Pine Road, Greenfield',
+                'quantity' => 75.25,
+                'shipment_date' => Carbon::now()->subDays(5),
+                'tracking_number' => 'TRACK564738291',
+                'received_date' => Carbon::now()->subDays(2),
+                'receiver_name' => 'Emily Johnson',
+                'received_condition' => 'Excellent',
+                'image' => 'distribution3.jpg',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]);
     }
 }
