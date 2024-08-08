@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Factory;
 use App\Models\Harvest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 
 class FactoryController extends Controller
@@ -72,12 +73,6 @@ class FactoryController extends Controller
         return view('factory.create', compact('harvests'));
     }
 
-    public function show($id)
-    {
-        $factory = Factory::findOrFail($id);
-        return response()->json($factory);
-    }
-
     public function update(Request $request, $id)
     {
         $factory = Factory::findOrFail($id);
@@ -89,9 +84,9 @@ class FactoryController extends Controller
         ]);
 
         if ($factory->update($validated)) {
-            return response()->json(['success' => true, 'message' => 'Factory updated successfully']);
+            return redirect()->route('factory.index')->with('success', 'Factory updated successfully');
         } else {
-            return response()->json(['success' => false, 'message' => 'Failed to update factory']);
+            return redirect()->back()->with('error', 'Failed to update factory');
         }
     }
 
@@ -104,10 +99,13 @@ class FactoryController extends Controller
     public function destroy($id)
     {
         $factory = Factory::findOrFail($id);
+        $imageName = $factory->image;
         if ($factory->delete()) {
-            return response()->json(['success' => true, 'message' => 'Factory deleted successfully']);
+            // Delete the image from storage
+            Storage::delete('public/images/' . $imageName);
+            return redirect()->route('factory.index')->with('success', 'Factory deleted successfully');
         } else {
-            return response()->json(['success' => false, 'message' => 'Failed to delete factory']);
+            return redirect()->back()->with('error', 'Failed to delete factory');
         }
     }
 }

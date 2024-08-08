@@ -19,51 +19,61 @@ class WasteManagementController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required|integer',
+        $validated = $request->validate([
             'waste_type' => 'required|string',
             'management_method' => 'required|string',
             'management_results' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $wasteManagement = WasteManagement::create($request->all());
+        $validated['user_id'] = auth()->user()->id;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $imageName);
+            $validated['image'] = $imageName;
+        }
+
+        $wasteManagement = WasteManagement::create($validated);
+
         if ($wasteManagement) {
-            return redirect()->route('waste-management.index')->with('success', 'Waste Management record created successfully.');
+            return redirect()->route('waste.index')->with('success', 'Waste Management record created successfully.');
         } else {
-            return redirect()->route('waste-management.index')->with('error', 'Failed to create Waste Management record.');
+            return redirect()->route('waste.index')->with('error', 'Failed to create Waste Management record.');
         }
     }
 
-    public function show(WasteManagement $wasteManagement)
+    public function edit($id)
     {
-        return view('waste-management.show', compact('wasteManagement'));
-    }
-
-    public function edit(WasteManagement $wasteManagement)
-    {
-        return view('waste-management.edit', compact('wasteManagement'));
+        $waste = WasteManagement::findOrFail($id);
+        return view('waste-management.edit', compact('waste'));
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'user_id' => 'required|integer',
+        $validatedData = $request->validate([
             'waste_type' => 'required|string',
             'management_method' => 'required|string',
             'management_results' => 'required|string',
         ]);
-
+        $validatedData['user_id'] = auth()->user()->id;
         $wasteManagement = WasteManagement::findOrFail($id);
-        $wasteManagement->update($request->all());
-
-        return redirect()->route('waste-management.index')->with('success', 'Waste Management record updated successfully.');
+        if ($wasteManagement->update($validatedData)) {
+            return redirect()->route('waste.index')->with('success', 'Waste Management record updated successfully.');
+        } else {
+            return redirect()->route('waste.index')->with('error', 'Failed to update Waste Management record.');
+        }
     }
+    
 
     public function destroy($id)
     {
         $wasteManagement = WasteManagement::findOrFail($id);
-        $wasteManagement->delete();
-
-        return redirect()->route('waste-management.index')->with('success', 'Waste Management record deleted successfully.');
+        if ($wasteManagement->delete()) {
+            return redirect()->route('waste.index')->with('success', 'Waste Management record deleted successfully.');
+        } else {
+            return redirect()->route('waste.index')->with('error', 'Failed to delete Waste Management record.');
+        }
     }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('craftsman_id');
             $table->string('test_results');
             $table->string('certificate_number');
-            $table->date('issue_date');
+            $table->dateTime('issue_date');
             $table->string('image');
             $table->timestamps();
 

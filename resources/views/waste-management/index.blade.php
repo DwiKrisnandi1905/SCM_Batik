@@ -1,5 +1,5 @@
 
-    <a href="{{ route('waste-management.create') }}">Create New Record</a>
+    <a href="{{ route('waste.create') }}">Create New Record</a>
 
     <table>
         <thead>
@@ -21,9 +21,8 @@
                     <td>{{ $wasteManagement->management_method }}</td>
                     <td>{{ $wasteManagement->management_results }}</td>
                     <td>
-                        <a href="{{ route('waste-management.show', $wasteManagement->id) }}">View</a>
-                        <a href="{{ route('waste-management.edit', $wasteManagement->id) }}">Edit</a>
-                        <form action="{{ route('waste-management.destroy', $wasteManagement->id) }}" method="POST" style="display:inline;">
+                        <a href="{{ route('waste.edit', $wasteManagement->id) }}">Edit</a>
+                        <form action="{{ route('waste.destroy', $wasteManagement->id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit">Delete</button>

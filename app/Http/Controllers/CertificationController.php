@@ -46,23 +46,28 @@ class CertificationController extends Controller
         return view('certification.show', compact('certification'));
     }
 
-    public function edit()
+    public function edit($id)
     {
+        $certification = Certification::findOrFail($id);
         return view('certification.edit', compact('certification'));
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'craftsman_id' => 'required|integer',
-            'test_results' => 'required|string',
-            'certificate_number' => 'required|string',
-            'issue_date' => 'required|date',
-        ]);
+        $user_id = auth()->id();
 
-        $certification = Certification::findOrFail($id);
-        if ($certification->update($request->all())) {
+        $query = "UPDATE certifications SET user_id = ?, craftsman_id = ?, test_results = ?, certificate_number = ?, issue_date = ?, image = ?, updated_at = NOW() WHERE id = ?";
+        $bindings = [
+            $user_id,
+            $request->craftsman_id,
+            $request->test_results,
+            $request->certificate_number,
+            $request->issue_date,
+            'default',
+            $id,
+        ];
+
+        if (DB::update($query, $bindings)) {
             return redirect()->route('certification.index')->with('success', 'Certification updated successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to update certification.');

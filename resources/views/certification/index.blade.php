@@ -57,16 +57,20 @@
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Factory</th>
                     <th>Certification number</th>
                     <th>issue date</th>
+                    <th>test results</th>
+                    <th>Image</th>
+                    <th>Monitor</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
             @foreach($certifications as $certification)
                     <tr>
                         <td>{{ $certification->id }}</td>
-                        <td>{{ $certification->cerftification_number }}</td>
+                        <td>{{ $certification->certificate_number }}</td>
+                        <td>{{ $certification->issue_date }}</td>
                         <td>{{ $certification->test_results }}</td>
                         <td>image</td>
                         <td>monitor</td>

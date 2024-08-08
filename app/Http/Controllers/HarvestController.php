@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Harvest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class HarvestController extends Controller
 {
@@ -101,14 +102,23 @@ class HarvestController extends Controller
 
     public function destroy($id)
     {
+        $harvest = Harvest::findOrFail($id);
+        $imagePath = 'public/images/' . $harvest->image;
+    
+        // Delete the image from storage
+        if (Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
+        }
+    
         $query = "DELETE FROM harvests WHERE id = ?";
         $success = DB::delete($query, [$id]);
-
+    
         if ($success) {
             return redirect('/harvest')->with('success', 'Harvest deleted successfully.');
         } else {
             return redirect('/harvest')->with('error', 'Failed to delete harvest.');
         }
     }
+    
 
 }

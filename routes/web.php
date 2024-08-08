@@ -81,15 +81,15 @@ Route::middleware(['auth' ,'certification'])->group(function () {
     });
 });
 
-Route::middleware(['auth', 'waste'])->group(function () {
-    Route::prefix('waste-management')->group(function () {
-        Route::get('/', [WasteManagementController::class, 'index'])->name('waste-management.index');
-        Route::get('/create', [WasteManagementController::class, 'create'])->name('waste-management.create');
-        Route::post('/', [WasteManagementController::class, 'store'])->name('waste-management.store');
-        Route::get('/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
-        Route::get('/{id}/edit', [WasteManagementController::class, 'edit'])->name('waste-management.edit');
-        Route::put('/{id}', [WasteManagementController::class, 'update'])->name('waste-management.update');
-        Route::delete('/{id}', [WasteManagementController::class, 'destroy'])->name('waste-management.destroy');
+Route::middleware(['auth', 'waste_management'])->group(function () {
+    Route::prefix('waste')->group(function () {
+        Route::get('/', [WasteManagementController::class, 'index'])->name('waste.index');
+        Route::get('/create', [WasteManagementController::class, 'create'])->name('waste.create');
+        Route::post('/', [WasteManagementController::class, 'store'])->name('waste.store');
+        Route::get('/{id}', [WasteManagementController::class, 'show'])->name('waste.show');
+        Route::get('/{id}/edit', [WasteManagementController::class, 'edit'])->name('waste.edit');
+        Route::put('/{id}', [WasteManagementController::class, 'update'])->name('waste.update');
+        Route::delete('/{id}', [WasteManagementController::class, 'destroy'])->name('waste.destroy');
     });
 });
 
