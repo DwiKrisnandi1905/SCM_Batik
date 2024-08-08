@@ -21,12 +21,16 @@
     background-color: #e9ecef;
 }
 .nav-pills .nav-link:hover {
-    background-color: #0056b3;
+    background: #ffcc00;
+    background: -webkit-linear-gradient(to right, #ffcc00, #ffb347, #ff8c00);
+    background: linear-gradient(to right, #ffcc00, #ffb347, #ff8c00);
     color: white !important;
     transform: translateX(5px);
 }
 .nav-pills .nav-link.active {
-    background-color: #0056b3;
+    background: #ffcc00;
+    background: -webkit-linear-gradient(to right, #ffcc00, #ffb347, #ff8c00);
+    background: linear-gradient(to right, #ffcc00, #ffb347, #ff8c00);
     color: white;
 }
 .nav-pills .nav-link i {
