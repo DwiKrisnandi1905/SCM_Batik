@@ -10,16 +10,17 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'name' => 'Michael Johnson', 'email' => 'michael@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 4, 'name' => 'Emily Davis', 'email' => 'emily@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 5, 'name' => 'David Wilson', 'email' => 'david@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 6, 'name' => 'Olivia Taylor', 'email' => 'olivia@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 7, 'name' => 'Sophia Anderson', 'email' => 'sophia@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 8, 'name' => 'Sarah Johnson', 'email' => 'sarah@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'name' => 'John Doe', 'email' => 'admin@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'name' => 'Jane Smith', 'email' => 'harvester@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'name' => 'Michael Johnson', 'email' => 'factory@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'name' => 'Emily Davis', 'email' => 'craftsman@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 5, 'name' => 'David Wilson', 'email' => 'certificator@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 6, 'name' => 'Olivia Taylor', 'email' => 'wastemanager@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 7, 'name' => 'Sophia Anderson', 'email' => 'distributor@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 8, 'name' => 'Sarah Johnson', 'email' => 'user@example.com', 'password' => bcrypt('password'), 'created_at' => now(), 'updated_at' => now()],
 
         ]);
+    
         DB::table('roles')->insert([
             ['id' => 1, 'name' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'name' => 'Harvester', 'created_at' => now(), 'updated_at' => now()],

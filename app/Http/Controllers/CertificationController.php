@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Certification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Craftsman;
 
 class CertificationController extends Controller
 {
@@ -15,36 +16,22 @@ class CertificationController extends Controller
 
     public function create()
     {
-        return view('certification.create');
+        $craftsmen = Craftsman::all();
+        return view('certification.create', compact('craftsmen'));
     }
 
     public function store(Request $request)
     {
         $user_id = auth()->id();
 
-        $request->validate([
-            'user_id' => 'required|integer',
-            'craftsman_id' => 'required|integer',
-            'test_results' => 'required|string',
-            'certificate_number' => 'required|string',
-            'issue_date' => 'required|date',
-        ]);
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('public/images', $imageName);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
-        }
-
-        $query = "INSERT INTO certifications (user_id, craftsman_id, test_results, certificate_number, issue_date, created_at, updated_at) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
+        $query = "INSERT INTO certifications (user_id, craftsman_id, test_results, certificate_number, issue_date, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
         $bindings = [
             $user_id,
             $request->craftsman_id,
             $request->test_results,
             $request->certificate_number,
             $request->issue_date,
+            'default',
         ];
 
         if (DB::insert($query, $bindings)) {

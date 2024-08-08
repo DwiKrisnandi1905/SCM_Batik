@@ -58,22 +58,16 @@
                 <tr>
                     <th>ID</th>
                     <th>Factory</th>
-                    <th>production_details</th>
-                    <th>finished_quantity</th>
-                    <th>completion_date </th>
-                    <th>Image</th>
-                    <th>Monitor</th>
-                    <th>Actions</th>
+                    <th>Certification number</th>
+                    <th>issue date</th>
                 </tr>
             </thead>
             <tbody>
             @foreach($certifications as $certification)
                     <tr>
                         <td>{{ $certification->id }}</td>
-                        <td>{{ $certification->factory->factory_name }}</td>
-                        <td>{{ $certification->production_details }}</td>
-                        <td>{{ $certification->finished_quantity }}</td>
-                        <td>{{ $certification->completion_date }}</td>
+                        <td>{{ $certification->cerftification_number }}</td>
+                        <td>{{ $certification->test_results }}</td>
                         <td>image</td>
                         <td>monitor</td>
                         <td>

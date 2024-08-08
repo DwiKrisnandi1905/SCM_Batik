@@ -16,9 +16,10 @@ class CreateBatiksTable extends Migration
         Schema::create('batiks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description')->nullable();
             $table->string('pattern');
-            $table->decimal('price', 8, 2);
+            $table->string('fabric_type');
+            $table->string('batik_type');
+            $table->text('special_features')->nullable();
             $table->timestamps();
         });
     }

@@ -7,7 +7,16 @@
             @csrf
 
             <div class="form-group mb-3">
-                <label for="test_results">Test Results:</label>
+                <label for="craftsman_id">Option ID:</label>
+                <select id="craftsman_id" name="craftsman_id" class="form-control" required>
+                    @foreach($craftsmen as $craftsmen)
+                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->id }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="test_results">Certificate test_results:</label>
                 <input type="text" id="test_results" name="test_results" class="form-control" value="{{ old('test_results') }}" required>
             </div>
 

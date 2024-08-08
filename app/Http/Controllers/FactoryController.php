@@ -53,9 +53,9 @@ class FactoryController extends Controller
         $result = DB::insert($query, $bindings);
     
         if ($result) {
-            return response()->json(['success' => true, 'message' => 'Factory created successfully']);
+            return redirect()->route('factory.index')->with('success', 'Factory created successfully');
         } else {
-            return response()->json(['success' => false, 'message' => 'Failed to create factory']);
+            return redirect()->back()->with('error', 'Failed to create factory');
         }
     }
 
