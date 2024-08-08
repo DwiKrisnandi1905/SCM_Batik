@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('waste_management', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('craftsman_id'); 
             $table->string('waste_type');
             $table->string('management_method');
             $table->string('management_results');

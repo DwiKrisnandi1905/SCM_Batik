@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('monitorings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('harvest_id');
-            $table->unsignedBigInteger('factory_id');
-            $table->unsignedBigInteger('craftsman_id');
-            $table->unsignedBigInteger('certification_id');
-            $table->unsignedBigInteger('waste_id');
-            $table->unsignedBigInteger('distribution_id');
+            $table->unsignedBigInteger('harvest_id')->nullable();
+            $table->unsignedBigInteger('factory_id')->nullable();
+            $table->unsignedBigInteger('craftsman_id')->nullable();
+            $table->unsignedBigInteger('certification_id')->nullable();
+            $table->unsignedBigInteger('waste_id')->nullable();
+            $table->unsignedBigInteger('distribution_id')->nullable();
             $table->string('status');
             $table->dateTime('last_updated');
             $table->timestamps();
