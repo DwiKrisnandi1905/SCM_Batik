@@ -105,15 +105,12 @@ Route::middleware(['auth','distribution'])->group(function () {
     });
 });
 
-Route::middleware(['auth' ,'monitoring'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::prefix('monitoring')->group(function () {
-        Route::get('/', [MonitoringController::class, 'index'])->name('monitoring.index');
         Route::get('/create', [MonitoringController::class, 'create'])->name('monitoring.create');
         Route::post('/', [MonitoringController::class, 'store'])->name('monitoring.store');
         Route::get('/{id}', [MonitoringController::class, 'show'])->name('monitoring.show');
-        Route::get('/{id}/edit', [MonitoringController::class, 'edit'])->name('monitoring.edit');
         Route::put('/{id}', [MonitoringController::class, 'update'])->name('monitoring.update');
-        Route::delete('/{id}', [MonitoringController::class, 'destroy'])->name('monitoring.destroy');
     });
 });
 

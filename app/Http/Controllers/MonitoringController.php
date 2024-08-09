@@ -22,16 +22,17 @@ class MonitoringController extends Controller
         $monitoring = Monitoring::create($request->all());
 
         if ($monitoring) {
-            return redirect()->route('monitorings.index')->with('success', 'Monitoring record created successfully.');
+            return response()->json(['success' => 'Monitoring record created successfully.']);
         } else {
-            return redirect()->route('monitorings.index')->with('fail', 'Failed to create monitoring record.');
+            return response()->json(['fail' => 'Failed to create monitoring record.']);
         }
     }
 
     public function show($id)
     {
         $monitoring = Monitoring::find($id);
-        return view('monitorings.show', compact('monitoring'));
+        $monitoring->load('harvest', 'factory', 'craftsman', 'certification', 'WasteManagement', 'distribution');
+        return response()->json(compact('monitoring'));
     }
 
     public function update(Request $request, $id)
@@ -49,13 +50,10 @@ class MonitoringController extends Controller
 
         $monitoring = Monitoring::find($id);
         $monitoring->update($request->all());
-        return redirect()->route('monitorings.index')->with('success', 'Monitoring record updated successfully.');
-    }
-
-    public function destroy($id)
-    {
-        $monitoring = Monitoring::find($id);
-        $monitoring->delete();
-        return redirect()->route('monitorings.index')->with('success', 'Monitoring record deleted successfully.');
+        if ($monitoring) {
+            return response()->json(['success' => 'Monitoring record updated successfully.']);
+        } else {
+            return response()->json(['fail' => 'Failed to update monitoring record.']);
+        }
     }
 }
