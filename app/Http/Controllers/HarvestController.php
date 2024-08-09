@@ -54,14 +54,21 @@ class HarvestController extends Controller
             'delivery_info' => 'sometimes|required|string',
             'delivery_date' => 'sometimes|required|date',
         ]);
-    
+
         $image = $request->file('image');
         if ($image) {
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
             $validated['image'] = $imageName;
+
+            // Delete the old image from storage
+            $harvest = Harvest::findOrFail($id);
+            $oldImagePath = 'public/images/' . $harvest->image;
+            if (Storage::exists($oldImagePath)) {
+            Storage::delete($oldImagePath);
+            }
         }
-    
+
         $query = "UPDATE harvests SET ";
         $params = [];
         foreach ($validated as $key => $value) {
@@ -71,9 +78,9 @@ class HarvestController extends Controller
         $query = rtrim($query, ', ');
         $query .= " WHERE id = ?";
         $params[] = $id;
-    
+
         $success = DB::update($query, $params);
-    
+
         if ($success) {
             return redirect('/harvest')->with('success', 'Harvest updated successfully.');
         } else {

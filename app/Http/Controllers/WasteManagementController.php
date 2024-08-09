@@ -59,6 +59,24 @@ class WasteManagementController extends Controller
         ]);
         $validatedData['user_id'] = auth()->user()->id;
         $wasteManagement = WasteManagement::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            // Delete old image
+            $oldImage = $wasteManagement->image;
+            if ($oldImage) {
+            $imagePath = public_path('images') . '/' . $oldImage;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+            }
+
+            // Save new image
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $imageName);
+            $validatedData['image'] = $imageName;
+        }
+
         if ($wasteManagement->update($validatedData)) {
             return redirect()->route('waste.index')->with('success', 'Waste Management record updated successfully.');
         } else {
@@ -70,7 +88,17 @@ class WasteManagementController extends Controller
     public function destroy($id)
     {
         $wasteManagement = WasteManagement::findOrFail($id);
+        $image = $wasteManagement->image;
+        
         if ($wasteManagement->delete()) {
+            // Delete image file
+            if ($image) {
+            $imagePath = public_path('images') . '/' . $image;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+            }
+            
             return redirect()->route('waste.index')->with('success', 'Waste Management record deleted successfully.');
         } else {
             return redirect()->route('waste.index')->with('error', 'Failed to delete Waste Management record.');

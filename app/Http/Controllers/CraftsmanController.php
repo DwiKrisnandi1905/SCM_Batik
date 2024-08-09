@@ -82,6 +82,21 @@ class CraftsmanController extends Controller
             'completion_date' => 'required|date_format:Y-m-d\TH:i',
         ]);
 
+        if ($request->hasFile('image')) {
+            // Delete old image
+            $oldImage = $craftsman->image;
+            if ($oldImage) {
+            Storage::delete('public/images/' . $oldImage);
+            }
+
+            // Save new image
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+
+            $validated['image'] = $imageName;
+        }
+
         $success = $craftsman->update($validated);
 
         if ($success) {
@@ -94,6 +109,10 @@ class CraftsmanController extends Controller
     public function destroy($id)
     {
         $craftsman = Craftsman::findOrFail($id);
+        $image = $craftsman->image;
+        if ($image) {
+            Storage::delete('public/images/' . $image);
+        }
         $success = $craftsman->delete();
 
         if ($success) {

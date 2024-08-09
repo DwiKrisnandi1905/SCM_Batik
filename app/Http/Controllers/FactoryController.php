@@ -81,7 +81,22 @@ class FactoryController extends Controller
             'initial_process' => 'sometimes|required|string',
             'semi_finished_quantity' => 'sometimes|required|numeric',
             'semi_finished_quality' => 'sometimes|required|string',
+            'image' => 'sometimes|required|file|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
+        // Check if request has image
+        if ($request->hasFile('image')) {
+            // Delete the old image from storage
+            Storage::delete('public/images/' . $factory->image);
+
+            // Handle the file upload
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+
+            // Update the image name in the database
+            $validated['image'] = $imageName;
+        }
 
         if ($factory->update($validated)) {
             return redirect()->route('factory.index')->with('success', 'Factory updated successfully');

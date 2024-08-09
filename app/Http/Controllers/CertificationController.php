@@ -34,16 +34,18 @@ class CertificationController extends Controller
             'default',
         ];
 
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image_name = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $image_name);
+            $bindings[5] = $image_name;
+        }
+
         if (DB::insert($query, $bindings)) {
             return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create certification.');
         }
-    }
-
-    public function show()
-    {
-        return view('certification.show', compact('certification'));
     }
 
     public function edit($id)
@@ -67,6 +69,21 @@ class CertificationController extends Controller
             $id,
         ];
 
+        if ($request->hasFile('image')) {
+            $oldImage = Certification::findOrFail($id)->image;
+            if ($oldImage != 'default') {
+            $imagePath = public_path('images') . '/' . $oldImage;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+            }
+
+            $image = $request->file('image');
+            $image_name = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $image_name);
+            $bindings[5] = $image_name;
+        }
+
         if (DB::update($query, $bindings)) {
             return redirect()->route('certification.index')->with('success', 'Certification updated successfully.');
         } else {
@@ -77,6 +94,13 @@ class CertificationController extends Controller
     public function destroy($id)
     {
         $certification = Certification::findOrFail($id);
+        $image = $certification->image;
+        if ($image != 'default') {
+            $imagePath = public_path('images') . '/' . $image;
+            if (file_exists($imagePath)) {
+            unlink($imagePath);
+            }
+        }
         $certification->delete();
         return redirect()->route('certification.index')->with('success', 'Certification deleted successfully.');
     }
