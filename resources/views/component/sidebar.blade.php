@@ -41,9 +41,9 @@
         </li>
         @endif
 
-        @if(auth()->user()->hasRole('waste_manager'))
+        @if(auth()->user()->hasRole('waste manager'))
         <li class="mb-2">
-            <a href="{{ route('waste-management.index') }}" class="nav-link {{ request()->routeIs('waste-management.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('waste.index') }}" class="nav-link {{ request()->routeIs('waste.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
