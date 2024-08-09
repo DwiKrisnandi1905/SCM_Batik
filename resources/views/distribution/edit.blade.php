@@ -7,9 +7,13 @@
             @csrf
             @method('PUT')
 
-            <div class="mb-3">
-                <label for="craftsman_id" class="form-label">Craftsman ID:</label>
-                <input type="number" class="form-control" id="craftsman_id" name="craftsman_id" value="{{ old('craftsman_id', $distribution->craftsman_id) }}" required>
+            <div class="form-group mb-3">
+                <label for="craftsman_id">Craftsman</label>
+                <select id="craftsman_id" name="craftsman_id" class="form-control" required>
+                    @foreach($craftsmen as $craftsmen)
+                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->production_details }} - {{$craftsmen->finished_quantity}} - {{$craftsmen->completion_date}}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="mb-3">

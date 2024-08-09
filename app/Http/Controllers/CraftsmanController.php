@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Craftsman;
 use App\Models\Factory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CraftsmanController extends Controller
 {
@@ -17,8 +18,8 @@ class CraftsmanController extends Controller
 
     public function create()
     {
-        Factory::all();
-        return view('craftsman.create');
+        $factories = Factory::all();
+        return view('craftsman.create', compact('factories'));
     }
 
     public function show(Craftsman $craftsman)
@@ -28,9 +29,11 @@ class CraftsmanController extends Controller
 
     public function edit($id)
     {
+        $factories = Factory::all();
         $craftsman = Craftsman::findOrFail($id);
-        return view('craftsman.edit', compact('craftsman'));
+        return view('craftsman.edit', compact('factories', 'craftsman'));
     }
+    
     public function store(Request $request)
     {
         $validated = $request->validate([

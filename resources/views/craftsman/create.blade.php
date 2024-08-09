@@ -8,7 +8,11 @@
 
             <div class="form-group">
                 <label for="factory_id">Factory ID:</label>
-                <input type="number" id="factory_id" name="factory_id" class="form-control" required>
+                <select id="factory_id" name="factory_id" class="form-control" required>
+                    @foreach($factories as $factory)
+                        <option value="{{ $factory->id }}">{{$factory->received_date}} - {{ $factory->factory_name }} - {{$factory->initial_process}} - {{$factory->semi_finished_quantity}} - {{$factory->semi_finished_quality}}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group">

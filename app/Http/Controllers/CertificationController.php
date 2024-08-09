@@ -50,8 +50,9 @@ class CertificationController extends Controller
 
     public function edit($id)
     {
+        $craftsmen = Craftsman::all();
         $certification = Certification::findOrFail($id);
-        return view('certification.edit', compact('certification'));
+        return view('certification.edit', compact('craftsmen', 'certification'));
     }
 
     public function update(Request $request, $id)

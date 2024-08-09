@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Distribution;
 use Illuminate\Http\Request;
+use App\Models\Craftsman;
 use Illuminate\Support\Facades\DB;
 
 class DistributionController extends Controller
@@ -15,7 +16,8 @@ class DistributionController extends Controller
 
     public function create()
     {
-        return view('distribution.create');
+        $craftsmen = Craftsman::all();
+        return view('distribution.create', compact('craftsmen'));
     }
 
     public function store(Request $request)
@@ -58,8 +60,9 @@ class DistributionController extends Controller
 
     public function edit($id)
     {
+        $craftsmen = Craftsman::all();
         $distribution = Distribution::find($id);
-        return view('distribution.edit', compact('distribution'));
+        return view('distribution.edit', compact('distribution', 'craftsmen'));
     }
 
     public function update(Request $request,$id)

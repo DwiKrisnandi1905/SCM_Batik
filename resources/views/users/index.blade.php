@@ -85,7 +85,7 @@
                     <img src="img/bagus.png" alt="avatar" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ffcc00;">
                     <h5 class="my-3 font-weight-bold text-name">John Doe</h5>
                     <h6 class="font-weight-bold text-name mb-1">Harvest</h6>
-                    <a href="#" class="btn btn-primary btn-lg mt-3">Edit Profile</a>
+                    <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-lg mt-3">Edit Profile</a>
                 </div>
             </div>
         </div>

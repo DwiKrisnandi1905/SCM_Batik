@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WasteManagement;
 use Illuminate\Http\Request;
+use App\Models\Craftsman;
 
 class WasteManagementController extends Controller
 {
@@ -14,7 +15,8 @@ class WasteManagementController extends Controller
 
     public function create()
     {
-        return view('waste-management.create');
+        $craftsmen = Craftsman::all();
+        return view('waste-management.create', compact('craftsmen'));
     }
 
     public function store(Request $request)
@@ -24,6 +26,7 @@ class WasteManagementController extends Controller
             'management_method' => 'required|string',
             'management_results' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'craftsman_id' => 'required|integer',
         ]);
 
         $validated['user_id'] = auth()->user()->id;
@@ -46,8 +49,9 @@ class WasteManagementController extends Controller
 
     public function edit($id)
     {
+        $craftsmen = Craftsman::all();
         $waste = WasteManagement::findOrFail($id);
-        return view('waste-management.edit', compact('waste'));
+        return view('waste-management.edit', compact('waste', 'craftsmen'));
     }
 
     public function update(Request $request, $id)

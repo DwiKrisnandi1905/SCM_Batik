@@ -107,8 +107,9 @@ class FactoryController extends Controller
 
     public function edit($id)
     {
+        $harvests = Harvest::all();
         $factory = Factory::findOrFail($id);
-        return view('factory.edit', compact('factory'));
+        return view('factory.edit', compact('factory', 'harvests'));
     }
 
     public function destroy($id)

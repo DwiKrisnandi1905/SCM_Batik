@@ -10,7 +10,7 @@
                 <label for="craftsman_id">Option ID:</label>
                 <select id="craftsman_id" name="craftsman_id" class="form-control" required>
                     @foreach($craftsmen as $craftsmen)
-                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->id }}</option>
+                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->production_details }} - {{$craftsmen->finished_quantity}} - {{$craftsmen->completion_date}}</option>
                     @endforeach
                 </select>
             </div>

@@ -114,8 +114,6 @@
         <thead class="thead-dark">
             <tr>
                 <th>ID</th>
-                <th>User ID</th>
-                <th>Craftsman ID</th>
                 <th>Destination</th>
                 <th>Quantity</th>
                 <th>Shipment Date</th>
@@ -131,8 +129,6 @@
             @foreach ($distribution as $dist)
             <tr>
                 <td>{{ $dist->id }}</td>
-                <td>{{ $dist->user_id }}</td>
-                <td>{{ $dist->craftsman_id }}</td>
                 <td>{{ $dist->destination }}</td>
                 <td>{{ $dist->quantity }}</td>
                 <td>{{ $dist->shipment_date }}</td>
@@ -144,9 +140,6 @@
                     <span class="btn-link monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-distribution="{{ json_encode($dist) }}">Monitor</span>
                 </td>
                 <td>
-                    <a href="{{ route('distribution.show', $dist->id) }}" class="btn btn-info btn-sm btn-icon">
-                        <i class="fas fa-eye"></i> View
-                    </a>
                     <a href="{{ route('distribution.edit', $dist->id) }}" class="btn btn-warning btn-sm btn-icon">
                         <i class="fas fa-edit"></i> Edit
                     </a>

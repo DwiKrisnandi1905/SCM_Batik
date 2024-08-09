@@ -7,6 +7,15 @@
             @csrf
             @method('PUT')
 
+            <div class="form-group mb-3">
+                <label for="craftsman_id">Craftsman</label>
+                <select id="craftsman_id" name="craftsman_id" class="form-control" required>
+                    @foreach($craftsmen as $craftsmen)
+                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->production_details }} - {{$craftsmen->finished_quantity}} - {{$craftsmen->completion_date}}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="mb-3">
                 <label for="waste_type" class="form-label">Waste Type:</label>
                 <input type="text" class="form-control" id="waste_type" name="waste_type" value="{{ old('waste_type', $waste->waste_type) }}" required>

@@ -12,7 +12,7 @@ class WasteManagement extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'waste_type', 'management_method', 'management_results' , 'image'
+        'user_id', 'waste_type', 'management_method', 'management_results' , 'image', 'craftsman_id'
     ];
 
     public function user()

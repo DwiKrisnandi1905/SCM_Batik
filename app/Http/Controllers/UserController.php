@@ -22,11 +22,29 @@ class UserController extends Controller
         
     }
 
-    public function monitoringIndex()
-    {
-        return view('harvests.monitoring.index', [
-            'name' => 'monitoring',
-            'title' => 'monitoring',
-        ]);
-    }
+        public function profileEdit()
+        {
+            $user = Auth::user();
+
+            return view('users.edit', compact('user'));
+        }
+
+        public function profileUpdate()
+        {
+            $user = Auth::user();
+
+            $data = request()->validate([
+                'name' => 'required',
+                'email' => 'required|email',
+            ]);
+
+            if ($user instanceof \Illuminate\Database\Eloquent\Model && $user->exists) {
+                $user->update($data);
+                return redirect()->route('profile.index')->with('success', 'Profile updated successfully.');
+            }
+            else {
+                return redirect()->route('profile.index')->with('fail', 'Failed to update profile.');
+            }
+        }
+
 }

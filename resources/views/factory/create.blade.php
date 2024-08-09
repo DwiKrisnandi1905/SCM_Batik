@@ -9,7 +9,7 @@
             <label for="harvest_id" class="form-label">Harvest:</label>
             <select id="harvest_id" name="harvest_id" class="form-select" required>
                 @foreach($harvests as $harvest)
-                    <option value="{{ $harvest->id }}">{{ $harvest->id }}</option>
+                    <option value="{{ $harvest->id }}">{{ $harvest->id }} - {{$harvest->material_type}} - {{$harvest->quantity}} - {{$harvest->quality}} - {{$harvest->delivery_info}} - {{$harvest->delivery_date}}</option>
                 @endforeach
             </select>
         </div>

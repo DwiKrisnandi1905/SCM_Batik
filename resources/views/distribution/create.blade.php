@@ -5,10 +5,15 @@
         <h1>Create Distribution</h1>
         <form action="{{ route('distribution.store') }}" method="POST">
             @csrf
-            <div class="mb-3">
-                <label for="craftsman_id" class="form-label">Craftsman ID:</label>
-                <input type="number" class="form-control" id="craftsman_id" name="craftsman_id" value="{{ old('craftsman_id') }}" required>
+            <div class="form-group mb-3">
+                <label for="craftsman_id">Craftsman</label>
+                <select id="craftsman_id" name="craftsman_id" class="form-control" required>
+                    @foreach($craftsmen as $craftsmen)
+                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->production_details }} - {{$craftsmen->finished_quantity}} - {{$craftsmen->completion_date}}</option>
+                    @endforeach
+                </select>
             </div>
+            
             <div class="mb-3">
                 <label for="destination" class="form-label">Destination:</label>
                 <input type="text" class="form-control" id="destination" name="destination" value="{{ old('destination') }}" required>

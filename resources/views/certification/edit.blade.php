@@ -8,8 +8,12 @@
             @method('PUT')
 
             <div class="form-group mb-3">
-                <label for="craftsman">Craftsman:</label>
-                <input type="text" id="craftsman_id" name="craftsman_id" class="form-control" value="{{ $certification->craftsman_id }}" required>
+                <label for="craftsman_id">Option ID:</label>
+                <select id="craftsman_id" name="craftsman_id" class="form-control" required>
+                    @foreach($craftsmen as $craftsmen)
+                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->production_details }} - {{$craftsmen->finished_quantity}} - {{$craftsmen->completion_date}}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group mb-3">
