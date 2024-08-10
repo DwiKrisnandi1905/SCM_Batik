@@ -103,12 +103,60 @@
         visibility: visible;
         opacity: 1;
     }
+    .alert {
+        padding: 20px;
+        background-color: #f44336; 
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    .alert.success {
+        background-color: #4CAF50;
+    }
+
+    .alert.info {
+        background-color: #2196F3;
+    }
+
+    .alert.warning {
+        background-color: #ff9800;
+    }
+
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .closebtn:hover {
+        color: black;
+    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Distribution Records</h1>
     <a href="{{ route('distribution.create') }}" class="btn btn-primary">Create New Record</a>
 </div>
+
+@if(session('success'))
+    <div class="alert success">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        {{ session('error') }}
+    </div>
+@endif
+
 <div class="table-wrapper">
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
@@ -233,14 +281,20 @@
         statuses.forEach(function(item) {
             var progressDiv = document.createElement('div');
             var progressBarDiv = document.createElement('div');
-            var progressBar = document.createElement('div');
-            var tooltipText = document.createElement('span');
-
             progressBarDiv.className = 'progress';
-            progressBar.className = 'progress-bar bg-' + (item.status ? 'success' : 'danger');
-            progressBar.style.width = '100%';
-            progressBar.role = 'progressbar';
 
+            var progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+
+            if (item.status === 'completed') {
+                progressBar.className += ' bg-success';
+                progressBar.style.width = '100%';
+            } else {
+                progressBar.className += ' bg-danger';
+                progressBar.style.width = '100%';
+            }
+
+            var tooltipText = document.createElement('span');
             tooltipText.className = 'tooltip-text';
             tooltipText.innerText = item.label;
 

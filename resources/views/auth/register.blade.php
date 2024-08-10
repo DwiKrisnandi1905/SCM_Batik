@@ -115,6 +115,11 @@
         .forgot-password:hover {
             color: #ffb347;
         }
+
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body>
@@ -136,7 +141,7 @@
                                         <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}" required placeholder=" ">
                                         <label for="name" class="mt-1">Name</label>
                                         @error('name')
-                                        <div>{{ $message }}</div>
+                                        <div class="error-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -144,7 +149,7 @@
                                         <input type="email" id="email" class="form-control" name="email" value="{{ old('email') }}" required placeholder=" ">
                                         <label for="email" class="mt-1">Email address</label>
                                         @error('email')
-                                        <div>{{ $message }}</div>
+                                            <div class="error-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
@@ -152,7 +157,7 @@
                                         <input type="password" id="password" class="form-control" name="password" required placeholder=" ">
                                         <label for="password" class="mt-1">Password</label>
                                         @error('password')
-                                        <div>{{ $message }}</div>
+                                        <div class="error-message">{{ $message }}</div>
                                         @enderror
                                     </div>
 
