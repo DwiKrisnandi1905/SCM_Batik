@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h1>Create Certification</h1>
-        <form action="{{ route('certification.store') }}" method="POST">
+        <form action="{{ route('certification.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="form-group mb-3">
@@ -28,6 +28,11 @@
             <div class="form-group mb-3">
                 <label for="issue_date">Issue Date:</label>
                 <input type="datetime-local" id="issue_date" name="issue_date" class="form-control" value="{{ old('issue_date') }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Certifications Image:</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Create</button>

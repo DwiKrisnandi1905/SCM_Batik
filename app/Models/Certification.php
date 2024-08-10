@@ -11,7 +11,7 @@ class Certification extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'craftsman_id', 'test_results', 'certificate_number', 'issue_date'
+        'user_id', 'craftsman_id', 'test_results', 'certificate_number', 'issue_date' , 'image'
     ];
 
     public function user()
