@@ -46,6 +46,14 @@
             <input type="text" id="factory_address" name="factory_address" class="form-control" value="{{ $factory->factory_address }}" required>
         </div>
 
+        <div class="mb-3">
+            <label for="image" class="form-label">Image:</label>
+            @if($factory->image)
+            <img src="{{ asset('storage/images/' . $factory->image) }}" alt="factory Image" class="img-thumbnail mb-2" width="100">
+            @endif
+            <input type="file" class="form-control" id="image" name="image">
+        </div>
+
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 </div>

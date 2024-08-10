@@ -34,11 +34,9 @@
             <div class="form-group mb-3">
                 <label for="image">Image:</label>
                 <input type="file" id="image" name="image" class="form-control">
-
                 @if($certification->image)
                     <img src="{{ asset('storage/' . $certification->image) }}" alt="certification Image" class="img-fluid mt-2" style="max-width: 200px;">
                 @endif
-
             </div>
 
             

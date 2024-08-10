@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h1>Create Distribution</h1>
-        <form action="{{ route('distribution.store') }}" method="POST">
+        <form action="{{ route('distribution.store') }}" method="POST" enctype="multipart/form-data" >
             @csrf
             <div class="form-group mb-3">
                 <label for="craftsman_id">Craftsman</label>
@@ -42,6 +42,12 @@
                 <label for="received_condition" class="form-label">Received Condition:</label>
                 <input type="text" class="form-control" id="received_condition" name="received_condition" value="{{ old('received_condition') }}" required>
             </div>
+            
+            <div class="mb-3">
+                <label for="image" class="form-label">Distributor Image:</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+            </div>
+
             <button type="submit" class="btn btn-primary">Create</button>
         </form>
     </div>

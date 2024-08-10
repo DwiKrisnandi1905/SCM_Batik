@@ -27,13 +27,14 @@ class DistributionController extends Controller
         // Store the image file in public/images directory
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images'), $imageName);
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+            $bindings[5] = $imageName;
         } else {
-            $imageName = null;
+            return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
-        $query = "INSERT INTO distributions (user_id, craftsman_id, destination, quantity, shipment_date, tracking_number, received_date, receiver_name, received_condition, image_name) 
+        $query = "INSERT INTO distributions (user_id, craftsman_id, destination, quantity, shipment_date, tracking_number, received_date, receiver_name, received_condition, image) 
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $values = [
