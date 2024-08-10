@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h1>Edit Distribution</h1>
-    <form action="{{ route('distribution.update', $distribution->id) }}" method="POST">
+    <form action="{{ route('distribution.update', $distribution->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 

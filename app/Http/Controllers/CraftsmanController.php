@@ -78,18 +78,19 @@ class CraftsmanController extends Controller
         $craftsman = Craftsman::findOrFail($id);
 
         $validated = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
             'factory_id' => 'required|integer|exists:factories,id',
             'production_details' => 'required|string',
             'finished_quantity' => 'required|numeric',
             'completion_date' => 'required|date_format:Y-m-d\TH:i',
         ]);
 
+        $validated['user_id'] = auth()->user()->id;
+
         if ($request->hasFile('image')) {
             // Delete old image
             $oldImage = $craftsman->image;
             if ($oldImage) {
-            Storage::delete('public/images/' . $oldImage);
+                Storage::delete('public/images/' . $oldImage);
             }
 
             // Save new image

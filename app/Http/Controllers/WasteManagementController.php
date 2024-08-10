@@ -67,20 +67,12 @@ class WasteManagementController extends Controller
         $wasteManagement = WasteManagement::findOrFail($id);
 
         if ($request->hasFile('image')) {
-            // Delete old image
-            $oldImage = $wasteManagement->image;
-            if ($oldImage) {
-            $imagePath = public_path('images') . '/' . $oldImage;
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
-            }
-
-            // Save new image
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images'), $imageName);
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
             $validatedData['image'] = $imageName;
+        } else {
+            return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
         if ($wasteManagement->update($validatedData)) {

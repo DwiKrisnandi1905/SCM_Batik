@@ -156,7 +156,6 @@
         <thead class="thead-dark">
             <tr>
                 <th>ID</th>
-                <th>User ID</th>
                 <th>Waste Type</th>
                 <th>Management Method</th>
                 <th>Management Results</th>
@@ -169,7 +168,6 @@
             @foreach ($wasteManagements as $wasteManagement)
                 <tr>
                     <td>{{ $wasteManagement->id }}</td>
-                    <td>{{ $wasteManagement->user_id }}</td>
                     <td>{{ $wasteManagement->waste_type }}</td>
                     <td>{{ $wasteManagement->management_method }}</td>
                     <td>{{ $wasteManagement->management_results }}</td>

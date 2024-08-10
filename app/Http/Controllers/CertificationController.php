@@ -68,23 +68,17 @@ class CertificationController extends Controller
             $request->test_results,
             $request->certificate_number,
             $request->issue_date,
-            'default',
+            null,
             $id,
         ];
 
         if ($request->hasFile('image')) {
-            $oldImage = Certification::findOrFail($id)->image;
-            if ($oldImage != 'default') {
-            $imagePath = public_path('images') . '/' . $oldImage;
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
-            }
-
             $image = $request->file('image');
-            $image_name = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images'), $image_name);
-            $bindings[5] = $image_name;
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+            $bindings[5] = $imageName;
+        } else {
+            return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
         if (DB::update($query, $bindings)) {

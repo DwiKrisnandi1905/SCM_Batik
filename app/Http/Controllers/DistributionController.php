@@ -69,27 +69,15 @@ class DistributionController extends Controller
     public function update(Request $request,$id)
     {
         if ($request->hasFile('image')) {
-            // Delete the old image if it exists
-            $oldImageName = $distribution->image_name;
-            if ($oldImageName) {
-                $oldImagePath = public_path('images') . '/' . $oldImageName;
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
-            }
-
-            // Store the new image file in public/images directory
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images'), $imageName);
-
-            // Update the image name in the database
-            $distribution->image_name = $imageName;
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+            $bindings[5] = $imageName;
         } else {
-            $imageName = $distribution->image_name;
+            return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
-        $query = "UPDATE distributions SET craftsman_id = ?, destination = ?, quantity = ?, shipment_date = ?, tracking_number = ?, received_date = ?, receiver_name = ?, received_condition = ?, image_name = ? WHERE id = ?";
+        $query = "UPDATE distributions SET craftsman_id = ?, destination = ?, quantity = ?, shipment_date = ?, tracking_number = ?, received_date = ?, receiver_name = ?, received_condition = ?, image = ? WHERE id = ?";
         $values = [
             $request->input('craftsman_id'),
             $request->input('destination'),
