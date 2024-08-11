@@ -12,7 +12,14 @@ class WasteManagement extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'waste_type', 'management_method', 'management_results' , 'image', 'craftsman_id'
+        'user_id',
+        'waste_type',
+        'management_method',
+        'management_results',
+        'image',
+        'craftsman_id',
+        'is_ref' => false,
+        'nft_token_id'
     ];
 
     public function user()

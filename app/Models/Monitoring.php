@@ -11,7 +11,14 @@ class Monitoring extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'harvest_id', 'factory_id', 'craftsman_id', 'certification_id', 'waste_id', 'distribution_id', 'status', 'last_updated'
+        'harvest_id',
+        'factory_id',
+        'craftsman_id',
+        'certification_id',
+        'waste_id',
+        'distribution_id',
+        'status',
+        'last_updated'
     ];
 
     public function harvest()
