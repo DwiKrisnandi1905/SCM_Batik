@@ -1,8 +1,27 @@
 @extends('layout.app')
 
 @section('content')
+    <style>
+        .btn-warning {
+        color: #fff;
+        background-color: #ff8c00;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        border: 2px solid #fff;
+        }
+
+        .btn-warning:hover {
+            color: #ff8c00;
+            background-color: #fff;
+            border: 2px solid #ff8c00;
+        }
+    </style>
     <div class="container">
-        <h1>Create Waste</h1>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Create Waste Management</h1>
+            <a href="{{ route('waste.index') }}" class="btn btn-warning">
+                Back
+            </a>
+        </div>
         <form action="{{ route('waste.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 

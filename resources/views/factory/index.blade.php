@@ -128,11 +128,24 @@
     .closebtn:hover {
         color: black;
     }
+
+    .btn-warning {
+        color: #fff;
+        background-color: #ff8c00;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        border: 2px solid #fff;
+    }
+
+    .btn-warning:hover {
+        color: #ff8c00;
+        background-color: #fff;
+        border: 2px solid #ff8c00;
+    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Factories</h1>
-    <a href="{{ route('factory.create') }}" class="btn btn-primary">Create New Factory</a>
+    <a href="{{ route('factory.create') }}" class="btn btn-warning">Create New Factory</a>
 </div>
 
 @if(session('success'))
@@ -189,10 +202,10 @@
                         <a href="{{ route('factory.edit', $factory->id) }}" class="btn btn-warning btn-sm btn-icon">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <form action="{{ route('factory.destroy', $factory->id) }}" method="POST" class="d-inline">
+                        <form action="{{ route('factory.destroy', $factory->id) }}" method="POST" class="d-inline delete-form">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm btn-icon" onclick="return confirm('Are you sure you want to delete this item?');">
+                            <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
@@ -324,6 +337,33 @@
             progressBarDiv.appendChild(progressBar);
             progressDiv.appendChild(tooltipText);
             progressContainer.appendChild(progressDiv);
+        });
+    });
+
+    document.querySelectorAll('.delete-button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff8008',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                    popup: 'gradient-custom',
+                    title: 'swal2-title',
+                    content: 'swal2-content',
+                    confirmButton: 'btn btn-danger',
+                    cancelButton: 'btn btn-warning',
+                    icon: 'swal2-icon swal2-warning'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest('form').submit();
+                }
+            });
         });
     });
 </script>

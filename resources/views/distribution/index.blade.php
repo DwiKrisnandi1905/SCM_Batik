@@ -136,11 +136,24 @@
     .closebtn:hover {
         color: black;
     }
+
+    .btn-warning {
+        color: #fff;
+        background-color: #ff8c00;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        border: 2px solid #fff;
+    }
+
+    .btn-warning:hover {
+        color: #ff8c00;
+        background-color: #fff;
+        border: 2px solid #ff8c00;
+    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Distribution Records</h1>
-    <a href="{{ route('distribution.create') }}" class="btn btn-primary">Create New Record</a>
+    <a href="{{ route('distribution.create') }}" class="btn btn-warning">Create New Record</a>
 </div>
 
 @if(session('success'))
@@ -169,6 +182,7 @@
                 <th>Received Date</th>
                 <th>Receiver Name</th>
                 <th>Received Condition</th>
+                <th>Image</th>
                 <th>Monitor</th>
                 <th>Actions</th>
             </tr>
@@ -185,17 +199,24 @@
                 <td>{{ $dist->receiver_name }}</td>
                 <td>{{ $dist->received_condition }}</td>
                 <td>
+                    @if($dist->image)
+                        <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $dist->image) }}">View Image</span>
+                    @else
+                        No Image
+                    @endif
+                </td>
+                <td>
                     <span class="btn-link monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-distribution="{{ json_encode($dist) }}">Monitor</span>
                 </td>
                 <td>
                     <a href="{{ route('distribution.edit', $dist->id) }}" class="btn btn-warning btn-sm btn-icon">
                         <i class="fas fa-edit"></i> Edit
                     </a>
-                    <form action="{{ route('distribution.destroy', $dist->id) }}" method="POST" class="d-inline">
+                    <form action="{{ route('distribution.destroy', $dist->id) }}" method="POST" class="d-inline delete-form">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm btn-icon" onclick="return confirm('Are you sure you want to delete this item?');">
-                            <i class="fas fa-trash-alt"></i> Delete
+                        <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
+                            <i class="fas fa-trash-alt"></i>
                         </button>
                     </form>
                 </td>
@@ -203,6 +224,24 @@
             @endforeach
         </tbody>
     </table>
+</div>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Craftsman Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Craftsman Image" class="img-fluid">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Monitor Modal -->
@@ -302,6 +341,33 @@
             progressBarDiv.appendChild(progressBar);
             progressDiv.appendChild(tooltipText);
             progressContainer.appendChild(progressDiv);
+        });
+    });
+
+    document.querySelectorAll('.delete-button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff8008',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                    popup: 'gradient-custom',
+                    title: 'swal2-title',
+                    content: 'swal2-content',
+                    confirmButton: 'btn btn-danger',
+                    cancelButton: 'btn btn-warning',
+                    icon: 'swal2-icon swal2-warning'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest('form').submit();
+                }
+            });
         });
     });
 </script>
