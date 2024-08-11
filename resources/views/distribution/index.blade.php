@@ -229,16 +229,20 @@
                     <span class="btn-link monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-distribution="{{ json_encode($dist) }}">Monitor</span>
                 </td>
                 <td>
-                    <a href="{{ route('distribution.edit', $dist->id) }}" class="btn btn-warning btn-sm btn-icon">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <form action="{{ route('distribution.destroy', $dist->id) }}" method="POST" class="d-inline delete-form">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
+                    @if($dist->is_ref != 1)
+                        <a href="{{ route('distribution.edit', $dist->id) }}" class="btn btn-warning btn-sm btn-icon">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <form action="{{ route('distribution.destroy', $dist->id) }}" method="POST" class="d-inline delete-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    @else
+                    <span class="disabled-button">Disabled</span>
+                    @endif
                 </td>
             </tr>
             @endforeach

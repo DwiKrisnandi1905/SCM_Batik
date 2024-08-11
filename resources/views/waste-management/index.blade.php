@@ -12,12 +12,16 @@
         width: 100%;
         table-layout: auto;
     }
-    th, td {
+
+    th,
+    td {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    .img-link, .monitor-link {
+
+    .img-link,
+    .monitor-link {
         position: relative;
         display: inline-block;
         font-size: 16px;
@@ -27,7 +31,9 @@
         transition: color 0.3s, transform 0.3s;
         cursor: pointer;
     }
-    .img-link::after, .monitor-link::after {
+
+    .img-link::after,
+    .monitor-link::after {
         content: '';
         position: absolute;
         width: 100%;
@@ -39,11 +45,15 @@
         transform-origin: bottom right;
         transition: transform 0.25s ease-out;
     }
-    .img-link:hover::after, .monitor-link:hover::after {
+
+    .img-link:hover::after,
+    .monitor-link:hover::after {
         transform: scaleX(1);
         transform-origin: bottom left;
     }
-    .img-link:hover, .monitor-link:hover {
+
+    .img-link:hover,
+    .monitor-link:hover {
         color: #0056b3;
         transform: scale(1.1);
     }
@@ -54,18 +64,26 @@
         align-items: center;
         margin-bottom: 15px;
     }
+
     .progress-container div {
         width: 100%;
-        margin: 0 -1px; /* Adjust margin to remove gaps between progress bars */
+        margin: 0 -1px;
+        /* Adjust margin to remove gaps between progress bars */
         position: relative;
     }
+
     .progress-container .progress {
-        margin: 0; /* Remove margin from progress */
-        border-radius: 0; /* Ensure no border radius on progress */
+        margin: 0;
+        /* Remove margin from progress */
+        border-radius: 0;
+        /* Ensure no border radius on progress */
     }
+
     .progress-container .progress-bar {
-        border-radius: 0; /* Ensure no border radius on progress-bar */
+        border-radius: 0;
+        /* Ensure no border radius on progress-bar */
     }
+
     .tooltip-text {
         visibility: hidden;
         opacity: 0;
@@ -82,6 +100,7 @@
         margin-left: -50px;
         transition: opacity 0.3s;
     }
+
     .tooltip-text::after {
         content: '';
         position: absolute;
@@ -92,6 +111,7 @@
         border-style: solid;
         border-color: black transparent transparent transparent;
     }
+
     .progress-container div:hover .tooltip-text {
         visibility: visible;
         opacity: 1;
@@ -99,7 +119,7 @@
 
     .alert {
         padding: 20px;
-        background-color: #f44336; 
+        background-color: #f44336;
         color: white;
         margin-bottom: 15px;
     }
@@ -151,17 +171,17 @@
 </div>
 
 @if(session('success'))
-    <div class="alert success">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-        {{ session('success') }}
-    </div>
+<div class="alert success">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{ session('success') }}
+</div>
 @endif
 
 @if(session('error'))
-    <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-        {{ session('error') }}
-    </div>
+<div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{ session('error') }}
+</div>
 @endif
 
 <div class="table-wrapper">
@@ -179,22 +199,23 @@
         </thead>
         <tbody>
             @foreach ($wasteManagements as $wasteManagement)
-                <tr>
-                    <td>{{ $wasteManagement->id }}</td>
-                    <td>{{ $wasteManagement->waste_type }}</td>
-                    <td>{{ $wasteManagement->management_method }}</td>
-                    <td>{{ $wasteManagement->management_results }}</td>
-                    <td>
-                        @if($wasteManagement->image)
-                            <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $wasteManagement->image) }}">View Image</span>
-                        @else
-                            No Image
-                        @endif
-                    </td>
-                    <td>
-                        <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-wastemanagement="{{ json_encode($wasteManagement) }}">Monitor</span>
-                    </td>
-                    <td>
+            <tr>
+                <td>{{ $wasteManagement->id }}</td>
+                <td>{{ $wasteManagement->waste_type }}</td>
+                <td>{{ $wasteManagement->management_method }}</td>
+                <td>{{ $wasteManagement->management_results }}</td>
+                <td>
+                    @if($wasteManagement->image)
+                    <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $wasteManagement->image) }}">View Image</span>
+                    @else
+                    No Image
+                    @endif
+                </td>
+                <td>
+                    <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-wastemanagement="{{ json_encode($wasteManagement) }}">Monitor</span>
+                </td>
+                <td>
+                    @if($wasteManagement->is_ref != 1)
                         <a href="{{ route('waste.edit', $wasteManagement->id) }}" class="btn btn-warning btn-sm btn-icon">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -205,8 +226,11 @@
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
-                    </td>
-                </tr>
+                    @else
+                    <span class="disabled-button">Disabled</span>
+                    @endif
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>
@@ -287,7 +311,7 @@
 
 <script>
     var imageModal = document.getElementById('imageModal');
-    imageModal.addEventListener('show.bs.modal', function (event) {
+    imageModal.addEventListener('show.bs.modal', function(event) {
         var button = event.relatedTarget;
         var imageUrl = button.getAttribute('data-bs-image');
         var modalImage = document.getElementById('modalImage');
@@ -295,17 +319,34 @@
     });
 
     var monitorModal = document.getElementById('monitorModal');
-    monitorModal.addEventListener('show.bs.modal', function (event) {
+    monitorModal.addEventListener('show.bs.modal', function(event) {
         var button = event.relatedTarget;
         var wasteManagement = JSON.parse(button.getAttribute('data-wastemanagement'));
-        
-        var statuses = [
-            { label: 'Harvest', status: wasteManagement.harvest },
-            { label: 'Factory', status: wasteManagement.factory },
-            { label: 'Craftsman', status: wasteManagement.craftsman },
-            { label: 'Certificator', status: wasteManagement.certificator },
-            { label: 'Waste Management', status: wasteManagement.waste_management },
-            { label: 'Distributor', status: wasteManagement.distributor }
+
+        var statuses = [{
+                label: 'Harvest',
+                status: wasteManagement.harvest
+            },
+            {
+                label: 'Factory',
+                status: wasteManagement.factory
+            },
+            {
+                label: 'Craftsman',
+                status: wasteManagement.craftsman
+            },
+            {
+                label: 'Certificator',
+                status: wasteManagement.certificator
+            },
+            {
+                label: 'Waste Management',
+                status: wasteManagement.waste_management
+            },
+            {
+                label: 'Distributor',
+                status: wasteManagement.distributor
+            }
         ];
 
         var progressContainer = monitorModal.querySelector('.progress-container');

@@ -197,16 +197,21 @@
                         <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-craftsman="{{ json_encode($craftsman) }}">Monitor</span>
                     </td>
                     <td>
-                        <a href="{{ route('craftsman.edit', $craftsman->id) }}" class="btn btn-warning btn-sm btn-icon">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{{ route('craftsman.destroy', $craftsman->id) }}" method="POST" class="d-inline delete-form">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        @if($craftsman->is_ref != 1)
+                            <a href="{{ route('craftsman.edit', $craftsman->id) }}" class="btn btn-warning btn-sm btn-icon">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('craftsman.destroy', $craftsman->id) }}" method="POST" class="d-inline delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        @else
+                        <span class="disabled-button">Disabled</span>
+                        @endif
+                    </td>
                     </td>
                 </tr>
             @endforeach
