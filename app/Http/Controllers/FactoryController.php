@@ -14,6 +14,7 @@ class FactoryController extends Controller
     public function store(Request $request)
     {
         $userId = auth()->id();
+
         // Validate the request
         $request->validate([
             'harvest_id' => 'required|integer',
@@ -25,7 +26,7 @@ class FactoryController extends Controller
             'factory_address' => 'required|string|max:255',
             'image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-    
+
         // Handle the file upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -34,10 +35,12 @@ class FactoryController extends Controller
         } else {
             return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
-    
-        // Prepare the raw SQL query
-        $query = "INSERT INTO factories (user_id, harvest_id, received_date, initial_process, semi_finished_quantity, semi_finished_quality, factory_name, factory_address, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
+        // Prepare the raw SQL query for inserting into factories
+        $query = "INSERT INTO factories (user_id, harvest_id, received_date, 
+        initial_process, semi_finished_quantity, semi_finished_quality, factory_name,
+        factory_address, image, is_ref) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+
         $bindings = [
             $userId,
             $request->input('harvest_id'),
@@ -49,16 +52,20 @@ class FactoryController extends Controller
             $request->input('factory_address'),
             $imageName
         ];
-    
+
         // Execute the raw SQL query
         $result = DB::insert($query, $bindings);
-    
+
+        // Update the harvest record where id matches harvest_id
         if ($result) {
+            $updateQuery = "UPDATE harvests SET is_ref = 1 WHERE id = ?";
+            DB::update($updateQuery, [$request->input('harvest_id')]);
             return redirect()->route('factory.index')->with('success', 'Factory created successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to create factory');
         }
     }
+
 
     public function index()
     {

@@ -11,7 +11,17 @@ class Distribution extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'craftsman_id', 'destination', 'quantity', 'shipment_date', 'tracking_number', 'received_date', 'receiver_name', 'received_condition'
+        'user_id',
+        'craftsman_id',
+        'destination',
+        'quantity',
+        'shipment_date',
+        'tracking_number',
+        'received_date',
+        'receiver_name',
+        'received_condition',
+        'is_ref',
+        'nft_token_id'
     ];
 
     public function user()

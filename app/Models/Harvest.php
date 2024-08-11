@@ -11,7 +11,15 @@ class Harvest extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'material_type', 'quantity', 'quality', 'delivery_info', 'delivery_date', 'image'
+        'user_id',
+        'material_type',
+        'quantity',
+        'quality',
+        'delivery_info',
+        'delivery_date',
+        'image',
+        'is_ref',
+        'nft_token_id'
     ];
 
     public function user()

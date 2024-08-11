@@ -27,8 +27,8 @@ class HarvestController extends Controller
             $imageName = null;
         }
         
-        $query = "INSERT INTO harvests (material_type, quantity, quality, delivery_info, delivery_date, image, user_id) 
-              VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO harvests (material_type, quantity, quality, delivery_info, delivery_date, image, user_id ,is_ref) 
+              VALUES (?, ?, ?, ?, ?, ?, ? , 0)";
         
         $success = DB::insert($query, [$material_type, $quantity, $quality, $delivery_info, $delivery_date, $imageName, $userId]);
         
