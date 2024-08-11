@@ -12,11 +12,14 @@
         width: 100%;
         table-layout: auto;
     }
-    th, td {
+
+    th,
+    td {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
     .btn-link {
         position: relative;
         display: inline-block;
@@ -27,6 +30,7 @@
         transition: color 0.3s, transform 0.3s;
         cursor: pointer;
     }
+
     .btn-link::after {
         content: '';
         position: absolute;
@@ -39,40 +43,53 @@
         transform-origin: bottom right;
         transition: transform 0.25s ease-out;
     }
+
     .btn-link:hover::after {
         transform: scaleX(1);
         transform-origin: bottom left;
     }
+
     .btn-link:hover {
         color: #0056b3;
         transform: scale(1.1);
     }
+
     .btn-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
     }
+
     .btn-icon i {
         margin-right: 5px;
     }
+
     .progress-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 15px;
     }
+
     .progress-container div {
         width: 100%;
-        margin: 0 -1px; /* Adjust margin to remove gaps between progress bars */
+        margin: 0 -1px;
+        /* Adjust margin to remove gaps between progress bars */
         position: relative;
     }
+
     .progress-container .progress {
-        margin: 0; /* Remove margin from progress */
-        border-radius: 0; /* Ensure no border radius on progress */
+        margin: 0;
+        /* Remove margin from progress */
+        border-radius: 0;
+        /* Ensure no border radius on progress */
     }
+
     .progress-container .progress-bar {
-        border-radius: 0; /* Ensure no border radius on progress-bar */
+        border-radius: 0;
+        /* Ensure no border radius on progress-bar */
     }
+
     .tooltip-text {
         visibility: hidden;
         opacity: 0;
@@ -89,6 +106,7 @@
         margin-left: -50px;
         transition: opacity 0.3s;
     }
+
     .tooltip-text::after {
         content: '';
         position: absolute;
@@ -99,13 +117,15 @@
         border-style: solid;
         border-color: black transparent transparent transparent;
     }
+
     .progress-container div:hover .tooltip-text {
         visibility: visible;
         opacity: 1;
     }
+
     .alert {
         padding: 20px;
-        background-color: #f44336; 
+        background-color: #f44336;
         color: white;
         margin-bottom: 15px;
     }
@@ -157,17 +177,17 @@
 </div>
 
 @if(session('success'))
-    <div class="alert success">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-        {{ session('success') }}
-    </div>
+<div class="alert success">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{ session('success') }}
+</div>
 @endif
 
 @if(session('error'))
-    <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-        {{ session('error') }}
-    </div>
+<div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{ session('error') }}
+</div>
 @endif
 
 <div class="table-wrapper">
@@ -200,9 +220,9 @@
                 <td>{{ $dist->received_condition }}</td>
                 <td>
                     @if($dist->image)
-                        <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $dist->image) }}">View Image</span>
+                    <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $dist->image) }}">View Image</span>
                     @else
-                        No Image
+                    No Image
                     @endif
                 </td>
                 <td>
@@ -300,18 +320,43 @@
 </div>
 
 <script>
+    var imageModal = document.getElementById('imageModal');
+    imageModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget;
+        var imageUrl = button.getAttribute('data-bs-image');
+        var modalImage = document.getElementById('modalImage');
+        modalImage.src = imageUrl;
+    });
+
     var monitorModal = document.getElementById('monitorModal');
-    monitorModal.addEventListener('show.bs.modal', function (event) {
+    monitorModal.addEventListener('show.bs.modal', function(event) {
         var button = event.relatedTarget;
         var distribution = JSON.parse(button.getAttribute('data-distribution'));
-        
-        var statuses = [
-            { label: 'Harvest', status: distribution.harvest },
-            { label: 'Factory', status: distribution.factory },
-            { label: 'Craftsman', status: distribution.craftsman },
-            { label: 'Certificator', status: distribution.certificator },
-            { label: 'Waste Management', status: distribution.waste_management },
-            { label: 'Distributor', status: distribution.distributor }
+
+        var statuses = [{
+                label: 'Harvest',
+                status: distribution.harvest
+            },
+            {
+                label: 'Factory',
+                status: distribution.factory
+            },
+            {
+                label: 'Craftsman',
+                status: distribution.craftsman
+            },
+            {
+                label: 'Certificator',
+                status: distribution.certificator
+            },
+            {
+                label: 'Waste Management',
+                status: distribution.waste_management
+            },
+            {
+                label: 'Distributor',
+                status: distribution.distributor
+            }
         ];
 
         var progressContainer = monitorModal.querySelector('.progress-container');
