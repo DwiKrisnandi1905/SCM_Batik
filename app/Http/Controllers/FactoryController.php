@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Factory;
 use App\Models\Harvest;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -13,10 +12,7 @@ class FactoryController extends Controller
 {
     public function store(Request $request)
     {
-        $userId = auth()->id();
-
-        // Validate the request
-        $request->validate([
+        $validated = $request->validate([
             'harvest_id' => 'required|integer',
             'received_date' => 'required|date',
             'initial_process' => 'required|string|max:255',
@@ -24,49 +20,32 @@ class FactoryController extends Controller
             'semi_finished_quality' => 'required|string|max:255',
             'factory_name' => 'required|string|max:255',
             'factory_address' => 'required|string|max:255',
-            'image' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
-        // Handle the file upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+    
+        $factory = new Factory($validated);
+        $factory->user_id = auth()->id();
+    
+        $image = $request->file('image');
+        if ($image) {
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
+            $factory->image = $imageName;
         } else {
             return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
-
-        // Prepare the raw SQL query for inserting into factories
-        $query = "INSERT INTO factories (user_id, harvest_id, received_date, 
-        initial_process, semi_finished_quantity, semi_finished_quality, factory_name,
-        factory_address, image, is_ref) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
-
-        $bindings = [
-            $userId,
-            $request->input('harvest_id'),
-            $request->input('received_date'),
-            $request->input('initial_process'),
-            $request->input('semi_finished_quantity'),
-            $request->input('semi_finished_quality'),
-            $request->input('factory_name'),
-            $request->input('factory_address'),
-            $imageName
-        ];
-
-        // Execute the raw SQL query
-        $result = DB::insert($query, $bindings);
-
-        // Update the harvest record where id matches harvest_id
-        if ($result) {
-            $updateQuery = "UPDATE harvests SET is_ref = 1 WHERE id = ?";
-            DB::update($updateQuery, [$request->input('harvest_id')]);
+    
+        $factory->is_ref = 0;
+        if ($factory->save()) {
+            $harvest = Harvest::find($validated['harvest_id']);
+            $harvest->is_ref = 1;
+            $harvest->save();
+    
             return redirect()->route('factory.index')->with('success', 'Factory created successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to create factory');
         }
     }
-
-
+    
     public function index()
     {
         $userId = auth()->id();
@@ -83,6 +62,7 @@ class FactoryController extends Controller
     public function update(Request $request, $id)
     {
         $factory = Factory::findOrFail($id);
+    
         $validated = $request->validate([
             'received_date' => 'sometimes|required|date',
             'initial_process' => 'sometimes|required|string',
@@ -91,22 +71,26 @@ class FactoryController extends Controller
             'factory_name' => 'sometimes|required|string|max:255',
             'factory_address' => 'sometimes|required|string|max:255',
         ]);
-
-        if ($request->hasFile('image')) {
-            Storage::delete('public/images/' . $factory->image);
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+    
+        $image = $request->file('image');
+        if ($image) {
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
             $validated['image'] = $imageName;
+    
+            $oldImagePath = 'public/images/' . $factory->image;
+            if (Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
+            }
         }
-
+    
         if ($factory->update($validated)) {
             return redirect()->route('factory.index')->with('success', 'Factory updated successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to update factory');
         }
     }
-
+    
     public function edit($id)
     {
         $harvests = Harvest::all();

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
 use App\Models\Factory;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CraftsmanController extends Controller
@@ -43,40 +42,30 @@ class CraftsmanController extends Controller
             'completion_date' => 'required|date_format:Y-m-d\TH:i',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
-        $validated['user_id'] = auth()->user()->id;
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+        $validated['user_id'] = auth()->id();
+        $image = $request->file('image');
+        if ($image) {
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
+            $validated['image'] = $imageName;
         } else {
             return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
-
-        $query = "INSERT INTO craftsmen (user_id, factory_id, production_details, finished_quantity, completion_date, image) VALUES (?, ?, ?, ?, ?, ?)";
-        $params = [
-            $validated['user_id'],
-            $validated['factory_id'],
-            $validated['production_details'],
-            $validated['finished_quantity'],
-            $validated['completion_date'],
-            $imageName
-        ];
-
-        $success = DB::insert($query, $params);
-
-        if ($success) {
+        $validated['is_ref'] = 0;
+        $craftsman = new Craftsman($validated);
+        if ($craftsman->save()) {
+            $factory = Factory::find($validated['factory_id']);
+            $factory->is_ref = 1;
+            $factory->save();
             return redirect()->route('craftsman.index')->with('success', 'Craftsman created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create craftsman.');
         }
     }
-
+    
     public function update(Request $request, $id)
     {
         $craftsman = Craftsman::findOrFail($id);
-
         $validated = $request->validate([
             'factory_id' => 'required|integer|exists:factories,id',
             'production_details' => 'required|string',
@@ -84,32 +73,31 @@ class CraftsmanController extends Controller
             'completion_date' => 'required|date_format:Y-m-d\TH:i',
         ]);
 
-        $validated['user_id'] = auth()->user()->id;
-
+        $validated['user_id'] = auth()->id();
+    
         if ($request->hasFile('image')) {
-            // Delete old image
-            $oldImage = $craftsman->image;
-            if ($oldImage) {
-                Storage::delete('public/images/' . $oldImage);
+            if ($craftsman->image) {
+                Storage::delete('public/images/' . $craftsman->image);
             }
 
-            // Save new image
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
-
             $validated['image'] = $imageName;
         }
+    
+        $validated['is_ref'] = $craftsman->is_ref ?? 0;
 
-        $success = $craftsman->update($validated);
-
-        if ($success) {
+        if ($craftsman->update($validated)) {
+            $factory = Factory::find($validated['factory_id']);
+            $factory->is_ref = 1;
+            $factory->save();
             return redirect()->route('craftsman.index')->with('success', 'Craftsman updated successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to update craftsman.');
         }
     }
-
+    
     public function destroy($id)
     {
         $craftsman = Craftsman::findOrFail($id);

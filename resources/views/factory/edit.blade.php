@@ -22,7 +22,7 @@
             Back
         </a>
     </div>
-    <form action="{{ route('factory.update', $factory->id) }}" method="POST">
+    <form action="{{ route('factory.update', $factory->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 

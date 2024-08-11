@@ -18,7 +18,7 @@ class WasteManagement extends Model
         'management_results',
         'image',
         'craftsman_id',
-        'is_ref' => false,
+        'is_ref',
         'nft_token_id'
     ];
 

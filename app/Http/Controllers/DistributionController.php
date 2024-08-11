@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Distribution;
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DistributionController extends Controller
 {
@@ -23,42 +23,57 @@ class DistributionController extends Controller
     public function store(Request $request)
     {
         $userId = auth()->user()->id;
-
-        // Store the image file in public/images directory
+    
+        // Validate request
+        $request->validate([
+            'craftsman_id' => 'required|exists:craftsmen,id',
+            'destination' => 'required|string|max:255',
+            'quantity' => 'required|integer',
+            'shipment_date' => 'required|date',
+            'tracking_number' => 'required|string|max:255',
+            'received_date' => 'required|date',
+            'receiver_name' => 'required|string|max:255',
+            'received_condition' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+    
+        // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
-            $bindings[5] = $imageName;
         } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
+            return redirect()->back()->with('error', 'Image upload failed.');
         }
-
-        $query = "INSERT INTO distributions (user_id, craftsman_id, destination, quantity, shipment_date, tracking_number, received_date, receiver_name, received_condition, image) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        $values = [
-            $userId,
-            $request->input('craftsman_id'),
-            $request->input('destination'),
-            $request->input('quantity'),
-            $request->input('shipment_date'),
-            $request->input('tracking_number'),
-            $request->input('received_date'),
-            $request->input('receiver_name'),
-            $request->input('received_condition'),
-            $imageName
-        ];
-
-        $result = DB::insert($query, $values);
-
-        if ($result) {
+    
+        // Create new distribution record
+        $distribution = new Distribution();
+        $distribution->user_id = $userId;
+        $distribution->craftsman_id = $request->input('craftsman_id');
+        $distribution->destination = $request->input('destination');
+        $distribution->quantity = $request->input('quantity');
+        $distribution->shipment_date = $request->input('shipment_date');
+        $distribution->tracking_number = $request->input('tracking_number');
+        $distribution->received_date = $request->input('received_date');
+        $distribution->receiver_name = $request->input('receiver_name');
+        $distribution->received_condition = $request->input('received_condition');
+        $distribution->image = $imageName;
+        $distribution->is_ref = 0;
+    
+        if ($distribution->save()) {
+            // Update Craftsman record
+            $craftsman = Craftsman::find($request->input('craftsman_id'));
+            if ($craftsman) {
+                $craftsman->is_ref = 1;
+                $craftsman->save();
+            }
+    
             return redirect()->route('distribution.index')->with('success', 'Distribution record created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create distribution record.');
         }
     }
-
+    
     public function edit($id)
     {
         $craftsmen = Craftsman::all();
@@ -66,34 +81,35 @@ class DistributionController extends Controller
         return view('distribution.edit', compact('distribution', 'craftsmen'));
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('public/images', $imageName);
-            $bindings[5] = $imageName;
-        } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
+        $distribution = Distribution::find($id);
+        if (!$distribution) {
+            return redirect()->back()->with('error', 'Distribution record not found.');
         }
 
-        $query = "UPDATE distributions SET craftsman_id = ?, destination = ?, quantity = ?, shipment_date = ?, tracking_number = ?, received_date = ?, receiver_name = ?, received_condition = ?, image = ? WHERE id = ?";
-        $values = [
-            $request->input('craftsman_id'),
-            $request->input('destination'),
-            $request->input('quantity'),
-            $request->input('shipment_date'),
-            $request->input('tracking_number'),
-            $request->input('received_date'),
-            $request->input('receiver_name'),
-            $request->input('received_condition'),
-            $imageName,
-            $id
-        ];
+        $oldImage = $distribution->image;
+        if ($oldImage) {
+            Storage::delete('public/images/' . $oldImage);
+        }
 
-        $result = DB::update($query, $values);
+        $distribution->craftsman_id = $request->input('craftsman_id');
+        $distribution->destination = $request->input('destination');
+        $distribution->quantity = $request->input('quantity');
+        $distribution->shipment_date = $request->input('shipment_date');
+        $distribution->tracking_number = $request->input('tracking_number');
+        $distribution->received_date = $request->input('received_date');
+        $distribution->receiver_name = $request->input('receiver_name');
+        $distribution->received_condition = $request->input('received_condition');
 
-        if ($result) {
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/images', $imageName);
+            $distribution->image = $imageName;
+        }
+
+        if ($distribution->save()) {
             return redirect()->route('distribution.index')->with('success', 'Distribution record updated successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to update distribution record.');
@@ -102,12 +118,13 @@ class DistributionController extends Controller
 
     public function destroy($id)
     {
-        $query = "DELETE FROM distributions WHERE id = ?";
-        $values = [$id];
-
-        $result = DB::delete($query, $values);
-
-        if ($result) {
+        $distribution = Distribution::find($id);
+        $image = $distribution->image;
+        if ($image) {
+            Storage::delete('public/images/' . $image);
+        }
+        if ($distribution) {
+            $distribution->delete();
             return redirect()->route('distribution.index')->with('success', 'Distribution record deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to delete distribution record.');
