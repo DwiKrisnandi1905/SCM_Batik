@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('certificate_number');
             $table->dateTime('issue_date');
             $table->string('image');
+            $table->boolean('is_ref');
+            $table->string('nft_token_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

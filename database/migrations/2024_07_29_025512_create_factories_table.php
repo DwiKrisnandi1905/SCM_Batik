@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('factory_name');
             $table->string('factory_address');
             $table->string('image');
+            $table->boolean('is_ref');
+            $table->string('nft_token_id');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('harvest_id')->references('id')->on('harvests');

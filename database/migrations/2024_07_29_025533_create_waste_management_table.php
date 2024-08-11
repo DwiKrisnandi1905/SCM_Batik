@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('management_method');
             $table->string('management_results');
             $table->string('image');
+            $table->boolean('is_ref');
+            $table->string('nft_token_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
