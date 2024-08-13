@@ -11,7 +11,7 @@ class NFTService
 {
     protected $web3;
     protected $contract;
-    protected $contractAddress = '0x90DE4f9baA5924799757dEE2Ad75D00b8b477E55';
+    protected $contractAddress = '0x30A94054048860651f14156CA472aA4126883b3c';
     protected $abi = '[
     {
       "inputs": [],
@@ -599,7 +599,7 @@ class NFTService
       "stateMutability": "nonpayable",
       "type": "function"
     }
-  ]'; // ABI of your contract
+  ]';
 
     public function __construct()
     {

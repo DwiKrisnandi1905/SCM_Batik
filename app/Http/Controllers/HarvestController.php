@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\NFTService;
 use Illuminate\Http\Request;
 use App\Models\Harvest;
 use Illuminate\Support\Facades\Storage;
 
 class HarvestController extends Controller
 {
+
+    protected $nftService;
+
+    public function __construct(NFTService $nftService)
+    {
+        $this->nftService = $nftService;
+    }
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -27,6 +35,14 @@ class HarvestController extends Controller
             $image->storeAs('public/images', $imageName);
             $harvest->image = $imageName;
         }
+
+         // Buat NFT untuk foto produk utama
+         $tokenURI = url('public/images/' . $imageName); 
+         $fromAddress = '0x79b97D95B8155C1c014BB40303576379F2B68dF9'; 
+         $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+ 
+         $harvest->nft_token_id = $transactionHash; 
+        //  $harvest->save();
         
         $harvest->is_ref = 0;
         if ($harvest->save()) {
@@ -104,4 +120,28 @@ class HarvestController extends Controller
         }
     }
 
+    public function verifyNFT($transactionHash)
+    {
+        try {
+            $transactionReceipt = $this->nftService->verifyNFT($transactionHash);
+
+            if ($transactionReceipt) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'NFT verification successful',
+                    'data' => $transactionReceipt,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found',
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }
