@@ -42,6 +42,7 @@ Route::middleware(['auth', 'harvest'])->group(function () {
         Route::get('/{id}/edit', [HarvestController::class, 'edit'])->name('harvest.edit');
         Route::put('/{id}', [HarvestController::class, 'update'])->name('harvest.update');
         Route::delete('/{id}', [HarvestController::class, 'destroy'])->name('harvest.destroy');
+        Route::get('/verify-nft/{transactionHash}', [HarvestController::class, 'verifyNFT'])->name('verify-nft');
     });
 });
 
