@@ -21,10 +21,10 @@ return new class extends Migration
             $table->float('quantity');
             $table->dateTime('shipment_date');
             $table->string('tracking_number');
-            $table->dateTime('received_date');
-            $table->string('receiver_name');
-            $table->string('received_condition');
-            $table->string('image');
+            $table->dateTime('received_date')->nullable();
+            $table->string('receiver_name')->nullable();
+            $table->string('received_condition')->nullable();
+            $table->string('image')->nullable();
             $table->boolean('is_ref');
             $table->string('nft_token_id')->nullable();
             $table->timestamps();

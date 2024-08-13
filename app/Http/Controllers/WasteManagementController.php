@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\WasteManagement;
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
+use Illuminate\Support\Facades\Storage;
 
 class WasteManagementController extends Controller
 {
@@ -25,29 +27,32 @@ class WasteManagementController extends Controller
             'waste_type' => 'required|string',
             'management_method' => 'required|string',
             'management_results' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'craftsman_id' => 'required|integer',
+            'craftsman_id' => 'required|integer|exists:craftsmen,id',
         ]);
 
-        $validated['user_id'] = auth()->user()->id;
+        $validated['user_id'] = auth()->id(); // or auth()->user()->id
+        $validated['is_ref'] = 0;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
             $validated['image'] = $imageName;
-        } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
         $wasteManagement = WasteManagement::create($validated);
 
         if ($wasteManagement) {
+            $craftsman = Craftsman::find($validated['craftsman_id']);
+            $craftsman->is_ref = 1;
+            $craftsman->save();
+
             return redirect()->route('waste.index')->with('success', 'Waste Management record created successfully.');
         } else {
             return redirect()->route('waste.index')->with('error', 'Failed to create Waste Management record.');
         }
     }
+
 
     public function edit($id)
     {
@@ -67,8 +72,11 @@ class WasteManagementController extends Controller
         $wasteManagement = WasteManagement::findOrFail($id);
 
         if ($request->hasFile('image')) {
+            if ($wasteManagement->image) {
+                Storage::delete('public/images/' . $wasteManagement->image);
+            }
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
             $validatedData['image'] = $imageName;
         } else {
@@ -81,22 +89,17 @@ class WasteManagementController extends Controller
             return redirect()->route('waste.index')->with('error', 'Failed to update Waste Management record.');
         }
     }
-    
+
 
     public function destroy($id)
     {
         $wasteManagement = WasteManagement::findOrFail($id);
         $image = $wasteManagement->image;
-        
-        if ($wasteManagement->delete()) {
-            // Delete image file
-            if ($image) {
-            $imagePath = public_path('images') . '/' . $image;
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
+        $success = $wasteManagement->delete();
+        if ($success) {
+            if ($image && $image !== 'default') {
+                Storage::delete('public/images/' . $image);
             }
-            }
-            
             return redirect()->route('waste.index')->with('success', 'Waste Management record deleted successfully.');
         } else {
             return redirect()->route('waste.index')->with('error', 'Failed to delete Waste Management record.');

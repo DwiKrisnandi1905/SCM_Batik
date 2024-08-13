@@ -199,16 +199,20 @@
                         <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-harvest="{{ json_encode($harvest) }}">Monitor</span>
                     </td>
                     <td class="actions">
-                        <a href="{{ route('harvest.edit', $harvest->id) }}" class="btn btn-warning btn-sm btn-icon">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{{ route('harvest.destroy', $harvest->id) }}" method="POST" class="d-inline delete-form">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        @if($harvest->is_ref != 1)
+                            <a href="{{ route('harvest.edit', $harvest->id) }}" class="btn btn-warning btn-sm btn-icon">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('harvest.destroy', $harvest->id) }}" method="POST" class="d-inline delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        @else
+                            <span class="disabled-button">Disabled</span>
+                        @endif
                     </td>
                 </tr>
             @endforeach

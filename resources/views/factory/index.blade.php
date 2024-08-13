@@ -199,16 +199,20 @@
                         <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-factory="{{ json_encode($factory) }}">Monitor</span>
                     </td>
                     <td class="actions">
-                        <a href="{{ route('factory.edit', $factory->id) }}" class="btn btn-warning btn-sm btn-icon">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <form action="{{ route('factory.destroy', $factory->id) }}" method="POST" class="d-inline delete-form">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        @if($factory->is_ref != 1)
+                            <a href="{{ route('factory.edit', $factory->id) }}" class="btn btn-warning btn-sm btn-icon">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('factory.destroy', $factory->id) }}" method="POST" class="d-inline delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        @else
+                        <span class="disabled-button">Disabled</span>
+                        @endif
                     </td>
                 </tr>
             @endforeach

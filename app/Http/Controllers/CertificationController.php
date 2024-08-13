@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Certification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Craftsman;
 
 class CertificationController extends Controller
@@ -23,32 +23,39 @@ class CertificationController extends Controller
     public function store(Request $request)
     {
         $user_id = auth()->id();
-
-        $query = "INSERT INTO certifications (user_id, craftsman_id, test_results, certificate_number, issue_date, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
-        $bindings = [
-            $user_id,
-            $request->craftsman_id,
-            $request->test_results,
-            $request->certificate_number,
-            $request->issue_date,
-            null,
-        ];
+        $validated = $request->validate([
+            'craftsman_id' => 'required|integer|exists:craftsmen,id',
+            'test_results' => 'required|string|max:255',
+            'certificate_number' => 'required|string|max:255',
+            'issue_date' => 'required|date',
+            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ensure image is validated
+        ]);
+    
+        $certification = new Certification();
+        $certification->user_id = $user_id;
+        $certification->craftsman_id = $validated['craftsman_id'];
+        $certification->test_results = $validated['test_results'];
+        $certification->certificate_number = $validated['certificate_number'];
+        $certification->issue_date = $validated['issue_date'];
+        $certification->is_ref = 0;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
-            $bindings[5] = $imageName;
-        } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
+            $certification->image = $imageName;
         }
-
-        if (DB::insert($query, $bindings)) {
+    
+        if ($certification->save()) {
+            $Craftsman = Craftsman::find($validated['craftsman_id']);
+            $Craftsman->is_ref = 1;
+            $Craftsman->save();
             return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create certification.');
         }
     }
+    
 
     public function edit($id)
     {
@@ -60,46 +67,46 @@ class CertificationController extends Controller
     public function update(Request $request, $id)
     {
         $user_id = auth()->id();
-
-        $query = "UPDATE certifications SET user_id = ?, craftsman_id = ?, test_results = ?, certificate_number = ?, issue_date = ?, image = ?, updated_at = NOW() WHERE id = ?";
-        $bindings = [
-            $user_id,
-            $request->craftsman_id,
-            $request->test_results,
-            $request->certificate_number,
-            $request->issue_date,
-            null,
-            $id,
-        ];
-
+        $certification = Certification::findOrFail($id);
+        $certification->user_id = $user_id;
+        $certification->craftsman_id = $request->craftsman_id;
+        $certification->test_results = $request->test_results;
+        $certification->certificate_number = $request->certificate_number;
+        $certification->issue_date = $request->issue_date;
+    
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('public/images', $imageName);
-            $bindings[5] = $imageName;
-        } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
-        }
+            if ($certification->image) {
+                Storage::delete('public/images/' . $certification->image);
+            }
 
-        if (DB::update($query, $bindings)) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/images', $imageName);
+            $certification->image = $imageName;
+        }
+    
+        if ($certification->save()) {
             return redirect()->route('certification.index')->with('success', 'Certification updated successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to update certification.');
         }
     }
+    
 
     public function destroy($id)
     {
         $certification = Certification::findOrFail($id);
         $image = $certification->image;
-        if ($image != 'default') {
-            $imagePath = public_path('images') . '/' . $image;
-            if (file_exists($imagePath)) {
-            unlink($imagePath);
-            }
+        if ($image && $image !== 'default') {
+            Storage::delete('public/images/' . $image);
         }
-        $certification->delete();
-        return redirect()->route('certification.index')->with('success', 'Certification deleted successfully.');
+        $success = $certification->delete();
+        if ($success) {
+            return redirect()->route('certification.index')->with('success', 'Certification deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to delete certification.');
+        }
     }
+    
 
 }
