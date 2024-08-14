@@ -38,7 +38,7 @@ Route::middleware(['auth', 'harvest'])->group(function () {
         Route::get('/', [HarvestController::class, 'index'])->name('harvest.index');
         Route::get('/create', [HarvestController::class, 'create'])->name('harvest.create');
         Route::post('/', [HarvestController::class, 'store'])->name('harvest.store');
-        Route::get('/{id}', [HarvestController::class, 'show'])->name('harvest.show');
+        // Route::get('/{id}', [HarvestController::class, 'show'])->name('harvest.show');
         Route::get('/{id}/edit', [HarvestController::class, 'edit'])->name('harvest.edit');
         Route::put('/{id}', [HarvestController::class, 'update'])->name('harvest.update');
         Route::delete('/{id}', [HarvestController::class, 'destroy'])->name('harvest.destroy');
@@ -125,3 +125,4 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+Route::get('/harvests/{id}', [HarvestController::class, 'show'])->name('harvests.show');
