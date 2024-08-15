@@ -25,7 +25,11 @@ class LoginController extends Controller
 
             $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
             $result = DB::select(DB::raw($query));
-            $role = $result[0]->role_id;
+            if (!isset($result[0])) {
+                return redirect()->route('roles.select');
+            }
+            
+            $role = $result[0]->role_id;            
             
             if ($role == 1) {
                 auth()->user()->role = 'Admin';
