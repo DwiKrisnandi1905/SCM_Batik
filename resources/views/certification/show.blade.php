@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harvest Details</title>
+    <title>Factory Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
@@ -69,15 +69,14 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">{{ $harvest->material_type }}</h5>
+                <h5 class="card-title">Certification Detail</h5>
             </div>
             <div class="card-body">
-                <p class="card-text text-start">Quantity: {{ $harvest->quantity }}</p>
-                <p class="card-text text-start">Quality: {{ $harvest->quality }}</p>
-                <p class="card-text text-start">Delivery Info: {{ $harvest->delivery_info }}</p>
-                <p class="card-text text-start">Delivery Date: {{ $harvest->delivery_date }}</p>
-                <p class="card-text text-start">NFT Token ID: {{ $harvest->nft_token_id }}</p>
-                <img src="{{ asset('storage/images/' . $harvest->image) }}" alt="Harvest Image" class="img-fluid">
+                <p class="card-text text-start">Test result: {{ $certification->test_results }}</p>
+                <p class="card-text text-start">Certificate number: {{ $certification->certificate_number }}</p>
+                <p class="card-text text-start">Issue date: {{ $certification->issue_date }}</p>
+                <p class="card-text text-start">NFT Token ID: {{ $certification->nft_token_id }}</p>
+                <img src="{{ asset('storage/images/' . $certification->image) }}" alt="certification Image" class="img-fluid">
             </div>
         </div>
     </div>

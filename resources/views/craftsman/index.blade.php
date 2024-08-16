@@ -175,6 +175,7 @@
                 <th>Completion Date</th>
                 <th>Image</th>
                 <th>Monitor</th>
+                <th>QR Code</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -195,6 +196,13 @@
                     </td>
                     <td>
                         <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-craftsman="{{ json_encode($craftsman) }}">Monitor</span>
+                    </td>
+                    <td>
+                        @if($craftsman->qrcode)
+                            <img src="{{ asset('storage/qrcodes/' . $craftsman->qrcode) }}" alt="QR Code" style="width: 100px;">
+                        @else
+                            No QR Code
+                        @endif
                     </td>
                     <td>
                         @if($craftsman->is_ref != 1)

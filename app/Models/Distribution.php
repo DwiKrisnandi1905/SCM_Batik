@@ -20,6 +20,7 @@ class Distribution extends Model
         'received_date',
         'receiver_name',
         'received_condition',
+        'image',
         'is_ref',
         'nft_token_id'
     ];
