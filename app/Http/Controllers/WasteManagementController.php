@@ -73,16 +73,16 @@ class WasteManagementController extends Controller
             $craftsman->is_ref = 1;
             $craftsman->save();
 
-            $monitoring = Monitoring::where('craftsman_id', $certification->craftsman_id)->first();
+            $monitoring = Monitoring::where('craftsman_id', $wasteManagement->craftsman_id)->first();
             if ($monitoring) {
-                $monitoring->waste_management_id = $wasteManagement->id;
+                $monitoring->waste_id = $wasteManagement->id;
                 $monitoring->status = 'In waste management';
                 $monitoring->last_updated = now();
                 $monitoring->is_ref = 0;
                 $monitoring->save();
             } else {
                 $monitoring = new Monitoring();
-                $monitoring->waste_management_id = $wasteManagement->id;
+                $monitoring->waste_id = $wasteManagement->id;
                 $monitoring->status = 'In waste management';
                 $monitoring->last_updated = now();
                 $monitoring->is_ref = 0;

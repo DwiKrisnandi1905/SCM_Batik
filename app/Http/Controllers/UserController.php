@@ -32,42 +32,37 @@ class UserController extends Controller
     }
 
     public function profileUpdate(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-    
-        $user = auth()->user();
-    
-        // Using the User model's update method
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-    
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $imageName);
-            $validated['image'] = $imageName;
-    
-            // Delete old image if it exists
-            if ($user->image) {
-                $oldImagePath = 'public/images/' . $user->image;
-                if (Storage::exists($oldImagePath)) {
-                    Storage::delete($oldImagePath);
-                }
+    {    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
+
+    $user = $request->user(); // Using dependency injection for the authenticated user
+    $user->name = $validated['name'];
+    $user->email = $validated['email'];
+
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+        $image->storeAs('public/images', $imageName);
+        $validated['image'] = $imageName;
+
+        // Delete old image if it exists
+        if ($user->image) {
+            $oldImagePath = 'public/images/' . $user->image;
+            if (Storage::exists($oldImagePath)) {
+                Storage::delete($oldImagePath);
             }
-    
-            // Update user image path
-            $user->image = $imageName;
         }
-    
-        if ($user->save()) {
-            return redirect()->route('profile.index')->with('success', 'Profile updated successfully.');
-        } else {
-            return redirect()->route('profile.index')->with('error', 'Failed to update profile.');
-        }
+        $user->image = $imageName;
+    }
+
+    if ($user->save()) {
+        return redirect()->route('profile.index')->with('success', 'Profile updated successfully.');
+    } else {
+        return redirect()->route('profile.index')->with('error', 'Failed to update profile.');
+    }
     }
     
     

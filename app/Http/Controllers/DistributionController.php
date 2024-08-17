@@ -94,7 +94,7 @@ class DistributionController extends Controller
                 $craftsman->save();
             }
 
-            $monitoring = Monitoring::where('craftsman_id', $certification->craftsman_id)->first();
+            $monitoring = Monitoring::where('craftsman_id', $distribution->craftsman_id)->first();
             if ($monitoring) {
                 $monitoring->distribution_id = $distribution->id;
                 $monitoring->status = 'In distribution';
