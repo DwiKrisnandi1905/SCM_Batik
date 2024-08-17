@@ -12,6 +12,6 @@ class HomeController extends Controller
 
     public function unauthorized()
     {
-        echo "bukan punyamu";
+        return redirect('/');
     }
 }

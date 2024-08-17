@@ -9,8 +9,7 @@ use App\Models\Harvest;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
-
-
+use App\Models\Monitoring;
 
 class FactoryController extends Controller
 {
@@ -65,6 +64,23 @@ class FactoryController extends Controller
             $harvest = Harvest::find($validated['harvest_id']);
             $harvest->is_ref = 1;
             $harvest->save();
+            
+            $monitoring = Monitoring::where('harvest_id', $factory->harvest_id)->first();
+            if ($monitoring) {
+                $monitoring->factory_id = $factory->id;
+                $monitoring->status = 'In factory';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->save();
+            } else {
+                $monitoring = new Monitoring();
+                $monitoring->factory_id = $factory->id;
+                $monitoring->status = 'In factory';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->harvest_id = $factory->harvest_id;
+                $monitoring->save();
+            }
     
             return redirect()->route('factory.index')->with('success', 'Factory created successfully');
         } else {

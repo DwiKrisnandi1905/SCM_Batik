@@ -9,6 +9,7 @@ use App\Models\Factory;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use App\Models\Monitoring;
 
 class CraftsmanController extends Controller
 {
@@ -83,6 +84,22 @@ class CraftsmanController extends Controller
             $factory = Factory::find($validated['factory_id']);
             $factory->is_ref = 1;
             $factory->save();
+
+            $monitoring = Monitoring::where('factory_id', $craftsman->factory_id)->first();
+            if ($monitoring) {
+                $monitoring->craftsman_id = $craftsman->id;
+                $monitoring->status = 'In craftsman';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->save();
+            } else {
+                $monitoring = new Monitoring();
+                $monitoring->craftsman_id = $craftsman->id;
+                $monitoring->status = 'In craftsman';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->save();
+            }
             return redirect()->route('craftsman.index')->with('success', 'Craftsman created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create craftsman.');
