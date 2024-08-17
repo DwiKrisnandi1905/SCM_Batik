@@ -1,13 +1,23 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Services\NFTService;
 use App\Models\Certification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Craftsman;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 class CertificationController extends Controller
 {
+
+    protected $nftService;
+
+    public function __construct(NFTService $nftService)
+    {
+        $this->nftService = $nftService;
+    }
     public function index()
     {
         $certifications = Certification::where('user_id', auth()->id())->get();
@@ -45,6 +55,21 @@ class CertificationController extends Controller
             $image->storeAs('public/images', $imageName);
             $certification->image = $imageName;
         }
+
+        //  $tokenURI = url('public/images/' . $imageName); 
+        //  $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
+        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+ 
+        //  $certification->nft_token_id = $transactionHash;
+
+        $certification->save();
+
+        $url = route('certification.show', $certification->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeCertification.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $certification->qrcode = $qrCodeName;
     
         if ($certification->save()) {
             $Craftsman = Craftsman::find($validated['craftsman_id']);
@@ -84,6 +109,13 @@ class CertificationController extends Controller
             $image->storeAs('public/images', $imageName);
             $certification->image = $imageName;
         }
+
+        $url = route('certification.show', $certification->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeCertification.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $certification->qrcode = $qrCodeName;
     
         if ($certification->save()) {
             return redirect()->route('certification.index')->with('success', 'Certification updated successfully.');
@@ -91,8 +123,13 @@ class CertificationController extends Controller
             return redirect()->back()->with('error', 'Failed to update certification.');
         }
     }
-    
 
+    public function show($id)
+    {
+        $certification = Certification::findOrFail($id);
+        return view('certification.show', compact('certification'));
+    }
+    
     public function destroy($id)
     {
         $certification = Certification::findOrFail($id);
@@ -108,5 +145,28 @@ class CertificationController extends Controller
         }
     }
     
+    public function verifyNFT($transactionHash)
+    {
+        try {
+            $transactionReceipt = $this->nftService->verifyNFT($transactionHash);
 
+            if ($transactionReceipt) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'NFT verification successful',
+                    'data' => $transactionReceipt,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found',
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
 }

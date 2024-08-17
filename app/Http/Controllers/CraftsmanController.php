@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\NFTService;
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
 use App\Models\Factory;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 class CraftsmanController extends Controller
 {
+
+    protected $nftService;
+
+    public function __construct(NFTService $nftService)
+    {
+        $this->nftService = $nftService;
+    }
     public function index()
     {
         $craftsmen = Craftsman::where('user_id', auth()->user()->id)->get();
@@ -21,10 +31,10 @@ class CraftsmanController extends Controller
         return view('craftsman.create', compact('factories'));
     }
 
-    public function show(Craftsman $craftsman)
-    {
-        return view('craftsman.show', compact('craftsman'));
-    }
+    // public function show(Craftsman $craftsman)
+    // {
+    //     return view('craftsman.show', compact('craftsman'));
+    // }
 
     public function edit($id)
     {
@@ -51,8 +61,24 @@ class CraftsmanController extends Controller
         } else {
             return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
+
+        //  $tokenURI = url('public/images/' . $imageName); 
+        //  $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
+        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+ 
+        //  $craftsman->nft_token_id = $transactionHash;
+
         $validated['is_ref'] = 0;
         $craftsman = new Craftsman($validated);
+        $craftsman->save();
+
+        $url = route('craftsman.show', $craftsman->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeCraftsman.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $craftsman->qrcode = $qrCodeName;
+
         if ($craftsman->save()) {
             $factory = Factory::find($validated['factory_id']);
             $factory->is_ref = 1;
@@ -88,6 +114,13 @@ class CraftsmanController extends Controller
     
         $validated['is_ref'] = $craftsman->is_ref ?? 0;
 
+        $url = route('craftsman.show', $craftsman->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeCraftsman.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $craftsman->qrcode = $qrCodeName;
+
         if ($craftsman->update($validated)) {
             $factory = Factory::find($validated['factory_id']);
             $factory->is_ref = 1;
@@ -96,6 +129,12 @@ class CraftsmanController extends Controller
         } else {
             return redirect()->back()->with('error', 'Failed to update craftsman.');
         }
+    }
+
+    public function show($id)
+    {
+        $craftsman = Craftsman::findOrFail($id);
+        return view('craftsman.show', compact('craftsman'));
     }
     
     public function destroy($id)
@@ -111,6 +150,31 @@ class CraftsmanController extends Controller
             return redirect()->route('craftsman.index')->with('success', 'Craftsman deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to delete craftsman.');
+        }
+    }
+
+    public function verifyNFT($transactionHash)
+    {
+        try {
+            $transactionReceipt = $this->nftService->verifyNFT($transactionHash);
+
+            if ($transactionReceipt) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'NFT verification successful',
+                    'data' => $transactionReceipt,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found',
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 }

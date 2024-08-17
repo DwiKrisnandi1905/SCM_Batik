@@ -174,6 +174,7 @@
                 <th>Test Results</th>
                 <th>Image</th>
                 <th>Monitor</th>
+                <th>QR Code</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -193,6 +194,13 @@
                     </td>
                     <td>
                         <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-certification="{{ json_encode($certification) }}">Monitor</span>
+                    </td>
+                    <td>
+                        @if($certification->qrcode)
+                            <img src="{{ asset('storage/qrcodes/' . $certification->qrcode) }}" alt="QR Code" style="width: 100px;">
+                        @else
+                            No QR Code
+                        @endif
                     </td>
                     <td>
                         @if($certification->is_ref != 1)

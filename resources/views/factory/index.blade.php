@@ -175,6 +175,7 @@
                 <th>Factory Address</th>
                 <th>Image</th>
                 <th>Monitor</th>
+                <th>QR Code</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -197,6 +198,13 @@
                     </td>
                     <td>
                         <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-factory="{{ json_encode($factory) }}">Monitor</span>
+                    </td>
+                    <td>
+                        @if($factory->qrcode)
+                            <img src="{{ asset('storage/qrcodes/' . $factory->qrcode) }}" alt="QR Code" style="width: 100px;">
+                        @else
+                            No QR Code
+                        @endif
                     </td>
                     <td class="actions">
                         @if($factory->is_ref != 1)

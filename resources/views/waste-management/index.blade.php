@@ -194,6 +194,7 @@
                 <th>Management Results</th>
                 <th>Image</th>
                 <th>Monitor</th>
+                <th>QR Code</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -213,6 +214,13 @@
                 </td>
                 <td>
                     <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-wastemanagement="{{ json_encode($wasteManagement) }}">Monitor</span>
+                </td>
+                <td>
+                    @if($wasteManagement->qrcode)
+                        <img src="{{ asset('storage/qrcodes/' . $wasteManagement->qrcode) }}" alt="QR Code" style="width: 100px;">
+                    @else
+                        No QR Code
+                    @endif
                 </td>
                 <td>
                     @if($wasteManagement->is_ref != 1)

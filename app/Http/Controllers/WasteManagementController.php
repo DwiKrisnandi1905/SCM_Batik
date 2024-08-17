@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\NFTService;
 use App\Models\WasteManagement;
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 class WasteManagementController extends Controller
 {
+
+    protected $nftService;
+
+    public function __construct(NFTService $nftService)
+    {
+        $this->nftService = $nftService;
+    }
     public function index()
     {
         $wasteManagements = WasteManagement::all();
@@ -40,9 +50,24 @@ class WasteManagementController extends Controller
             $validated['image'] = $imageName;
         }
 
+        //  $tokenURI = url('public/images/' . $imageName); 
+        //  $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
+        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+ 
+        //  $wasteManagement->nft_token_id = $transactionHash;
+
         $wasteManagement = WasteManagement::create($validated);
 
-        if ($wasteManagement) {
+        // $wasteManagement->save();
+
+        $url = route('waste-management.show', $wasteManagement->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeWasteManagement.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $wasteManagement->qrcode = $qrCodeName;
+
+        if ($wasteManagement->save()) {
             $craftsman = Craftsman::find($validated['craftsman_id']);
             $craftsman->is_ref = 1;
             $craftsman->save();
@@ -83,6 +108,13 @@ class WasteManagementController extends Controller
             return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
+        $url = route('waste-management.show', $wasteManagement->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeWasteManagement.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $wasteManagement->qrcode = $qrCodeName;
+
         if ($wasteManagement->update($validatedData)) {
             return redirect()->route('waste.index')->with('success', 'Waste Management record updated successfully.');
         } else {
@@ -90,6 +122,11 @@ class WasteManagementController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $wasteManagement = WasteManagement::findOrFail($id);
+        return view('waste-management.show', compact('wasteManagement'));
+    }
 
     public function destroy($id)
     {
@@ -103,6 +140,31 @@ class WasteManagementController extends Controller
             return redirect()->route('waste.index')->with('success', 'Waste Management record deleted successfully.');
         } else {
             return redirect()->route('waste.index')->with('error', 'Failed to delete Waste Management record.');
+        }
+    }
+
+    public function verifyNFT($transactionHash)
+    {
+        try {
+            $transactionReceipt = $this->nftService->verifyNFT($transactionHash);
+
+            if ($transactionReceipt) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'NFT verification successful',
+                    'data' => $transactionReceipt,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found',
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 }

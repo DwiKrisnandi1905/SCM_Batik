@@ -204,6 +204,7 @@
                 <th>Received Condition</th>
                 <th>Image</th>
                 <th>Monitor</th>
+                <th>QR Code</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -227,6 +228,13 @@
                 </td>
                 <td>
                     <span class="btn-link monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-distribution="{{ json_encode($dist) }}">Monitor</span>
+                </td>
+                <td>
+                    @if($dist->qrcode)
+                        <img src="{{ asset('storage/qrcodes/' . $dist->qrcode) }}" alt="QR Code" style="width: 100px;">
+                    @else
+                        No QR Code
+                    @endif
                 </td>
                 <td>
                     @if($dist->is_ref != 1)

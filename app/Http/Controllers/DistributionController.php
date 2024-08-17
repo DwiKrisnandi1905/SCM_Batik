@@ -1,13 +1,23 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Services\NFTService;
 use App\Models\Distribution;
 use Illuminate\Http\Request;
 use App\Models\Craftsman;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 class DistributionController extends Controller
 {
+
+    protected $nftService;
+
+    public function __construct(NFTService $nftService)
+    {
+        $this->nftService = $nftService;
+    }
     public function index()
     {
         $distribution = Distribution::all();
@@ -45,6 +55,12 @@ class DistributionController extends Controller
         } else {
             return redirect()->back()->with('error', 'Image upload failed.');
         }
+
+        //  $tokenURI = url('public/images/' . $imageName); 
+        //  $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
+        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+ 
+        //  $craftsman->nft_token_id = $transactionHash;
     
         // Create new distribution record
         $distribution = new Distribution();
@@ -59,6 +75,15 @@ class DistributionController extends Controller
         $distribution->received_condition = $request->input('received_condition');
         $distribution->image = $imageName;
         $distribution->is_ref = 0;
+
+        $distribution->save();
+
+        $url = route('distribution.show', $distribution->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeDistribution.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $distribution->qrcode = $qrCodeName;
     
         if ($distribution->save()) {
             // Update Craftsman record
@@ -109,11 +134,24 @@ class DistributionController extends Controller
             $distribution->image = $imageName;
         }
 
+        $url = route('distribution.show', $distribution->id);
+        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+
+        $qrCodeName = time() . '_qrcodeDistribution.svg';
+        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $distribution->qrcode = $qrCodeName;
+
         if ($distribution->save()) {
             return redirect()->route('distribution.index')->with('success', 'Distribution record updated successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to update distribution record.');
         }
+    }
+
+    public function show($id)
+    {
+        $distribution = Distribution::findOrFail($id);
+        return view('distribution.show', compact('distribution'));
     }
 
     public function destroy($id)
@@ -128,6 +166,31 @@ class DistributionController extends Controller
             return redirect()->route('distribution.index')->with('success', 'Distribution record deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to delete distribution record.');
+        }
+    }
+    
+    public function verifyNFT($transactionHash)
+    {
+        try {
+            $transactionReceipt = $this->nftService->verifyNFT($transactionHash);
+
+            if ($transactionReceipt) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'NFT verification successful',
+                    'data' => $transactionReceipt,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found',
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 }
