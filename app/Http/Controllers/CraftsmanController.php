@@ -32,11 +32,6 @@ class CraftsmanController extends Controller
         return view('craftsman.create', compact('factories'));
     }
 
-    // public function show(Craftsman $craftsman)
-    // {
-    //     return view('craftsman.show', compact('craftsman'));
-    // }
-
     public function edit($id)
     {
         $factories = Factory::all();
@@ -91,6 +86,8 @@ class CraftsmanController extends Controller
                 $monitoring->last_updated = now();
                 $monitoring->is_ref = 0;
                 $monitoring->save();
+                $craftsman->monitoring_id = $monitoring->id; // Add monitoring_id to craftsman data
+                $craftsman->save();
             } else {
                 $monitoring = new Monitoring();
                 $monitoring->craftsman_id = $craftsman->id;
@@ -98,6 +95,8 @@ class CraftsmanController extends Controller
                 $monitoring->last_updated = now();
                 $monitoring->is_ref = 0;
                 $monitoring->save();
+                $craftsman->monitoring_id = $monitoring->id; // Add monitoring_id to craftsman data
+                $craftsman->save();
             }
             return redirect()->route('craftsman.index')->with('success', 'Craftsman created successfully.');
         } else {

@@ -40,60 +40,65 @@ class WasteManagementController extends Controller
             'management_results' => 'required|string',
             'craftsman_id' => 'required|integer|exists:craftsmen,id',
         ]);
-
+    
         $validated['user_id'] = auth()->id(); // or auth()->user()->id
         $validated['is_ref'] = 0;
-
+    
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
             $validated['image'] = $imageName;
         }
-
+    
         $wasteManagement = WasteManagement::create($validated);
-
+    
         // $tokenURI = url('public/images/' . $imageName); 
         // $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
         // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
-
+    
         // $wasteManagement->nft_token_id = $transactionHash;
-
+    
         // $wasteManagement->save();
-
+    
         $url = route('waste-management.show', $wasteManagement->id);
         $qrCode = QrCode::format('svg')->size(300)->generate($url);
-
+    
         $qrCodeName = time() . '_qrcodeWasteManagement.svg';
         Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
         $wasteManagement->qrcode = $qrCodeName;
-
-        if ($wasteManagement->save()) {
-            $craftsman = Craftsman::find($validated['craftsman_id']);
-            $craftsman->is_ref = 1;
-            $craftsman->save();
-
-            $monitoring = Monitoring::where('craftsman_id', $wasteManagement->craftsman_id)->first();
-            if ($monitoring) {
-                $monitoring->waste_id = $wasteManagement->id;
-                $monitoring->status = 'In waste management';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->save();
-            } else {
-                $monitoring = new Monitoring();
-                $monitoring->waste_id = $wasteManagement->id;
-                $monitoring->status = 'In waste management';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->save();
-            }
-
-            return redirect()->route('waste.index')->with('success', 'Waste Management record created successfully.');
+    
+        // Save the record before updating the monitoring data
+        $wasteManagement->save();
+    
+        // Update or create monitoring record
+        $craftsman = Craftsman::find($validated['craftsman_id']);
+        $craftsman->is_ref = 1;
+        $craftsman->save();
+    
+        $monitoring = Monitoring::where('craftsman_id', $wasteManagement->craftsman_id)->first();
+        if ($monitoring) {
+            $monitoring->waste_id = $wasteManagement->id;
+            $monitoring->status = 'In waste management';
+            $monitoring->last_updated = now();
+            $monitoring->is_ref = 0;
+            $monitoring->save();
+            $wasteManagement->monitoring_id = $monitoring->id;
         } else {
-            return redirect()->route('waste.index')->with('error', 'Failed to create Waste Management record.');
+            $monitoring = new Monitoring();
+            $monitoring->waste_id = $wasteManagement->id;
+            $monitoring->status = 'In waste management';
+            $monitoring->last_updated = now();
+            $monitoring->is_ref = 0;
+            $monitoring->save();
+            $wasteManagement->monitoring_id = $monitoring->id;
         }
+    
+        $wasteManagement->save(); // Save the monitoring_id
+    
+        return redirect()->route('waste.index')->with('success', 'Waste Management record created successfully.');
     }
+    
 
 
     public function edit($id)

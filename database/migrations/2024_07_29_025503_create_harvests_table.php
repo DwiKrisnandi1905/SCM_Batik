@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('harvests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('monitoring_id')->nullable();
             $table->string('material_type');
             $table->float('quantity');
             $table->string('quality');

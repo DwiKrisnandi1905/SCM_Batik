@@ -1,150 +1,6 @@
 @extends('layout.app')
-
 @section('content')
-
-<style>
-    .table-wrapper {
-        overflow-x: auto;
-    }
-
-    table {
-        min-width: 800px;
-        width: 100%;
-        table-layout: auto;
-    }
-    th, td {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .img-link, .monitor-link {
-        position: relative;
-        display: inline-block;
-        font-size: 16px;
-        font-weight: bold;
-        color: #007bff;
-        text-decoration: none;
-        transition: color 0.3s, transform 0.3s;
-        cursor: pointer;
-    }
-    .img-link::after, .monitor-link::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        transform: scaleX(0);
-        height: 2px;
-        bottom: 0;
-        left: 0;
-        background-color: #007bff;
-        transform-origin: bottom right;
-        transition: transform 0.25s ease-out;
-    }
-    .img-link:hover::after, .monitor-link:hover::after {
-        transform: scaleX(1);
-        transform-origin: bottom left;
-    }
-    .img-link:hover, .monitor-link:hover {
-        color: #0056b3;
-        transform: scale(1.1);
-    }
-
-    .progress-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-    .progress-container div {
-        width: 100%;
-        margin: 0 -1px; /* Adjust margin to remove gaps between progress bars */
-        position: relative;
-    }
-    .progress-container .progress {
-        margin: 0; /* Remove margin from progress */
-        border-radius: 0; /* Ensure no border radius on progress */
-    }
-    .progress-container .progress-bar {
-        border-radius: 0; /* Ensure no border radius on progress-bar */
-    }
-    .tooltip-text {
-        visibility: hidden;
-        opacity: 0;
-        width: 100px;
-        background-color: black;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px 0;
-        position: absolute;
-        z-index: 1;
-        bottom: 150%;
-        left: 50%;
-        margin-left: -50px;
-        transition: opacity 0.3s;
-    }
-    .tooltip-text::after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: black transparent transparent transparent;
-    }
-    .progress-container div:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .alert {
-        padding: 20px;
-        background-color: #f44336; 
-        color: white;
-        margin-bottom: 15px;
-    }
-
-    .alert.success {
-        background-color: #4CAF50;
-    }
-
-    .alert.info {
-        background-color: #2196F3;
-    }
-
-    .alert.warning {
-        background-color: #ff9800;
-    }
-
-    .closebtn {
-        margin-left: 15px;
-        color: white;
-        font-weight: bold;
-        float: right;
-        font-size: 22px;
-        line-height: 20px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .closebtn:hover {
-        color: black;
-    }
-
-    .btn-warning {
-        color: #fff;
-        background-color: #ff8c00;
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-        border: 2px solid #fff;
-    }
-
-    .btn-warning:hover {
-        color: #ff8c00;
-        background-color: #fff;
-        border: 2px solid #ff8c00;
-    }
-</style>
-
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Harvests</h1>
     <a href="{{ route('harvest.create') }}" class="btn btn-warning">Create New Harvest</a>
@@ -197,7 +53,7 @@
                         @endif
                     </td>
                     <td>
-                        <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-harvest="{{ json_encode($harvest) }}">Monitor</span>
+                        <a href="{{ route('monitoring.show', $harvest->monitoring_id) }}" class="monitor-link">Monitor</a>
                     </td>
                     <td>
                         @if($harvest->qrcode)
@@ -246,62 +102,8 @@
     </div>
 </div>
 
-<!-- Monitor Modal -->
-<div class="modal fade" id="monitorModal" tabindex="-1" aria-labelledby="monitorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="monitorModalLabel">Monitor Harvest</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="progress-container">
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Harvest</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Factory</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Craftsman</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Certificator</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Waste Management</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Distributor</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
+    // Handle image modal display
     var imageModal = document.getElementById('imageModal');
     imageModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
@@ -310,69 +112,7 @@
         modalImage.src = imageUrl;
     });
 
-    var monitorModal = document.getElementById('monitorModal');
-    monitorModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var harvest = JSON.parse(button.getAttribute('data-harvest'));
-        
-        var statuses = [
-            { label: 'Harvest', status: harvest.harvest },
-            { label: 'Factory', status: harvest.factory },
-            { label: 'Craftsman', status: harvest.craftsman },
-            { label: 'Certificator', status: harvest.certificator },
-            { label: 'Waste Management', status: harvest.waste_management },
-            { label: 'Distributor', status: harvest.distributor }
-        ];
-
-        var progressContainer = monitorModal.querySelector('.progress-container');
-        progressContainer.innerHTML = '';
-
-        statuses.forEach(function(item) {
-            var progressDiv = document.createElement('div');
-            var progressBarDiv = document.createElement('div');
-            progressBarDiv.className = 'progress';
-
-            var progressBar = document.createElement('div');
-            progressBar.className = 'progress-bar';
-
-            if (item.status === 'completed') {
-                progressBar.className += ' bg-success';
-                progressBar.style.width = '100%';
-            } else {
-                progressBar.className += ' bg-danger';
-                progressBar.style.width = '100%';
-            }
-
-            var tooltipText = document.createElement('span');
-            tooltipText.className = 'tooltip-text';
-            tooltipText.innerText = item.label;
-
-            progressDiv.appendChild(progressBarDiv);
-            progressBarDiv.appendChild(progressBar);
-            progressDiv.appendChild(tooltipText);
-            progressContainer.appendChild(progressDiv);
-        });
-        // statuses.forEach(function(item) {
-        //     var progressDiv = document.createElement('div');
-        //     var progressBarDiv = document.createElement('div');
-        //     var progressBar = document.createElement('div');
-        //     var tooltipText = document.createElement('span');
-
-        //     progressBarDiv.className = 'progress';
-        //     progressBar.className = 'progress-bar bg-' + (item.status ? 'success' : 'danger');
-        //     progressBar.style.width = '100%';
-        //     progressBar.role = 'progressbar';
-
-        //     tooltipText.className = 'tooltip-text';
-        //     tooltipText.innerText = item.label;
-
-        //     progressDiv.appendChild(progressBarDiv);
-        //     progressBarDiv.appendChild(progressBar);
-        //     progressDiv.appendChild(tooltipText);
-        //     progressContainer.appendChild(progressDiv);
-        // });
-    });
-
+    // Handle delete button with confirmation modal using SweetAlert2
     document.querySelectorAll('.delete-button').forEach(function(button) {
         button.addEventListener('click', function() {
             Swal.fire({
@@ -400,6 +140,7 @@
         });
     });
 
+    // Automatically fade out and remove alerts after 3 seconds
     setTimeout(function() {
         let alerts = document.querySelectorAll('.alert');
         alerts.forEach(function(alert) {
@@ -411,5 +152,6 @@
         });
     }, 3000);
 </script>
+
 
 @endsection

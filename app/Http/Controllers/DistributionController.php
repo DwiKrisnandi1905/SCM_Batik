@@ -34,7 +34,7 @@ class DistributionController extends Controller
     public function store(Request $request)
     {
         $userId = auth()->user()->id;
-    
+     
         // Validate request
         $request->validate([
             'craftsman_id' => 'required|exists:craftsmen,id',
@@ -47,7 +47,7 @@ class DistributionController extends Controller
             'received_condition' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    
+     
         // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -56,7 +56,7 @@ class DistributionController extends Controller
         } else {
             return redirect()->back()->with('error', 'Image upload failed.');
         }
-    
+     
         // Create new distribution record
         $distribution = new Distribution();
         $distribution->user_id = $userId;
@@ -70,51 +70,50 @@ class DistributionController extends Controller
         $distribution->received_condition = $request->input('received_condition');
         $distribution->image = $imageName;
         $distribution->is_ref = 0;
-
-        // $tokenURI = url('public/images/' . $imageName); 
-        // $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
-        // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
-
-        // $distribution->nft_token_id = $transactionHash;
-
-        $distribution->save();
-
+    
+        $distribution->save(); // Save to get the ID
+    
+        // Generate and save QR code
         $url = route('distribution.show', $distribution->id);
         $qrCode = QrCode::format('svg')->size(300)->generate($url);
-
         $qrCodeName = time() . '_qrcodeDistribution.svg';
         Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
         $distribution->qrcode = $qrCodeName;
     
-        if ($distribution->save()) {
-            // Update Craftsman record
-            $craftsman = Craftsman::find($request->input('craftsman_id'));
-            if ($craftsman) {
-                $craftsman->is_ref = 1;
-                $craftsman->save();
-            }
-
-            $monitoring = Monitoring::where('craftsman_id', $distribution->craftsman_id)->first();
-            if ($monitoring) {
-                $monitoring->distribution_id = $distribution->id;
-                $monitoring->status = 'In distribution';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->save();
-            } else {
-                $monitoring = new Monitoring();
-                $monitoring->distribution_id = $distribution->id;
-                $monitoring->status = 'In distribution';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->save();
-            }
+        // Save QR code
+        $distribution->save();
     
-            return redirect()->route('distribution.index')->with('success', 'Distribution record created successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Failed to create distribution record.');
+        // Update or create monitoring record
+        $craftsman = Craftsman::find($request->input('craftsman_id'));
+        if ($craftsman) {
+            $craftsman->is_ref = 1;
+            $craftsman->save();
         }
+    
+        $monitoring = Monitoring::where('craftsman_id', $distribution->craftsman_id)->first();
+        if ($monitoring) {
+            $monitoring->distribution_id = $distribution->id;
+            $monitoring->status = 'In distribution';
+            $monitoring->last_updated = now();
+            $monitoring->is_ref = 0;
+            $monitoring->save();
+            $distribution->monitoring_id = $monitoring->id;
+        } else {
+            $monitoring = new Monitoring();
+            $monitoring->distribution_id = $distribution->id;
+            $monitoring->status = 'In distribution';
+            $monitoring->last_updated = now();
+            $monitoring->is_ref = 0;
+            $monitoring->save();
+            $distribution->monitoring_id = $monitoring->id;
+        }
+    
+        // Save the monitoring_id
+        $distribution->save();
+    
+        return redirect()->route('distribution.index')->with('success', 'Distribution record created successfully.');
     }
+    
     
     public function edit($id)
     {

@@ -22,7 +22,8 @@ class Distribution extends Model
         'received_condition',
         'image',
         'is_ref',
-        'nft_token_id'
+        'nft_token_id',
+        'monitoring_id'
     ];
 
     public function user()

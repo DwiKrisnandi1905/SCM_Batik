@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('factory_id');
             $table->string('production_details');
             $table->float('finished_quantity');
+            $table->unsignedBigInteger('monitoring_id')->nullable();
             $table->dateTime('completion_date');
             $table->string('image');
             $table->boolean('is_ref');

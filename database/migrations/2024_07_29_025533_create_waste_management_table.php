@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('craftsman_id'); 
+            $table->unsignedBigInteger('monitoring_id')->nullable();
             $table->string('waste_type');
             $table->string('management_method');
             $table->string('management_results');

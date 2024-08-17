@@ -18,7 +18,8 @@ class Certification extends Model
         'issue_date',
         'image',
         'is_ref',
-        'nft_token_id'
+        'nft_token_id',
+        'monitoring_id'
     ];
 
     public function user()

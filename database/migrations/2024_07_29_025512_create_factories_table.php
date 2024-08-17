@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('harvest_id');
+            $table->unsignedBigInteger('monitoring_id')->nullable();
             $table->dateTime('received_date');
             $table->string('initial_process');
             $table->float('semi_finished_quantity');

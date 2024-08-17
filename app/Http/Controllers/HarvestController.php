@@ -62,6 +62,8 @@ class HarvestController extends Controller
             $monitoring->last_updated = now();
             $monitoring->is_ref = 0;
             $monitoring->save();
+            $harvest->monitoring_id = $monitoring->id; // Add monitoring_id to harvest data
+            $harvest->save();
             return redirect('/harvest')->with('success', 'Harvest created successfully.');
         } else {
             return redirect('/harvest')->with('error', 'Failed to create harvest.');

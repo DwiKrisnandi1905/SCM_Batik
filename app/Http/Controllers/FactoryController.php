@@ -31,10 +31,10 @@ class FactoryController extends Controller
             'factory_name' => 'required|string|max:255',
             'factory_address' => 'required|string|max:255',
         ]);
-    
+
         $factory = new Factory($validated);
         $factory->user_id = auth()->id();
-    
+
         $image = $request->file('image');
         if ($image) {
             $imageName = time() . '.' . $image->getClientOriginalExtension();
@@ -72,6 +72,8 @@ class FactoryController extends Controller
                 $monitoring->last_updated = now();
                 $monitoring->is_ref = 0;
                 $monitoring->save();
+                $factory->monitoring_id = $monitoring->id; // Add monitoring_id to factory data
+                $factory->save();
             } else {
                 $monitoring = new Monitoring();
                 $monitoring->factory_id = $factory->id;
@@ -80,6 +82,8 @@ class FactoryController extends Controller
                 $monitoring->is_ref = 0;
                 $monitoring->harvest_id = $factory->harvest_id;
                 $monitoring->save();
+                $factory->monitoring_id = $monitoring->id; // Add monitoring_id to factory data
+                $factory->save();
             }
     
             return redirect()->route('factory.index')->with('success', 'Factory created successfully');

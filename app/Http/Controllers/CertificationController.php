@@ -40,7 +40,7 @@ class CertificationController extends Controller
             'test_results' => 'required|string|max:255',
             'certificate_number' => 'required|string|max:255',
             'issue_date' => 'required|date',
-            // 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ensure image is validated
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ensure image is validated
         ]);
     
         $certification = new Certification();
@@ -50,56 +50,51 @@ class CertificationController extends Controller
         $certification->certificate_number = $validated['certificate_number'];
         $certification->issue_date = $validated['issue_date'];
         $certification->is_ref = 0;
-
+    
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
             $certification->image = $imageName;
         }
-
-        //  $tokenURI = url('public/images/' . $imageName); 
-        //  $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
-        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
- 
-        //  $certification->nft_token_id = $transactionHash;
-
+    
         $certification->save();
-
+    
         $url = route('certification.show', $certification->id);
         $qrCode = QrCode::format('svg')->size(300)->generate($url);
-
+    
         $qrCodeName = time() . '_qrcodeCertification.svg';
         Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
         $certification->qrcode = $qrCodeName;
     
-        if ($certification->save()) {
-            $Craftsman = Craftsman::find($validated['craftsman_id']);
-            $Craftsman->is_ref = 1;
-            $Craftsman->save();
-
-            $monitoring = Monitoring::where('craftsman_id', $certification->craftsman_id)->first();
-            if ($monitoring) {
-                $monitoring->certification_id = $certification->id;
-                $monitoring->status = 'Certified';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->save();
-            } else {
-                $monitoring = new Monitoring();
-                $monitoring->certification_id = $certification->id;
-                $monitoring->status = 'Certified';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->save();
-            }
-            return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
+        $Craftsman = Craftsman::find($validated['craftsman_id']);
+        $Craftsman->is_ref = 1;
+        $Craftsman->save();
+    
+        $monitoring = Monitoring::where('craftsman_id', $certification->craftsman_id)->first();
+        if ($monitoring) {
+            $monitoring->certification_id = $certification->id;
+            $monitoring->status = 'Certified';
+            $monitoring->last_updated = now();
+            $monitoring->is_ref = 0;
+            $monitoring->save();
+            $certification->monitoring_id = $monitoring->id;
         } else {
-            return redirect()->back()->with('error', 'Failed to create certification.');
+            $monitoring = new Monitoring();
+            $monitoring->certification_id = $certification->id;
+            $monitoring->status = 'Certified';
+            $monitoring->last_updated = now();
+            $monitoring->is_ref = 0;
+            $monitoring->save();
+            $certification->monitoring_id = $monitoring->id;
         }
+    
+        $certification->save();
+    
+        return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
     }
     
-
+    
     public function edit($id)
     {
         $craftsmen = Craftsman::all();
