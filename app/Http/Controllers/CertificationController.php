@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Craftsman;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CertificationController extends Controller
 {
@@ -168,5 +169,21 @@ class CertificationController extends Controller
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function generateCertificate($name, $course, $date)
+    {
+        // Prepare data to be passed to the view
+        $data = [
+            'name' => $name,
+            'course' => $course,
+            'date' => $date,
+        ];
+
+        // Load the view and pass the data
+        $pdf = Pdf::loadView('certification/certificate', $data);
+
+        // Stream the PDF to the browser
+        return $pdf->stream('certificate.pdf');
     }
 }
