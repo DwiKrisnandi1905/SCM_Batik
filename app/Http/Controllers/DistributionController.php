@@ -8,6 +8,7 @@ use App\Models\Craftsman;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use App\Models\Monitoring;
 
 class DistributionController extends Controller
 {
@@ -91,6 +92,22 @@ class DistributionController extends Controller
             if ($craftsman) {
                 $craftsman->is_ref = 1;
                 $craftsman->save();
+            }
+
+            $monitoring = Monitoring::where('craftsman_id', $certification->craftsman_id)->first();
+            if ($monitoring) {
+                $monitoring->distribution_id = $distribution->id;
+                $monitoring->status = 'In distribution';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->save();
+            } else {
+                $monitoring = new Monitoring();
+                $monitoring->distribution_id = $distribution->id;
+                $monitoring->status = 'In distribution';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->save();
             }
     
             return redirect()->route('distribution.index')->with('success', 'Distribution record created successfully.');

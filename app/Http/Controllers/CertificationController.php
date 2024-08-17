@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Craftsman;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Monitoring;
 
 class CertificationController extends Controller
 {
@@ -75,6 +77,22 @@ class CertificationController extends Controller
             $Craftsman = Craftsman::find($validated['craftsman_id']);
             $Craftsman->is_ref = 1;
             $Craftsman->save();
+
+            $monitoring = Monitoring::where('craftsman_id', $certification->craftsman_id)->first();
+            if ($monitoring) {
+                $monitoring->certification_id = $certification->id;
+                $monitoring->status = 'Certified';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->save();
+            } else {
+                $monitoring = new Monitoring();
+                $monitoring->certification_id = $certification->id;
+                $monitoring->status = 'Certified';
+                $monitoring->last_updated = now();
+                $monitoring->is_ref = 0;
+                $monitoring->save();
+            }
             return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to create certification.');
@@ -168,5 +186,21 @@ class CertificationController extends Controller
                 'message' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function generateCertificate($name, $course, $date)
+    {
+        // Prepare data to be passed to the view
+        $data = [
+            'name' => $name,
+            'course' => $course,
+            'date' => $date,
+        ];
+
+        // Load the view and pass the data
+        $pdf = Pdf::loadView('certification/certificate', $data);
+
+        // Stream the PDF to the browser
+        return $pdf->stream('certificate.pdf');
     }
 }

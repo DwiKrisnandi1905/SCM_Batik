@@ -31,8 +31,13 @@ class MonitoringController extends Controller
     public function show($id)
     {
         $monitoring = Monitoring::find($id);
-        $monitoring->load('harvest', 'factory', 'craftsman', 'certification', 'WasteManagement', 'distribution');
-        return response()->json(compact('monitoring'));
+
+        if ($monitoring) {
+            $monitoring->load('harvest', 'factory', 'craftsman', 'certification', 'WasteManagement', 'distribution');
+            return response()->json(compact('monitoring'));
+        } else {
+            return response()->json(['fail' => 'Monitoring record not found.']);
+        }
     }
 
     public function update(Request $request, $id)

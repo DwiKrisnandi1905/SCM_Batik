@@ -8,6 +8,7 @@ use App\Models\Harvest;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use App\Models\Monitoring;
 
 class HarvestController extends Controller
 {
@@ -55,6 +56,12 @@ class HarvestController extends Controller
         $harvest->qrcode = $qrCodeName;
 
         if ($harvest->save()) {
+            $monitoring = new Monitoring();
+            $monitoring->harvest_id = $harvest->id;
+            $monitoring->status = 'Harvested';
+            $monitoring->last_updated = now();
+            $monitoring->is_ref = 0;
+            $monitoring->save();
             return redirect('/harvest')->with('success', 'Harvest created successfully.');
         } else {
             return redirect('/harvest')->with('error', 'Failed to create harvest.');
