@@ -74,11 +74,11 @@
             <div class="card-body">
                 <p class="card-text text-start">Test result: {{ $distribution->destination }}</p>
                 <p class="card-text text-start">Certificate number: {{ $distribution->quantity }}</p>
-                <p class="card-text text-start">Issue date: {{ $distribution->shipment_date }}</p>
-                <p class="card-text text-start">Issue date: {{ $distribution->tracking_number }}</p>
-                <p class="card-text text-start">Issue date: {{ $distribution->recieved_date }}</p>
-                <p class="card-text text-start">Issue date: {{ $distribution->recieved_name }}</p>
-                <p class="card-text text-start">Issue date: {{ $distribution->recieved_condition }}</p>
+                <p class="card-text text-start">Shipment date: {{ $distribution->shipment_date }}</p>
+                <p class="card-text text-start">Tracking number: {{ $distribution->tracking_number }}</p>
+                <p class="card-text text-start">Recieve date: {{ $distribution->recieved_date }}</p>
+                <p class="card-text text-start">Recieve name: {{ $distribution->recieved_name }}</p>
+                <p class="card-text text-start">Recieve Condition: {{ $distribution->recieved_condition }}</p>
                 <p class="card-text text-start">NFT Token ID: {{ $distribution->nft_token_id }}</p>
                 <img src="{{ asset('storage/images/' . $distribution->image) }}" alt="distribution Image" class="img-fluid">
             </div>
