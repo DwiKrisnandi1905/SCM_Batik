@@ -82,7 +82,8 @@
         <div class="col-lg-4">
             <div class="card mb-4 shadow-lg border-light rounded-4">
                 <div class="card-body text-center">
-                    <img src="img/bagus.png" alt="avatar" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ffcc00;">
+                @foreach ($users as $user)
+                    <img src="{{ asset('storage/images/' . $user->image) }}" alt="avatar" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ffcc00;">
                     <h5 class="my-3 font-weight-bold text-name">John Doe</h5>
                     <h6 class="font-weight-bold text-name mb-1">Harvest</h6>
                     <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-lg mt-3">Edit Profile</a>
@@ -95,7 +96,6 @@
                     <h5 class="mb-0">Profile Information</h5>
                 </div>
                 <div class="card-body">
-                    @foreach ($users as $user)
                         <div class="info-row blur-background">
                             <div class="row">
                                 <div class="col-sm-4">
