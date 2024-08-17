@@ -56,12 +56,6 @@ class DistributionController extends Controller
         } else {
             return redirect()->back()->with('error', 'Image upload failed.');
         }
-
-        //  $tokenURI = url('public/images/' . $imageName); 
-        //  $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
-        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
- 
-        //  $craftsman->nft_token_id = $transactionHash;
     
         // Create new distribution record
         $distribution = new Distribution();
@@ -76,6 +70,12 @@ class DistributionController extends Controller
         $distribution->received_condition = $request->input('received_condition');
         $distribution->image = $imageName;
         $distribution->is_ref = 0;
+
+        // $tokenURI = url('public/images/' . $imageName); 
+        // $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
+        // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+
+        // $distribution->nft_token_id = $transactionHash;
 
         $distribution->save();
 
