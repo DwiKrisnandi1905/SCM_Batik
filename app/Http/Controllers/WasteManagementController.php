@@ -54,7 +54,7 @@ class WasteManagementController extends Controller
         $wasteManagement = WasteManagement::create($validated);
     
         // $tokenURI = url('public/images/' . $imageName); 
-        // $fromAddress = '0x82494581249EeE88c97C949eEC16226789677f42'; 
+        // $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
         // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
     
         // $wasteManagement->nft_token_id = $transactionHash;

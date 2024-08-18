@@ -70,6 +70,12 @@ class DistributionController extends Controller
         $distribution->received_condition = $request->input('received_condition');
         $distribution->image = $imageName;
         $distribution->is_ref = 0;
+
+        // $tokenURI = url('public/images/' . $imageName); 
+        //  $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
+        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+ 
+        //  $distribution->nft_token_id = $transactionHash;
     
         $distribution->save(); // Save to get the ID
     

@@ -58,6 +58,12 @@ class CertificationController extends Controller
             $image->storeAs('public/images', $imageName);
             $certification->image = $imageName;
         }
+
+        // $tokenURI = url('public/images/' . $imageName); 
+        // $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
+        // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+
+        // $certification->nft_token_id = $transactionHash;
     
         $certification->save();
     
