@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use App\Models\Monitoring;
-
+use Illuminate\Support\Facades\DB;
 class FactoryController extends Controller
 {
 
@@ -95,7 +95,20 @@ class FactoryController extends Controller
     public function index()
     {
         $userId = auth()->id();
-        $factory = Factory::where('user_id', $userId)->get();
+        $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
+        $result = DB::select(DB::raw($query));
+        if (!isset($result[0])) {
+            return redirect()->route('roles.select');
+        }
+        
+        $role = $result[0]->role_id;
+
+        if ($role == 1) {
+            $factory = Factory::all();
+        } else {
+            $factory = Factory::where('user_id', $userId)->get();
+        }
+        
         return view('factory.index', compact('factory'));
     }
 

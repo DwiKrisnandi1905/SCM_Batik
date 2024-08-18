@@ -15,9 +15,9 @@ class FactoryMiddleware
         $user = Auth::user();
 
         $userId = $user->id;
-        $roleId = 3;
+        $roleIds = [1, 3]; 
 
-        $query = "SELECT * FROM role_user WHERE user_id = $userId AND role_id = $roleId";
+        $query = "SELECT * FROM role_user WHERE user_id = $userId AND role_id IN (" . implode(',', $roleIds) . ")";
         $result = DB::select(DB::raw($query));
 
         if ($result) {

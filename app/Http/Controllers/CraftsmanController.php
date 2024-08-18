@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use App\Models\Monitoring;
+use Illuminate\Support\Facades\DB;
 
 class CraftsmanController extends Controller
 {
@@ -22,7 +23,20 @@ class CraftsmanController extends Controller
     }
     public function index()
     {
-        $craftsmen = Craftsman::where('user_id', auth()->user()->id)->get();
+        $userId = auth()->user()->id;
+        $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
+        $result = DB::select(DB::raw($query));
+        if (!isset($result[0])) {
+            return redirect()->route('roles.select');
+        }
+        
+        $role = $result[0]->role_id;
+
+        if ($role == 1) {
+            $craftsmen = Craftsman::all();
+        } else {
+            $craftsmen = Craftsman::where('user_id', $userId)->get();
+        }
         return view('craftsman.index', compact('craftsmen'));
     }
 

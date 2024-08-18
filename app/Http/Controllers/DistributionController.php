@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use App\Models\Monitoring;
+use Illuminate\Support\Facades\DB;
 
 class DistributionController extends Controller
 {
@@ -21,7 +22,20 @@ class DistributionController extends Controller
     }
     public function index()
     {
-        $distribution = Distribution::all();
+        $userId = auth()->user()->id;
+        $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
+        $result = DB::select(DB::raw($query));
+        if (!isset($result[0])) {
+            return redirect()->route('roles.select');
+        }
+        
+        $role = $result[0]->role_id;
+
+        if ($role == 1) {
+            $distribution = Distribution::all();
+        } else {
+            $distribution = Distribution::where('user_id', $userId)->get();
+        }
         return view('distribution.index', compact('distribution'));
     }
 

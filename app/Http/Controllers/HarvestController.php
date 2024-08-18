@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use App\Models\Monitoring;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class HarvestController extends Controller
 {
@@ -119,9 +121,24 @@ class HarvestController extends Controller
 
     public function index()
     {
-        $userId = auth()->id();
-        $harvests = Harvest::where('user_id', $userId)->get();
-        return view('harvests.index', compact('harvests'));
+        $user = Auth::user();
+        $userId = $user->id;
+
+        $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
+        $result = DB::select(DB::raw($query));
+        if (!isset($result[0])) {
+            return redirect()->route('roles.select');
+        }
+        
+        $role = $result[0]->role_id;   
+        if ($role == 1) {
+            $harvests = Harvest::all();
+            return view('harvests.index', compact('harvests'));
+        } else {
+            $harvests = Harvest::where('user_id', $userId)->get();
+            return view('harvests.index', compact('harvests'));
+        }
+
     }
 
     public function create()

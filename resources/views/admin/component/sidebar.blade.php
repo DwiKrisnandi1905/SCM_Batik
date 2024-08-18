@@ -6,7 +6,7 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('admin.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Dashboard
             </a>
@@ -14,7 +14,7 @@
     </ul>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('harvest.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Harvester
             </a>
@@ -22,7 +22,7 @@
     </ul>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('factory.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Factory
             </a>
@@ -30,7 +30,7 @@
     </ul>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('craftsman.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Craftsman
             </a>
@@ -38,7 +38,7 @@
     </ul>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('certification.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Certificator
             </a>
@@ -46,7 +46,7 @@
     </ul>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('waste.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Waste
             </a>
@@ -54,7 +54,7 @@
     </ul>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+            <a href="{{ route('distribution.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Distributor
             </a>

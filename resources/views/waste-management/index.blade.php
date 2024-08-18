@@ -50,7 +50,7 @@
                     @endif
                 </td>
                 <td>
-                <a href="{{ route('monitoring.show', $harvest->monitoring_id) }}" class="monitor-link">Monitor</a>
+                <a href="{{ route('monitoring.show', $wasteManagement->monitoring_id) }}" class="monitor-link">Monitor</a>
                 </td>
                 <td>
                     @if($wasteManagement->qrcode)
