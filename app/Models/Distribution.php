@@ -23,7 +23,8 @@ class Distribution extends Model
         'image',
         'is_ref',
         'nft_token_id',
-        'monitoring_id'
+        'monitoring_id',
+        'qrcode'
     ];
 
     public function user()

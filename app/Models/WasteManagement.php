@@ -20,7 +20,8 @@ class WasteManagement extends Model
         'craftsman_id',
         'is_ref',
         'nft_token_id',
-        'monitoring_id'
+        'monitoring_id',
+        'qrcode'
     ];
 
     public function user()

@@ -1,5 +1,3 @@
-<!-- resources/views/certificate.blade.php -->
-
 <!DOCTYPE html>
 <html>
 <head>

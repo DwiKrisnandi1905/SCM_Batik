@@ -183,19 +183,21 @@ class CertificationController extends Controller
         }
     }
 
-    public function generateCertificate($name, $course, $date)
+    public function generateCertificate($id)
     {
-        // Prepare data to be passed to the view
+        $certification = Certification::findOrFail($id);
+        
         $data = [
-            'name' => $name,
-            'course' => $course,
-            'date' => $date,
+            'certificate_number' => $certification->certificate_number,
+            'issue_date' => $certification->issue_date,
+            'qrcode' => $certification->qrcode,
         ];
-
+        
         // Load the view and pass the data
         $pdf = Pdf::loadView('certification/certificate', $data);
 
         // Stream the PDF to the browser
         return $pdf->stream('certificate.pdf');
     }
+
 }

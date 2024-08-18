@@ -60,7 +60,7 @@
                     @endif
                 </td>
                 <td>
-                    <span class="btn-link monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-distribution="{{ json_encode($dist) }}">Monitor</span>
+                <a href="{{ route('monitoring.show', $harvest->monitoring_id) }}" class="monitor-link">Monitor</a>
                 </td>
                 <td>
                     @if($dist->qrcode)
@@ -109,61 +109,6 @@
     </div>
 </div>
 
-<!-- Monitor Modal -->
-<div class="modal fade" id="monitorModal" tabindex="-1" aria-labelledby="monitorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="monitorModalLabel">Monitor Distribution</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="progress-container">
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Harvest</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Factory</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Craftsman</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Certificator</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Waste Management</span>
-                    </div>
-                    <div>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-                        </div>
-                        <span class="tooltip-text">Distributor</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     var imageModal = document.getElementById('imageModal');
     imageModal.addEventListener('show.bs.modal', function(event) {
@@ -171,67 +116,6 @@
         var imageUrl = button.getAttribute('data-bs-image');
         var modalImage = document.getElementById('modalImage');
         modalImage.src = imageUrl;
-    });
-
-    var monitorModal = document.getElementById('monitorModal');
-    monitorModal.addEventListener('show.bs.modal', function(event) {
-        var button = event.relatedTarget;
-        var distribution = JSON.parse(button.getAttribute('data-distribution'));
-
-        var statuses = [{
-                label: 'Harvest',
-                status: distribution.harvest
-            },
-            {
-                label: 'Factory',
-                status: distribution.factory
-            },
-            {
-                label: 'Craftsman',
-                status: distribution.craftsman
-            },
-            {
-                label: 'Certificator',
-                status: distribution.certificator
-            },
-            {
-                label: 'Waste Management',
-                status: distribution.waste_management
-            },
-            {
-                label: 'Distributor',
-                status: distribution.distributor
-            }
-        ];
-
-        var progressContainer = monitorModal.querySelector('.progress-container');
-        progressContainer.innerHTML = '';
-
-        statuses.forEach(function(item) {
-            var progressDiv = document.createElement('div');
-            var progressBarDiv = document.createElement('div');
-            progressBarDiv.className = 'progress';
-
-            var progressBar = document.createElement('div');
-            progressBar.className = 'progress-bar';
-
-            if (item.status === 'completed') {
-                progressBar.className += ' bg-success';
-                progressBar.style.width = '100%';
-            } else {
-                progressBar.className += ' bg-danger';
-                progressBar.style.width = '100%';
-            }
-
-            var tooltipText = document.createElement('span');
-            tooltipText.className = 'tooltip-text';
-            tooltipText.innerText = item.label;
-
-            progressDiv.appendChild(progressBarDiv);
-            progressBarDiv.appendChild(progressBar);
-            progressDiv.appendChild(tooltipText);
-            progressContainer.appendChild(progressDiv);
-        });
     });
 
     document.querySelectorAll('.delete-button').forEach(function(button) {

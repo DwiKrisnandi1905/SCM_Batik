@@ -54,7 +54,7 @@
                         @endif
                     </td>
                     <td>
-                        <span class="monitor-link" data-bs-toggle="modal" data-bs-target="#monitorModal" data-craftsman="{{ json_encode($craftsman) }}">Monitor</span>
+                    <a href="{{ route('monitoring.show', $craftsman->monitoring_id) }}" class="monitor-link">Monitor</a>
                     </td>
                     <td>
                         @if($craftsman->qrcode)

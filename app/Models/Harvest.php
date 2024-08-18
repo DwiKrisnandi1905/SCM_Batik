@@ -21,6 +21,7 @@ class Harvest extends Model
         'is_ref',
         'nft_token_id',
         'monitoring_id',
+        'qrcode'
     ];
 
     public function user()
