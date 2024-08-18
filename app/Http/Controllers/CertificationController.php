@@ -190,6 +190,7 @@ class CertificationController extends Controller
         $data = [
             'certificate_number' => $certification->certificate_number,
             'issue_date' => $certification->issue_date,
+            'nft_token_id' => $certification->nft_token_id,
         ];
 
         $pdf = Pdf::loadView('certification.certificate', $data)
