@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Craftsman;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Str;
+
 use Barryvdh\DomPDF\Facade\Pdf;
+
 use App\Models\Monitoring;
 
 class CertificationController extends Controller
@@ -186,15 +187,13 @@ class CertificationController extends Controller
     public function generateCertificate($id)
     {
         $certification = Certification::findOrFail($id);
-        
         $data = [
             'certificate_number' => $certification->certificate_number,
             'issue_date' => $certification->issue_date,
-            'qrcode' => $certification->qrcode,
         ];
-        
-        // Load the view and pass the data
-        $pdf = Pdf::loadView('certification/certificate', $data);
+
+        $pdf = Pdf::loadView('certification.certificate', $data)
+            ->setPaper('a4', 'landscape');
 
         // Stream the PDF to the browser
         return $pdf->stream('certificate.pdf');

@@ -52,7 +52,7 @@
                         @endif
                     </td>
                     <td>
-                    <a href="{{ route('monitoring.show', $harvest->monitoring_id) }}" class="monitor-link">Monitor</a>
+                    <a href="{{ route('monitoring.show', $certification->monitoring_id) }}" class="monitor-link">Monitor</a>
                     </td>
                     <td>
                         @if($certification->qrcode)
