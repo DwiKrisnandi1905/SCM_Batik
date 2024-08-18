@@ -10,7 +10,7 @@ class RoleController extends Controller
 {
     public function select()
     {
-        $roles = Role::all();
+        $roles = Role::where('id', '!=', 1)->get();
         return view('roles.select', compact('roles'));
     }
 
