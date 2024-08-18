@@ -83,7 +83,7 @@
             <div class="card mb-4 shadow-lg border-light rounded-4">
                 <div class="card-body text-center">
                 @foreach ($users as $user)
-                    <img src="{{ asset('storage/images/' . $user->image) }}" alt="avatar" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ffcc00;">
+                <img src="{{ $user->image ? asset('storage/images/' . $user->image) : asset('img/pasfoto.jpg') }}" alt="avatar" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ffcc00;">
                     <h5 class="my-3 font-weight-bold text-name">John Doe</h5>
                     <h6 class="font-weight-bold text-name mb-1">Harvest</h6>
                     <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-lg mt-3">Edit Profile</a>
@@ -126,7 +126,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="info-row blur-background">
+                        {{-- <div class="info-row blur-background">
                             <div class="row">
                                 <div class="col-sm-4">
                                     <p class="mb-0 info-title">Address</p>
@@ -135,7 +135,7 @@
                                     <p class="mb-0 text-white fw-bold">Bay Area, San Francisco, CA</p>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     @endforeach
                 </div>
             </div>
