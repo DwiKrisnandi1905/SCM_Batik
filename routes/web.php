@@ -137,4 +137,4 @@ Route::get('/certification/{id}', [CertificationController::class, 'show'])->nam
 Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
 Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
 
-Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate']);
+Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');

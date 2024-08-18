@@ -10,17 +10,17 @@
 </div>
 
 @if(session('success'))
-    <div class="alert success">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-        {{ session('success') }}
-    </div>
+<div class="alert success">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{ session('success') }}
+</div>
 @endif
 
 @if(session('error'))
-    <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-        {{ session('error') }}
-    </div>
+<div class="alert">
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{ session('error') }}
+</div>
 @endif
 
 <div class="table-wrapper">
@@ -34,50 +34,53 @@
                 <th>Image</th>
                 <th>Monitor</th>
                 <th>QR Code</th>
+                <th>Download</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($certifications as $certification)
-                <tr>
-                    <td>{{ $certification->id }}</td>
-                    <td>{{ $certification->certificate_number }}</td>
-                    <td>{{ $certification->issue_date }}</td>
-                    <td>{{ $certification->test_results }}</td>
-                    <td>
-                        @if($certification->image)
-                            <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $certification->image) }}">View Image</span>
-                        @else
-                            No Image
-                        @endif
-                    </td>
-                    <td>
+            <tr>
+                <td>{{ $certification->id }}</td>
+                <td>{{ $certification->certificate_number }}</td>
+                <td>{{ $certification->issue_date }}</td>
+                <td>{{ $certification->test_results }}</td>
+                <td>
+                    @if($certification->image)
+                    <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $certification->image) }}">View Image</span>
+                    @else
+                    No Image
+                    @endif
+                </td>
+                <td>
                     <a href="{{ route('monitoring.show', $certification->monitoring_id) }}" class="monitor-link">Monitor</a>
-                    </td>
-                    <td>
-                        @if($certification->qrcode)
-                            <img src="{{ asset('storage/qrcodes/' . $certification->qrcode) }}" alt="QR Code" style="width: 100px;">
-                        @else
-                            No QR Code
-                        @endif
-                    </td>
-                    <td>
-                        @if($certification->is_ref != 1)
-                            <a href="{{ route('certification.edit', $certification->id) }}" class="btn btn-warning btn-sm btn-icon">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route('certification.destroy', $certification->id) }}" method="POST" class="d-inline delete-form">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
-                        @else
-                        <span class="disabled-button">Disabled</span>
-                        @endif
-                    </td>
-                </tr>
+                </td>
+                <td>
+                    @if($certification->qrcode)
+                    <img src="{{ asset('storage/qrcodes/' . $certification->qrcode) }}" alt="QR Code" style="width: 100px;">
+                    @else
+                    No QR Code
+                    @endif
+                </td>
+                <td>
+                    <a href="{{ route('certificate', $certification->id) }}" class="btn btn-warning btn-sm" download>Download PDF</a>
+                <td>
+                    @if($certification->is_ref != 1)
+                    <a href="{{ route('certification.edit', $certification->id) }}" class="btn btn-warning btn-sm btn-icon">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="{{ route('certification.destroy', $certification->id) }}" method="POST" class="d-inline delete-form">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                    @else
+                    <span class="disabled-button">Disabled</span>
+                    @endif
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>
@@ -103,7 +106,7 @@
 
 <script>
     var imageModal = document.getElementById('imageModal');
-    imageModal.addEventListener('show.bs.modal', function (event) {
+    imageModal.addEventListener('show.bs.modal', function(event) {
         var button = event.relatedTarget;
         var imageUrl = button.getAttribute('data-bs-image');
         var modalImage = document.getElementById('modalImage');
