@@ -15,7 +15,8 @@ use App\Http\Controllers\{
     Auth\ForgotPasswordController,
     Auth\ResetPasswordController,
     HomeController,
-    UserController
+    UserController,
+    adminDashboardController
 };
 
 Route::get('/', function () {
@@ -138,3 +139,5 @@ Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])
 Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
 
 Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
+
+Route::get('/admin', [adminDashboardController::class, 'index'])->name('admin.index');
