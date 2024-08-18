@@ -97,7 +97,7 @@
             Awarded for your dedication and completion of the program. Like the intricate designs of batik, your journey has been unique and commendable.
         </div>
         <div class="nft">
-            0x62bf48aeeaef1b2e6b853b737cbb084c70d8761879e9ee572cb57559d868fb43
+            {{ $nft_token_id }}
         </div>
         <div class="footer">
             Date: {{ $issue_date }}
