@@ -10,8 +10,6 @@
         .certificate {
             border: 10px solid #797979;
             padding: 50px;
-            width: 100%;
-            height: 100%;
         }
         .header {
             font-size: 24px;
@@ -36,14 +34,14 @@
             Certificate of Completion
         </div>
         <div class="recipient">
-            {{ $name }}
+            {{ $certificate_number }}
         </div>
         <div class="body">
-            This is to certify that <strong>{{ $name }}</strong> has successfully completed the <strong>{{ $course }}</strong> course.
+            This is to certify that has successfully completed the course.
         </div>
         <div class="footer">
-            Date: {{ $date }}
-        </div>
+            Date: {{ $issue_date }}
+        </div>        
     </div>
 </body>
 </html>
