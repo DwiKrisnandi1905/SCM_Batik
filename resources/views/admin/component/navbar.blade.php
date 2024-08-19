@@ -60,10 +60,10 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li>
-                            {{-- <form method="POST" action="#" id="logout-form">
-                                @csrf --}}
+                            <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                                @csrf
                                 <button type="submit" class="dropdown-item" id="signout-btn">Sign out</button>
-                            {{-- </form> --}}
+                            </form>
                         </li>
                     </ul>
                 </li>

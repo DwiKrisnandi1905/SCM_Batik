@@ -55,7 +55,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://via.placeholder.com/40" alt="" width="32" height="32" class="rounded-circle me-2">
+                        <img src="{{ asset('storage/images/' . auth()->user()->image) }}" alt="" width="32" height="32" class="rounded-circle me-2">
                         <strong>{{ auth()->user()->name }}</strong>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
