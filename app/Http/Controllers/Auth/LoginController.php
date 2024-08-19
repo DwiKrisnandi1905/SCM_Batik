@@ -33,7 +33,7 @@ class LoginController extends Controller
             
             if ($role == 1) {
                 auth()->user()->role = 'Admin';
-                return redirect('/');
+                return redirect()->route('admin.index');
             } elseif ($role == 2) {
                 auth()->user()->role = 'Harvester';
                 return redirect()->route('harvest.index');

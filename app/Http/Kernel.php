@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'harvest' => \App\Http\Middleware\HarvestMiddleware::class,
         'monitoring' => \App\Http\Middleware\MonitoringMiddleware::class,
         'waste_management' => \App\Http\Middleware\WasteManagementMiddleware::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
     ];
 }

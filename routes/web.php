@@ -121,6 +121,12 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::get('/', [adminDashboardController::class, 'index'])->name('admin.index');
+    });
+});
+
 Route::get('/unauthorized', [HomeController::class, 'unauthorized'])->name('unauthorized');
 Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('register', [RegisterController::class, 'register']);
@@ -138,6 +144,5 @@ Route::get('/certification/{id}', [CertificationController::class, 'show'])->nam
 Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
 Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
 
-Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
 
-Route::get('/admin', [adminDashboardController::class, 'index'])->name('admin.index');
+
