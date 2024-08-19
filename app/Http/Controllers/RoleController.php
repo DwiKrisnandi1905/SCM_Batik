@@ -17,18 +17,18 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $user_id = auth()->user()->id;
-    
+
         // Validate the request
         $validated = $request->validate([
             'role_id' => 'required|integer|between:1,7',
         ]);
-    
+
         // Add user ID to the validated data
         $validated['user_id'] = $user_id;
-    
+
         // Attempt to create the RoleUser record
         $role = RoleUser::create($validated);
-    
+
         if ($role) {
             // Map role_id to role name and route
             $roles = [
@@ -40,10 +40,10 @@ class RoleController extends Controller
                 6 => ['name' => 'Waste Manager', 'route' => 'waste.index'],
                 7 => ['name' => 'Distributor', 'route' => 'distribution.index'],
             ];
-    
+
             // Update the user's role and redirect based on role_id
             auth()->user()->role = $roles[$validated['role_id']]['name'];
-            
+
             return redirect()->route($roles[$validated['role_id']]['route']);
         } else {
             // If creation fails, return back with an error message and the old input
@@ -52,6 +52,6 @@ class RoleController extends Controller
                 ->withErrors(['message' => 'Failed to create role']);
         }
     }
-    
-    
+
+
 }

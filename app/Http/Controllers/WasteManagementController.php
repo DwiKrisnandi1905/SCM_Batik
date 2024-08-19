@@ -176,28 +176,4 @@ class WasteManagementController extends Controller
         }
     }
 
-    public function verifyNFT($transactionHash)
-    {
-        try {
-            $transactionReceipt = $this->nftService->verifyNFT($transactionHash);
-
-            if ($transactionReceipt) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'NFT verification successful',
-                    'data' => $transactionReceipt,
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Transaction not found',
-                ]);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
 }

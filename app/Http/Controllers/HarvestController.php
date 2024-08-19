@@ -21,6 +21,24 @@ class HarvestController extends Controller
     {
         $this->nftService = $nftService;
     }
+
+    public function create()
+    {
+        return view('harvests.create');
+    }
+
+    public function edit($id)
+    {
+        $harvest = Harvest::findOrFail($id);
+        return view('harvests.edit', compact('harvest'));
+    }
+
+    public function show($id)
+    {
+        $harvest = Harvest::findOrFail($id);
+        return view('harvests.show', compact('harvest'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -113,11 +131,6 @@ class HarvestController extends Controller
             return redirect('/harvest')->with('error', 'Failed to update harvest.');
         }
     }
-    public function show($id)
-    {
-        $harvest = Harvest::findOrFail($id);
-        return view('harvests.show', compact('harvest'));
-    }
 
     public function index()
     {
@@ -139,17 +152,6 @@ class HarvestController extends Controller
             return view('harvests.index', compact('harvests'));
         }
 
-    }
-
-    public function create()
-    {
-        return view('harvests.create');
-    }
-
-    public function edit($id)
-    {
-        $harvest = Harvest::findOrFail($id);
-        return view('harvests.edit', compact('harvest'));
     }
 
     public function destroy($id)
@@ -181,29 +183,4 @@ class HarvestController extends Controller
         }
     }
     
-
-    public function verifyNFT($transactionHash)
-    {
-        try {
-            $transactionReceipt = $this->nftService->verifyNFT($transactionHash);
-
-            if ($transactionReceipt) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'NFT verification successful',
-                    'data' => $transactionReceipt,
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Transaction not found',
-                ]);
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-    }
 }

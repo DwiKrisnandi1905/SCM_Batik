@@ -1,7 +1,7 @@
 <h1 align="center">Batik Supply Chain Management App. </h1>
 
 <p align="center">
-The Batik Supply Chain Management App is designed to streamline and optimize the process of managing the batik production supply chain. From sourcing raw materials to tracking finished goods, this app helps batik producers, suppliers, and distributors maintain a clear and efficient workflow.
+Supply Chain Management App to managing the batik production supply chain. From sourcing raw materials to tracking finished goods, this app helps batik producers, suppliers, and distributors maintain a clear and efficient workflow.
 </p>
 
 <p align="center">
@@ -93,17 +93,14 @@ For database design, you can find it [here](https://dbdiagram.io/d/SCM-Batik-66a
 
 ### User Roles and Access Endpoints
 
-| User ID | Role   | Accessible Endpoints                        |
-|---------|--------|---------------------------------------------|
-| 1       | Admin  | `/users`, `/products`, `/orders`, `/reports` |
-| 2       | Harvester| `/products`, `/orders`, `/reports`|
-| 3       | Factory   | `/products`, `/orders`|
-| 4       | Craftman  | `/users`, `/products`, `/orders`, `/reports` |
-| 5       | Certificator| `/products`, `/orders`, `/reports`|
-| 6       | Waste Manager   | `/products`, `/orders`|
-| 7       | Distributor   | `/products`, `/orders`|
+| Role ID | Role            |
+|---------|-----------------|
+| 1       | Admin           |
+| 2       | Harvester       |
+| 3       | Factory         |
+| 4       | Craftman        |
+| 5       | Certificator    |
+| 6       | Waste Manager   |
+| 7       | Distributor     |
 
-In the table above, we have defined three user roles: Admin, Harvester, and User. Each role has different access privileges to various endpoints in the web application.
-
-- The Admin role (User ID 1) has access to all endpoints, including `/users`, `/products`, `/orders`, and `/reports`.
-Please note that this is the actual endpoints and access privileges may vary based on your specific application role.
+- The Admin role (Role ID 1) has access to all endpoints
