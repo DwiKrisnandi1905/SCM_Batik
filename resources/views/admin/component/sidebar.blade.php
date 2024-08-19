@@ -6,14 +6,6 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('admin.index') }}" class="nav-link">
-                <i class="bi bi-speedometer2 mx-2"></i>
-                Dashboard
-            </a>
-        </li>
-    </ul>
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="mb-2">
             <a href="{{ route('harvest.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Harvester

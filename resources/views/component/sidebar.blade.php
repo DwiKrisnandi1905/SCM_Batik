@@ -5,6 +5,16 @@
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
+
+        @if(auth()->user()->hasRole('admin'))
+        <li class="mb-2">
+            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : 'link-dark' }}">
+                <i class="bi bi-speedometer2 mx-2"></i>
+                Dashboard
+            </a>
+        </li>
+        @endif
+        
         @if(auth()->user()->hasRole('harvester'))
         <li class="mb-2">
             <a href="{{ route('harvest.index') }}" class="nav-link {{ request()->routeIs('harvest.*') ? 'active' : 'link-dark' }}">
@@ -58,7 +68,7 @@
             </a>
         </li>
         @endif
-        
+
         <li class="mb-2">
             <a href="{{ route('profile.index') }}" class="nav-link {{ request()->routeIs('profile.*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
