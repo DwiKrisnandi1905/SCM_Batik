@@ -83,6 +83,7 @@ Route::middleware(['auth' ,'certification'])->group(function () {
 
 Route::middleware(['auth', 'waste_management'])->group(function () {
     Route::prefix('waste')->group(function () {
+
         Route::get('/', [WasteManagementController::class, 'index'])->name('waste.index');
         Route::get('/create', [WasteManagementController::class, 'create'])->name('waste.create');
         Route::post('/', [WasteManagementController::class, 'store'])->name('waste.store');
@@ -132,3 +133,5 @@ Route::get('/craftsman/{id}', [CraftsmanController::class, 'show'])->name('craft
 Route::get('/certification/{id}', [CertificationController::class, 'show'])->name('certification.show');
 Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
 Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
+
+Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
