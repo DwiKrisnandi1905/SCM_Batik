@@ -27,12 +27,12 @@ return new class extends Migration
             $table->string('nft_token_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('harvest_id')->references('id')->on('harvests');
-            $table->foreign('factory_id')->references('id')->on('factories');
-            $table->foreign('craftsman_id')->references('id')->on('craftsmen');
-            $table->foreign('certification_id')->references('id')->on('certifications');
-            $table->foreign('waste_id')->references('id')->on('waste_management');
-            $table->foreign('distribution_id')->references('id')->on('distributions');
+            $table->foreign('harvest_id')->references('id')->on('harvests')->onDelete('cascade');
+            $table->foreign('factory_id')->references('id')->on('factories')->onDelete('cascade');
+            $table->foreign('craftsman_id')->references('id')->on('craftsmen')->onDelete('cascade');
+            $table->foreign('certification_id')->references('id')->on('certifications')->onDelete('cascade');
+            $table->foreign('waste_id')->references('id')->on('waste_management')->onDelete('cascade');
+            $table->foreign('distribution_id')->references('id')->on('distributions')->onDelete('cascade');
         });
     }
 

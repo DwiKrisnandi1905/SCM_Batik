@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Services\NFTService;
@@ -43,7 +44,7 @@ class CertificationController extends Controller
             'issue_date' => 'required|date',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ensure image is validated
         ]);
-    
+
         $certification = new Certification();
         $certification->user_id = $user_id;
         $certification->craftsman_id = $validated['craftsman_id'];
@@ -51,7 +52,7 @@ class CertificationController extends Controller
         $certification->certificate_number = $validated['certificate_number'];
         $certification->issue_date = $validated['issue_date'];
         $certification->is_ref = 0;
-    
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
@@ -64,20 +65,20 @@ class CertificationController extends Controller
         // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
 
         // $certification->nft_token_id = $transactionHash;
-    
+
         $certification->save();
-    
+
         $url = route('certification.show', $certification->id);
         $qrCode = QrCode::format('svg')->size(300)->generate($url);
-    
+
         $qrCodeName = time() . '_qrcodeCertification.svg';
         Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
         $certification->qrcode = $qrCodeName;
-    
+
         $Craftsman = Craftsman::find($validated['craftsman_id']);
         $Craftsman->is_ref = 1;
         $Craftsman->save();
-    
+
         $monitoring = Monitoring::where('craftsman_id', $certification->craftsman_id)->first();
         if ($monitoring) {
             $monitoring->certification_id = $certification->id;
@@ -95,13 +96,13 @@ class CertificationController extends Controller
             $monitoring->save();
             $certification->monitoring_id = $monitoring->id;
         }
-    
+
         $certification->save();
-    
+
         return redirect()->route('certification.index')->with('success', 'Certification created successfully.');
     }
-    
-    
+
+
     public function edit($id)
     {
         $craftsmen = Craftsman::all();
@@ -118,7 +119,7 @@ class CertificationController extends Controller
         $certification->test_results = $request->test_results;
         $certification->certificate_number = $request->certificate_number;
         $certification->issue_date = $request->issue_date;
-    
+
         if ($request->hasFile('image')) {
             if ($certification->image) {
                 Storage::delete('public/images/' . $certification->image);
@@ -136,7 +137,7 @@ class CertificationController extends Controller
         $qrCodeName = time() . '_qrcodeCertification.svg';
         Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
         $certification->qrcode = $qrCodeName;
-    
+
         if ($certification->save()) {
             return redirect()->route('certification.index')->with('success', 'Certification updated successfully.');
         } else {
@@ -149,22 +150,35 @@ class CertificationController extends Controller
         $certification = Certification::findOrFail($id);
         return view('certification.show', compact('certification'));
     }
-    
+
     public function destroy($id)
     {
         $certification = Certification::findOrFail($id);
-        $image = $certification->image;
-        if ($image && $image !== 'default') {
-            Storage::delete('public/images/' . $image);
+
+        // Set the related monitoring records to null
+        Monitoring::where('certification_id', $certification->id)->update(['certification_id' => null]);
+
+        // Delete the associated image
+        $imagePath = 'public/images/' . $certification->image;
+        if (Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
         }
+
+        // Delete the associated QR code
+        $qrCodePath = 'public/qrcodes/' . $certification->qrcode;
+        if (Storage::exists($qrCodePath)) {
+            Storage::delete($qrCodePath);
+        }
+
         $success = $certification->delete();
+
         if ($success) {
             return redirect()->route('certification.index')->with('success', 'Certification deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to delete certification.');
         }
     }
-    
+
     public function verifyNFT($transactionHash)
     {
         try {
@@ -205,5 +219,4 @@ class CertificationController extends Controller
         // Stream the PDF to the browser
         return $pdf->stream('certificate.pdf');
     }
-
 }

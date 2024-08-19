@@ -99,8 +99,6 @@ class WasteManagementController extends Controller
         return redirect()->route('waste.index')->with('success', 'Waste Management record created successfully.');
     }
     
-
-
     public function edit($id)
     {
         $craftsmen = Craftsman::all();
@@ -153,12 +151,25 @@ class WasteManagementController extends Controller
     public function destroy($id)
     {
         $wasteManagement = WasteManagement::findOrFail($id);
-        $image = $wasteManagement->image;
+
+        // Set the related monitoring records to null
+        Monitoring::where('waste_id', $wasteManagement->id)->update(['waste_id' => null]);
+    
+        // Delete the associated image
+        $imagePath = 'public/images/' . $wasteManagement->image;
+        if (Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
+        }
+    
+        // Delete the associated QR code
+        $qrCodePath = 'public/qrcodes/' . $wasteManagement->qrcode;
+        if (Storage::exists($qrCodePath)) {
+            Storage::delete($qrCodePath);
+        }
+
         $success = $wasteManagement->delete();
+        
         if ($success) {
-            if ($image && $image !== 'default') {
-                Storage::delete('public/images/' . $image);
-            }
             return redirect()->route('waste.index')->with('success', 'Waste Management record deleted successfully.');
         } else {
             return redirect()->route('waste.index')->with('error', 'Failed to delete Waste Management record.');

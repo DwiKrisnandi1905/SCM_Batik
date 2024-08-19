@@ -155,20 +155,32 @@ class HarvestController extends Controller
     public function destroy($id)
     {
         $harvest = Harvest::findOrFail($id);
+    
+        // Set the related monitoring records to null
+        Monitoring::where('harvest_id', $harvest->id)->update(['harvest_id' => null]);
+    
+        // Delete the associated image
         $imagePath = 'public/images/' . $harvest->image;
-
         if (Storage::exists($imagePath)) {
             Storage::delete($imagePath);
         }
-
+    
+        // Delete the associated QR code
+        $qrCodePath = 'public/qrcodes/' . $harvest->qrcode;
+        if (Storage::exists($qrCodePath)) {
+            Storage::delete($qrCodePath);
+        }
+    
+        // Delete the harvest record
         $success = $harvest->delete();
-
+    
         if ($success) {
             return redirect('/harvest')->with('success', 'Harvest deleted successfully.');
         } else {
             return redirect('/harvest')->with('error', 'Failed to delete harvest.');
         }
     }
+    
 
     public function verifyNFT($transactionHash)
     {

@@ -193,12 +193,25 @@ class DistributionController extends Controller
     public function destroy($id)
     {
         $distribution = Distribution::find($id);
-        $image = $distribution->image;
-        if ($image) {
-            Storage::delete('public/images/' . $image);
+
+        // Set the related monitoring records to null
+        Monitoring::where('distribution_id', $distribution->id)->update(['distribution_id' => null]);
+    
+        // Delete the associated image
+        $imagePath = 'public/images/' . $distribution->image;
+        if (Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
         }
-        if ($distribution) {
-            $distribution->delete();
+    
+        // Delete the associated QR code
+        $qrCodePath = 'public/qrcodes/' . $distribution->qrcode;
+        if (Storage::exists($qrCodePath)) {
+            Storage::delete($qrCodePath);
+        }
+
+        $success = $distribution->delete();
+        
+        if ($success) {
             return redirect()->route('distribution.index')->with('success', 'Distribution record deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to delete distribution record.');

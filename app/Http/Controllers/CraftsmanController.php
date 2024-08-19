@@ -169,10 +169,22 @@ class CraftsmanController extends Controller
     public function destroy($id)
     {
         $craftsman = Craftsman::findOrFail($id);
-        $image = $craftsman->image;
-        if ($image) {
-            Storage::delete('public/images/' . $image);
+
+        // Set the related monitoring records to null
+        Monitoring::where('craftsman_id', $craftsman->id)->update(['craftsman_id' => null]);
+    
+        // Delete the associated image
+        $imagePath = 'public/images/' . $craftsman->image;
+        if (Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
         }
+    
+        // Delete the associated QR code
+        $qrCodePath = 'public/qrcodes/' . $craftsman->qrcode;
+        if (Storage::exists($qrCodePath)) {
+            Storage::delete($qrCodePath);
+        }
+        
         $success = $craftsman->delete();
 
         if ($success) {

@@ -11,6 +11,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use App\Models\Monitoring;
 use Illuminate\Support\Facades\DB;
+
 class FactoryController extends Controller
 {
 
@@ -47,9 +48,9 @@ class FactoryController extends Controller
         //  $tokenURI = url('public/images/' . $imageName); 
         //  $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
         //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
- 
+
         //  $factory->nft_token_id = $transactionHash;
-    
+
         $factory->is_ref = 0;
         $factory->save();
 
@@ -64,7 +65,7 @@ class FactoryController extends Controller
             $harvest = Harvest::find($validated['harvest_id']);
             $harvest->is_ref = 1;
             $harvest->save();
-            
+
             $monitoring = Monitoring::where('harvest_id', $factory->harvest_id)->first();
             if ($monitoring) {
                 $monitoring->factory_id = $factory->id;
@@ -85,13 +86,13 @@ class FactoryController extends Controller
                 $factory->monitoring_id = $monitoring->id; // Add monitoring_id to factory data
                 $factory->save();
             }
-    
+
             return redirect()->route('factory.index')->with('success', 'Factory created successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to create factory');
         }
     }
-    
+
     public function index()
     {
         $userId = auth()->id();
@@ -100,7 +101,7 @@ class FactoryController extends Controller
         if (!isset($result[0])) {
             return redirect()->route('roles.select');
         }
-        
+
         $role = $result[0]->role_id;
 
         if ($role == 1) {
@@ -108,7 +109,7 @@ class FactoryController extends Controller
         } else {
             $factory = Factory::where('user_id', $userId)->get();
         }
-        
+
         return view('factory.index', compact('factory'));
     }
 
@@ -121,7 +122,7 @@ class FactoryController extends Controller
     public function update(Request $request, $id)
     {
         $factory = Factory::findOrFail($id);
-    
+
         $validated = $request->validate([
             'received_date' => 'sometimes|required|date',
             'initial_process' => 'sometimes|required|string',
@@ -130,13 +131,13 @@ class FactoryController extends Controller
             'factory_name' => 'sometimes|required|string|max:255',
             'factory_address' => 'sometimes|required|string|max:255',
         ]);
-    
+
         $image = $request->file('image');
         if ($image) {
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/images', $imageName);
             $validated['image'] = $imageName;
-    
+
             $oldImagePath = 'public/images/' . $factory->image;
             if (Storage::exists($oldImagePath)) {
                 Storage::delete($oldImagePath);
@@ -149,7 +150,7 @@ class FactoryController extends Controller
         $qrCodeName = time() . '_qrcodeFactory.svg';
         Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
         $factory->qrcode = $qrCodeName;
-    
+
         if ($factory->update($validated)) {
             return redirect()->route('factory.index')->with('success', 'Factory updated successfully');
         } else {
@@ -162,7 +163,7 @@ class FactoryController extends Controller
         $factory = Factory::findOrFail($id);
         return view('factory.show', compact('factory'));
     }
-    
+
     public function edit($id)
     {
         $harvests = Harvest::all();
@@ -173,9 +174,23 @@ class FactoryController extends Controller
     public function destroy($id)
     {
         $factory = Factory::findOrFail($id);
-        $imageName = $factory->image;
+
+        // Set the related monitoring records to null
+        Monitoring::where('factory_id', $factory->id)->update(['factory_id' => null]);
+
+        // Delete the associated image
+        $imagePath = 'public/images/' . $factory->image;
+        if (Storage::exists($imagePath)) {
+            Storage::delete($imagePath);
+        }
+
+        // Delete the associated QR code
+        $qrCodePath = 'public/qrcodes/' . $factory->qrcode;
+        if (Storage::exists($qrCodePath)) {
+            Storage::delete($qrCodePath);
+        }
+
         if ($factory->delete()) {
-            Storage::delete('public/images/' . $imageName);
             return redirect()->route('factory.index')->with('success', 'Factory deleted successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to delete factory');
