@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="batik_type">Batik Type:</label>
+            <label for="batik_type">Batik Name:</label>
             <input type="text" id="batik_type" name="batik_type" class="form-control"
                 value="{{ $certification->batik_type }}" required>
         </div>

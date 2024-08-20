@@ -28,7 +28,7 @@
         <thead class="thead-dark">
             <tr>
                 <th>ID</th>
-                <th>Batik Type</th>
+                <th>Batik Name</th>
                 <th>Certification Number</th>
                 <th>Issue Date</th>
                 <th>Test Results</th>

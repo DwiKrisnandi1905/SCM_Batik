@@ -140,8 +140,7 @@
             {{ $certificate_number }}
         </div>
         <div class="batik-name">
-            {{-- Batik: {{ $batik_name }} --}}
-            Batik Mega Mendung
+            Batik: {{ $batik_type }}
         </div>
         <div class="body">
             Awarded as proof of rightful ownership of batik. Like the intricate designs of batik, your ownership is unique and valuable.
