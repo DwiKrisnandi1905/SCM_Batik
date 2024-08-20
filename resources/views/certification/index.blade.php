@@ -28,6 +28,7 @@
         <thead class="thead-dark">
             <tr>
                 <th>ID</th>
+                <th>Batik Type</th>
                 <th>Certification Number</th>
                 <th>Issue Date</th>
                 <th>Test Results</th>
@@ -42,6 +43,7 @@
             @foreach($certifications as $certification)
             <tr>
                 <td>{{ $certification->id }}</td>
+                <td>{{ $certification->batik_type }}</td>
                 <td>{{ $certification->certificate_number }}</td>
                 <td>{{ $certification->issue_date }}</td>
                 <td>{{ $certification->test_results }}</td>

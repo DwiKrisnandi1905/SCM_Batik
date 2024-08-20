@@ -35,6 +35,11 @@
             </div>
 
             <div class="form-group mb-3">
+                <label for="batik_type">Batik Type:</label>
+                <input type="text" id="batik_type" name="batik_type" class="form-control" value="{{ old('batik_type') }}" required>
+            </div>
+
+            <div class="form-group mb-3">
                 <label for="test_results">Certificate test_results:</label>
                 <input type="text" id="test_results" name="test_results" class="form-control" value="{{ old('test_results') }}" required>
             </div>

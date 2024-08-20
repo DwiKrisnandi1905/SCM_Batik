@@ -14,6 +14,7 @@ class Certification extends Model
         'user_id',
         'craftsman_id',
         'test_results',
+        'batik_type',
         'certificate_number',
         'issue_date',
         'image',
