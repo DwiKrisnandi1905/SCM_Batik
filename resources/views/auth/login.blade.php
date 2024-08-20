@@ -159,7 +159,7 @@
                                                 Remember Me
                                             </label>
                                         </div>
-                                        <a class="forgot-password" href="#">
+                                        <a class="forgot-password" href="{{ route('forgot-password.form') }}">
                                             Forgot Password?
                                         </a>
                                     </div>

@@ -13,7 +13,6 @@ use App\Http\Controllers\{
     Auth\RegisterController,
     Auth\LoginController,
     Auth\ForgotPasswordController,
-    Auth\ResetPasswordController,
     HomeController,
     UserController,
     AdminController,
@@ -124,17 +123,23 @@ Route::prefix('auth')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('login', [LoginController::class, 'login']);
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 });
 
-Route::get('/harvests/{id}', [HarvestController::class, 'show'])->name('harvests.show');
-Route::get('/factory/{id}', [FactoryController::class, 'show'])->name('factory.show');
-Route::get('/craftsman/{id}', [CraftsmanController::class, 'show'])->name('craftsman.show');
-Route::get('/certification/{id}', [CertificationController::class, 'show'])->name('certification.show');
-Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
-Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
+Route::prefix('password')->group(function () {
+    Route::get('forgot', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.forgot.form');
+    Route::post('forgot', [ForgotPasswordController::class, 'sendResetLink'])->name('password.forgot.email');
+    
+    Route::get('reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset.update');
+});
 
-Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
+Route::prefix('show')->group(function () {
+    Route::get('/harvests/{id}', [HarvestController::class, 'show'])->name('harvests.show');
+    Route::get('/factory/{id}', [FactoryController::class, 'show'])->name('factory.show');
+    Route::get('/craftsman/{id}', [CraftsmanController::class, 'show'])->name('craftsman.show');
+    Route::get('/certification/{id}', [CertificationController::class, 'show'])->name('certification.show');
+    Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
+    Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
+    Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
+});
+
