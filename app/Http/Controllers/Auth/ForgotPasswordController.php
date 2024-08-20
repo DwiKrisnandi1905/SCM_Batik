@@ -29,7 +29,7 @@ class ForgotPasswordController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
-        $resetLink = url('reset-password', $token);
+        $resetLink = url('/password/reset/', $token);
 
         Mail::send('auth.emails.password-reset', ['resetLink' => $resetLink], function ($message) use ($request) {
             $message->to($request->email);

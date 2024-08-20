@@ -6,7 +6,7 @@
     <div>{{ $errors->first() }}</div>
 @endif
 
-<form action="{{ route('forgot-password.email') }}" method="POST">
+<form action="{{ route('password.forgot.email') }}" method="POST">
     @csrf
     <div>
         <label for="email">Email:</label>
