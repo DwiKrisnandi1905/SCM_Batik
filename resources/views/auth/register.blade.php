@@ -131,7 +131,7 @@
                         <div class="col-lg-6">
                             <div class="card-body p-md-3 mx-md-4">
                                 <div class="text-center">
-                                    <img src="img/logo_batiks.png" style="width: 100px;" alt="logo">
+                                    <img src="/img/logo_batiks.png" style="width: 100px;" alt="logo">
                                     <h4 class="mt-4 mb-4 pb-1">SCM Batik</h4>
                                 </div>
 
