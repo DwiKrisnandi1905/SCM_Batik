@@ -34,7 +34,10 @@ class CertificationController extends Controller
     public function create()
     {
         $craftsmen = Craftsman::all();
-        return view('certification.create', compact('craftsmen'));
+        return view('certification.create', compact('craftsmen'))->with([
+            'title' => 'Certification',
+            'name' => 'Certification'
+        ]);
     }
 
     public function store(Request $request)
@@ -112,7 +115,10 @@ class CertificationController extends Controller
     {
         $craftsmen = Craftsman::all();
         $certification = Certification::findOrFail($id);
-        return view('certification.edit', compact('craftsmen', 'certification'));
+        return view('certification.edit', compact('craftsmen', 'certification'))->with([
+            'title' => 'Waste Management',
+            'name' => 'Waste Management'
+        ]);
     }
 
     public function update(Request $request, $id)

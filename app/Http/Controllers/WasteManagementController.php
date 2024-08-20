@@ -32,7 +32,10 @@ class WasteManagementController extends Controller
     public function create()
     {
         $craftsmen = Craftsman::all();
-        return view('waste-management.create', compact('craftsmen'));
+        return view('waste-management.create', compact('craftsmen'))->with([
+            'title' => 'Waste Management',
+            'name' => 'Waste Management'
+        ]);
     }
 
     public function store(Request $request)
@@ -106,7 +109,10 @@ class WasteManagementController extends Controller
     {
         $craftsmen = Craftsman::all();
         $waste = WasteManagement::findOrFail($id);
-        return view('waste-management.edit', compact('waste', 'craftsmen'));
+        return view('waste-management.edit', compact('waste', 'craftsmen'))->with([
+            'title' => 'Waste Management',
+            'name' => 'Waste Management'
+        ]);
     }
 
     public function update(Request $request, $id)

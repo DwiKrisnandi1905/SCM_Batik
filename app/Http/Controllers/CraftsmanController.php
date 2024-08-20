@@ -46,14 +46,20 @@ class CraftsmanController extends Controller
     public function create()
     {
         $factories = Factory::all();
-        return view('craftsman.create', compact('factories'));
+        return view('craftsman.create', compact('factories'))->with([
+            'title' => 'Craftsman',
+            'name' => 'Craftsman'
+        ]);
     }
 
     public function edit($id)
     {
         $factories = Factory::all();
         $craftsman = Craftsman::findOrFail($id);
-        return view('craftsman.edit', compact('factories', 'craftsman'));
+        return view('craftsman.edit', compact('factories', 'craftsman'))->with([
+            'title' => 'Craftsman',
+            'name' => 'Craftsman'
+        ]);
     }
     
     public function store(Request $request)

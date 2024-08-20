@@ -46,7 +46,10 @@ class DistributionController extends Controller
     public function create()
     {
         $craftsmen = Craftsman::all();
-        return view('distribution.create', compact('craftsmen'));
+        return view('distribution.create', compact('craftsmen'))->with([
+            'title' => 'Distribution',
+            'name' => 'Distribution'
+        ]);
     }
 
     public function store(Request $request)
@@ -143,7 +146,10 @@ class DistributionController extends Controller
     {
         $craftsmen = Craftsman::all();
         $distribution = Distribution::find($id);
-        return view('distribution.edit', compact('distribution', 'craftsmen'));
+        return view('distribution.edit', compact('distribution', 'craftsmen'))->with([
+            'title' => 'Distribution',
+            'name' => 'Distribution'
+        ]);
     }
 
     public function update(Request $request, $id)

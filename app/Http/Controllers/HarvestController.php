@@ -24,13 +24,13 @@ class HarvestController extends Controller
 
     public function create()
     {
-        return view('harvests.create');
+        return view('harvests.create', ['title' => 'Harvest', 'name' => 'Harvest']);
     }
 
     public function edit($id)
     {
         $harvest = Harvest::findOrFail($id);
-        return view('harvests.edit', compact('harvest'));
+        return view('harvests.edit', compact('harvest'))->with(['title' => 'Harvest', 'name' => 'Harvest']);
     }
 
     public function show($id)
@@ -59,11 +59,11 @@ class HarvestController extends Controller
             $harvest->image = $imageName;
         }
 
-        //  $tokenURI = url('public/images/' . $imageName); 
-        //  $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
-        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
- 
-        //  $harvest->nft_token_id = $transactionHash; 
+        $tokenURI = url('public/images/' . $imageName);
+        $fromAddress = '0x9984Efc5b77055FcF8762d8df3a81786A44bA2E7';
+        $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+
+        $harvest->nft_token_id = $transactionHash;
 
         $harvest->is_ref = 0;
         $harvest->save();
@@ -142,8 +142,8 @@ class HarvestController extends Controller
         if (!isset($result[0])) {
             return redirect()->route('roles.select');
         }
-        
-        $role = $result[0]->role_id;   
+
+        $role = $result[0]->role_id;
         if ($role == 1) {
             $harvests = Harvest::all();
             // return view('harvests.index', compact('harvests'));
@@ -162,30 +162,30 @@ class HarvestController extends Controller
     public function destroy($id)
     {
         $harvest = Harvest::findOrFail($id);
-    
+
         // Set the related monitoring records to null
         Monitoring::where('harvest_id', $harvest->id)->update(['harvest_id' => null]);
-    
+
         // Delete the associated image
         $imagePath = 'public/images/' . $harvest->image;
         if (Storage::exists($imagePath)) {
             Storage::delete($imagePath);
         }
-    
+
         // Delete the associated QR code
         $qrCodePath = 'public/qrcodes/' . $harvest->qrcode;
         if (Storage::exists($qrCodePath)) {
             Storage::delete($qrCodePath);
         }
-    
+
         // Delete the harvest record
         $success = $harvest->delete();
-    
+
         if ($success) {
             return redirect('/harvest')->with('success', 'Harvest deleted successfully.');
         } else {
             return redirect('/harvest')->with('error', 'Failed to delete harvest.');
         }
     }
-    
+
 }

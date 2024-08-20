@@ -119,7 +119,10 @@ class FactoryController extends Controller
     public function create()
     {
         $harvests = Harvest::all();
-        return view('factory.create', compact('harvests'));
+        return view('factory.create', compact('harvests'))->with([
+            'title' => 'Factory',
+            'name' => 'Factory'
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -171,7 +174,10 @@ class FactoryController extends Controller
     {
         $harvests = Harvest::all();
         $factory = Factory::findOrFail($id);
-        return view('factory.edit', compact('factory', 'harvests'));
+        return view('factory.edit', compact('factory', 'harvests'))->with([
+            'title' => 'Factory',
+            'name' => 'Factory'
+        ]);
     }
 
     public function destroy($id)
