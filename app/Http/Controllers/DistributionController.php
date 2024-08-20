@@ -36,7 +36,11 @@ class DistributionController extends Controller
         } else {
             $distribution = Distribution::where('user_id', $userId)->get();
         }
-        return view('distribution.index', compact('distribution'));
+        return view('distribution.index', compact('distribution'))->with([
+            'name' => 'distribution',
+            'title' => 'distribution'
+        ]);
+        
     }
 
     public function create()
