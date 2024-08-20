@@ -146,11 +146,16 @@ class HarvestController extends Controller
         $role = $result[0]->role_id;   
         if ($role == 1) {
             $harvests = Harvest::all();
-            return view('harvests.index', compact('harvests'));
+            // return view('harvests.index', compact('harvests'));
         } else {
             $harvests = Harvest::where('user_id', $userId)->get();
-            return view('harvests.index', compact('harvests'));
+            // return view('harvests.index', compact('harvests'));
         }
+
+        return view('harvests.index', compact('harvests'))->with([
+            'name' => 'harvest',
+            'title' => 'Harvest'
+        ]);
 
     }
 

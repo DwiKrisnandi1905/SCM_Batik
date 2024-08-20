@@ -37,7 +37,10 @@ class CraftsmanController extends Controller
         } else {
             $craftsmen = Craftsman::where('user_id', $userId)->get();
         }
-        return view('craftsman.index', compact('craftsmen'));
+        return view('craftsman.index', compact('craftsmen'))->with([
+            'name' => 'craftsman',
+            'title' => 'craftsman'
+        ]);
     }
 
     public function create()

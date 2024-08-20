@@ -23,7 +23,10 @@ class WasteManagementController extends Controller
     public function index()
     {
         $wasteManagements = WasteManagement::all();
-        return view('waste-management.index', compact('wasteManagements'));
+        return view('waste-management.index', compact('wasteManagements'))->with([
+            'name' => 'waste management',
+            'title' => 'waste management'
+        ]);
     }
 
     public function create()

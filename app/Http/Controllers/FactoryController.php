@@ -110,7 +110,10 @@ class FactoryController extends Controller
             $factory = Factory::where('user_id', $userId)->get();
         }
 
-        return view('factory.index', compact('factory'));
+        return view('factory.index', compact('factory'))->with([
+            'name' => 'factory',
+            'title' => 'factory'
+        ]);
     }
 
     public function create()

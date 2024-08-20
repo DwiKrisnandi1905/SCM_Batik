@@ -25,7 +25,10 @@ class CertificationController extends Controller
     public function index()
     {
         $certifications = Certification::where('user_id', auth()->id())->get();
-        return view('certification.index', compact('certifications'));
+        return view('certification.index', compact('certifications'))->with([
+            'name' => 'certification',
+            'title' => 'certification'
+        ]);
     }
 
     public function create()
