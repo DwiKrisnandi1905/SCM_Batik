@@ -1,20 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-<style>
-    .btn-warning {
-    color: #fff;
-    background-color: #ff8c00;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    border: 2px solid #fff;
-    }
-
-    .btn-warning:hover {
-        color: #ff8c00;
-        background-color: #fff;
-        border: 2px solid #ff8c00;
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
 <div class="container">
     <div class="d-flex justify-content-between align-items-center">
         <h1>Edit Distribution</h1>
@@ -29,8 +16,8 @@
         <div class="form-group mb-3">
             <label for="craftsman_id">Craftsman</label>
             <select id="craftsman_id" name="craftsman_id" class="form-control" required>
-                @foreach($craftsmen as $craftsmen)
-                <option value="{{ $craftsmen->id }}">{{ $craftsmen->production_details }} - {{$craftsmen->finished_quantity}} - {{$craftsmen->completion_date}}</option>
+                @foreach($craftsmen as $craftsman)
+                <option value="{{ $craftsman->id }}">{{ $craftsman->production_details }} - {{$craftsman->finished_quantity}} - {{$craftsman->completion_date}}</option>
                 @endforeach
             </select>
         </div>

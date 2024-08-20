@@ -1,20 +1,7 @@
 @extends('layout.app')
 
 @section('content')
-    <style>
-        .btn-warning {
-        color: #fff;
-        background-color: #ff8c00;
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-        border: 2px solid #fff;
-        }
-
-        .btn-warning:hover {
-            color: #ff8c00;
-            background-color: #fff;
-            border: 2px solid #ff8c00;
-        }
-    </style>
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
             <h1>Create Certification</h1>
@@ -28,10 +15,15 @@
             <div class="form-group mb-3">
                 <label for="craftsman_id">Option ID:</label>
                 <select id="craftsman_id" name="craftsman_id" class="form-control" required>
-                    @foreach($craftsmen as $craftsmen)
-                        <option value="{{ $craftsmen->id }}">{{ $craftsmen->production_details }} - {{$craftsmen->finished_quantity}} - {{$craftsmen->completion_date}}</option>
+                    @foreach($craftsmen as $craftsman)
+                        <option value="{{ $craftsman->id }}">{{ $craftsman->production_details }} - {{$craftsman->finished_quantity}} - {{$craftsman->completion_date}}</option>
                     @endforeach
                 </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="batik_type">Batik Type:</label>
+                <input type="text" id="batik_type" name="batik_type" class="form-control" value="{{ old('batik_type') }}" required>
             </div>
 
             <div class="form-group mb-3">

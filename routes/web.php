@@ -13,7 +13,6 @@ use App\Http\Controllers\{
     Auth\RegisterController,
     Auth\LoginController,
     Auth\ForgotPasswordController,
-    Auth\ResetPasswordController,
     HomeController,
     UserController,
     AdminController,
@@ -30,9 +29,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/', [RoleController::class, 'store'])->name('roles.store');
     });
 
-    Route::get('/profile', [UserController::class, 'profileIndex'])->name('profile.index');
-    Route::get('/profile/edit', [UserController::class, 'profileEdit'])->name('profile.edit');
-    Route::put('/profile', [UserController::class, 'profileUpdate'])->name('profile.update');
+    Route::prefix('user')->group(function () {
+        Route::get('/profile', [UserController::class, 'profileIndex'])->name('profile.index');
+        Route::get('/profile/edit', [UserController::class, 'profileEdit'])->name('profile.edit');
+        Route::put('/profile', [UserController::class, 'profileUpdate'])->name('profile.update');
+    });
 
     Route::get('/verify-nft/{transactionHash}', [NFTController::class, 'verifyNFT'])->name('verify-nft');
 });
@@ -70,7 +71,7 @@ Route::middleware(['auth', 'craftsman'])->group(function () {
     });
 });
 
-Route::middleware(['auth' ,'certification'])->group(function () {
+Route::middleware(['auth', 'certification'])->group(function () {
     Route::prefix('certification')->group(function () {
         Route::get('/', [CertificationController::class, 'index'])->name('certification.index');
         Route::get('/create', [CertificationController::class, 'create'])->name('certification.create');
@@ -83,7 +84,6 @@ Route::middleware(['auth' ,'certification'])->group(function () {
 
 Route::middleware(['auth', 'waste_management'])->group(function () {
     Route::prefix('waste')->group(function () {
-
         Route::get('/', [WasteManagementController::class, 'index'])->name('waste.index');
         Route::get('/create', [WasteManagementController::class, 'create'])->name('waste.create');
         Route::post('/', [WasteManagementController::class, 'store'])->name('waste.store');
@@ -93,7 +93,7 @@ Route::middleware(['auth', 'waste_management'])->group(function () {
     });
 });
 
-Route::middleware(['auth','distribution'])->group(function () {
+Route::middleware(['auth', 'distribution'])->group(function () {
     Route::prefix('distribution')->group(function () {
         Route::get('/', [DistributionController::class, 'index'])->name('distribution.index');
         Route::get('/create', [DistributionController::class, 'create'])->name('distribution.create');
@@ -116,22 +116,30 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 });
 
-Route::get('/unauthorized', [HomeController::class, 'unauthorized'])->name('unauthorized');
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [LoginController::class, 'login']);
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+Route::prefix('auth')->group(function () {
+    Route::get('/unauthorized', [HomeController::class, 'unauthorized'])->name('unauthorized');
+    Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('register', [RegisterController::class, 'register']);
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [LoginController::class, 'login']);
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+});
 
-Route::get('/harvests/{id}', [HarvestController::class, 'show'])->name('harvests.show');
-Route::get('/factory/{id}', [FactoryController::class, 'show'])->name('factory.show');
-Route::get('/craftsman/{id}', [CraftsmanController::class, 'show'])->name('craftsman.show');
-Route::get('/certification/{id}', [CertificationController::class, 'show'])->name('certification.show');
-Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
-Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
+Route::prefix('password')->group(function () {
+    Route::get('forgot', [ForgotPasswordController::class, 'showForgotPasswordForm'])->name('password.forgot.form');
+    Route::post('forgot', [ForgotPasswordController::class, 'sendResetLink'])->name('password.forgot.email');
+    
+    Route::get('reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.reset.update');
+});
 
-Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
+Route::prefix('show')->group(function () {
+    Route::get('/harvests/{id}', [HarvestController::class, 'show'])->name('harvests.show');
+    Route::get('/factory/{id}', [FactoryController::class, 'show'])->name('factory.show');
+    Route::get('/craftsman/{id}', [CraftsmanController::class, 'show'])->name('craftsman.show');
+    Route::get('/certification/{id}', [CertificationController::class, 'show'])->name('certification.show');
+    Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
+    Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
+    Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
+});
+

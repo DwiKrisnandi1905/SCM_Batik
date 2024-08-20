@@ -39,6 +39,7 @@ class CertificationController extends Controller
         $user_id = auth()->id();
         $validated = $request->validate([
             'craftsman_id' => 'required|integer|exists:craftsmen,id',
+            'batik_type' => 'required|string|max:255',
             'test_results' => 'required|string|max:255',
             'certificate_number' => 'required|string|max:255',
             'issue_date' => 'required|date',
@@ -48,6 +49,7 @@ class CertificationController extends Controller
         $certification = new Certification();
         $certification->user_id = $user_id;
         $certification->craftsman_id = $validated['craftsman_id'];
+        $certification->batik_type = $validated['batik_type'];
         $certification->test_results = $validated['test_results'];
         $certification->certificate_number = $validated['certificate_number'];
         $certification->issue_date = $validated['issue_date'];
@@ -116,6 +118,7 @@ class CertificationController extends Controller
         $certification = Certification::findOrFail($id);
         $certification->user_id = $user_id;
         $certification->craftsman_id = $request->craftsman_id;
+        $certification->batik_type = $request->batik_type;
         $certification->test_results = $request->test_results;
         $certification->certificate_number = $request->certificate_number;
         $certification->issue_date = $request->issue_date;

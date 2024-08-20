@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('craftsman_id');
+            $table->string('batik_type');
             $table->unsignedBigInteger('monitoring_id')->nullable();
             $table->string('test_results');
             $table->string('certificate_number');
