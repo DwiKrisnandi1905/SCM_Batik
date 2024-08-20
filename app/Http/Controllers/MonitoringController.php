@@ -11,9 +11,9 @@ class MonitoringController extends Controller
         $monitoring = Monitoring::with(['harvest', 'factory', 'craftsman', 'certification', 'WasteManagement', 'distribution'])->find($id);
     
         if ($monitoring) {
-            return view('monitor', compact('monitoring'));
+            return view('monitor', compact('monitoring', 'title', 'name'));
         } else {
-            return view('monitor', ['fail' => 'Monitoring record not found.']);
+            return view('monitor', ['fail' => 'Monitoring record not found.', 'title' => 'Monitor', 'name' => 'Monitor']);
         }
     }
 }
