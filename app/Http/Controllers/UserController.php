@@ -12,6 +12,7 @@ class UserController extends Controller
     public function profileIndex()
     {
         $user = Auth::user();
+        $title = 'Profile';
 
         $users = DB::table('users')
             ->select('users.id AS user_id', 'users.name AS user_name', 'users.email AS user_email', 'users.image AS image', 'roles.id AS role_id', 'roles.name AS role_name')
@@ -20,7 +21,7 @@ class UserController extends Controller
             ->where('users.id', $user->id)
             ->get();
 
-        return view('users.index', ['users' => $users]);
+        return view('users.index', ['users' => $users, 'title' => $title , 'name' => $title]);
     }
 
     public function profileEdit()
