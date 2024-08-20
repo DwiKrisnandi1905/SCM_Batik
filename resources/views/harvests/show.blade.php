@@ -4,66 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harvest Details</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            margin-top: 50px;
-            max-width: 400px;
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            background-color: #ff7043;
-            color: #fff;
-            padding: 20px;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .card-body {
-            padding: 20px;
-            text-align: center;
-        }
-
-        .card-text {
-            font-size: 0.8rem;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        .card img {
-            border-radius: 12px;
-            margin-top: 20px;
-            max-height: 100%;
-            object-fit: contain;
-            width: 60%;
-        }
-
-        @media (max-width: 768px) {
-            .card-header,
-            .card-body {
-                text-align: center;
-            }
-
-            .card img {
-                max-height: 250px;
-            }
-        }
-    </style>
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/show.css') }}" rel="stylesheet">
 </head>
 <body>
     <div class="container">

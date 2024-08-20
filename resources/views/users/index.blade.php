@@ -126,16 +126,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="info-row blur-background">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <p class="mb-0 info-title">Address</p>
-                                </div>
-                                <div class="col-sm-8">
-                                    <p class="mb-0 text-white fw-bold">Bay Area, San Francisco, CA</p>
-                                </div>
-                            </div>
-                        </div> --}}
                     @endforeach
                 </div>
             </div>
