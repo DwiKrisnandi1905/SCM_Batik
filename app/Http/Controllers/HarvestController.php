@@ -8,6 +8,7 @@ use App\Models\Harvest;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use App\Models\NFT;
 use App\Models\Monitoring;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -60,8 +61,11 @@ class HarvestController extends Controller
         }
 
         $tokenURI = url('public/images/' . $imageName);
-        $fromAddress = '0x9984Efc5b77055FcF8762d8df3a81786A44bA2E7';
-        $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+        $fromAddress = NFT::first()->fromAddress;
+        
+        if ($fromAddress) {
+            $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+        }
 
         $harvest->nft_token_id = $transactionHash;
 
@@ -82,7 +86,7 @@ class HarvestController extends Controller
             $monitoring->last_updated = now();
             $monitoring->is_ref = 0;
             $monitoring->save();
-            $harvest->monitoring_id = $monitoring->id; // Add monitoring_id to harvest data
+            $harvest->monitoring_id = $monitoring->id;
             $harvest->save();
             return redirect('/harvest')->with('success', 'Harvest created successfully.');
         } else {

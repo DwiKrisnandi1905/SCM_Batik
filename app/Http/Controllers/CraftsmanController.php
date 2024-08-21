@@ -11,6 +11,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use App\Models\Monitoring;
 use Illuminate\Support\Facades\DB;
+use App\Models\NFT;
 
 class CraftsmanController extends Controller
 {
@@ -83,11 +84,14 @@ class CraftsmanController extends Controller
 
         $validated['is_ref'] = 0;
         $craftsman = new Craftsman($validated);
-        // $tokenURI = url('public/images/' . $imageName); 
-        // $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
-        // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+        $tokenURI = url('public/images/' . $imageName); 
+        $fromAddress = NFT::first()->fromAddress;
+        
+        if ($fromAddress) {
+            $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+        }
 
-        // $craftsman->nft_token_id = $transactionHash;
+        $craftsman->nft_token_id = $transactionHash;
         $craftsman->save();
 
         $url = route('craftsman.show', $craftsman->id);

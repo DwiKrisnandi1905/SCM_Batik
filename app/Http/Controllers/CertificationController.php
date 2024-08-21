@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Craftsman;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
+use App\Models\NFT;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -68,11 +70,14 @@ class CertificationController extends Controller
             $certification->image = $imageName;
         }
 
-        // $tokenURI = url('public/images/' . $imageName); 
-        // $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
-        // $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+        $tokenURI = url('public/images/' . $imageName); 
+        $fromAddress = NFT::first()->fromAddress;
+        
+        if ($fromAddress) {
+            $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+        }
 
-        // $certification->nft_token_id = $transactionHash;
+        $certification->nft_token_id = $transactionHash;
 
         $certification->save();
 
@@ -198,6 +203,7 @@ class CertificationController extends Controller
             'certificate_number' => $certification->certificate_number,
             'issue_date' => $certification->issue_date,
             'nft_token_id' => $certification->nft_token_id,
+            'batik_type' => $certification->batik_type,
         ];
 
         $pdf = Pdf::loadView('certification.certificate', $data)

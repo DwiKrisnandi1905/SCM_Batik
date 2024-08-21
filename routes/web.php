@@ -35,7 +35,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile', [UserController::class, 'profileUpdate'])->name('profile.update');
     });
 
-    Route::get('/verify-nft/{transactionHash}', [NFTController::class, 'verifyNFT'])->name('verify-nft');
 });
 
 Route::middleware(['auth', 'harvest'])->group(function () {
@@ -113,6 +112,12 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+    });
+
+    Route::prefix('nft')->group(function () {
+        Route::get('/edit', [NFTController::class, 'editNFTConfig'])->name('edit-nft');
+        Route::put('/update', [NFTController::class, 'updateNFTConfig'])->name('update-nft');
+        Route::get('/verify/{transactionHash}', [NFTController::class, 'verifyNFT'])->name('verify-nft');
     });
 });
 

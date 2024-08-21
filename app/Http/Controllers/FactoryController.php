@@ -11,6 +11,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use App\Models\Monitoring;
 use Illuminate\Support\Facades\DB;
+use App\Models\NFT;
 
 class FactoryController extends Controller
 {
@@ -45,11 +46,14 @@ class FactoryController extends Controller
             return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
-        //  $tokenURI = url('public/images/' . $imageName); 
-        //  $fromAddress = '0xae36F58eb2579b5A48547C1FB505080cA91b5D7F'; 
-        //  $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+         $tokenURI = url('public/images/' . $imageName); 
+        $fromAddress = NFT::first()->fromAddress;
+        
+        if ($fromAddress) {
+            $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+        }
 
-        //  $factory->nft_token_id = $transactionHash;
+         $factory->nft_token_id = $transactionHash;
 
         $factory->is_ref = 0;
         $factory->save();

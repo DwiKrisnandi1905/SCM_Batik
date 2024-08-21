@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\NFTService;
+use Illuminate\Http\Request;
+use App\Models\NFT;
 
 class NFTController extends Controller
 {
@@ -36,4 +38,29 @@ class NFTController extends Controller
             ]);
         }
     }
+
+    
+    public function updateNFTConfig(Request $request)
+    {
+        try {
+            $nftConfig = NFT::findOrFail(1);
+            $nftConfig->fromAddress = $request->fromAddress;
+            $nftConfig->contractAddress = $request->contractAddress;
+            $nftConfig->abi = $request->abi;
+            $nftConfig->save();
+
+            return redirect()->route('admin.index')
+                ->with('success', 'NFT config updated successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to update NFT config');
+        }
+    }
+
+    public function editNFTConfig()
+    {
+        $nftConfig = NFT::findOrFail(1);
+        return view('nft.edit', compact('nftConfig'));
+    }
+    
 }

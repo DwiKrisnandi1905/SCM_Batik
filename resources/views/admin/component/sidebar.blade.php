@@ -6,6 +6,15 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
+            <a href="{{ route('edit-nft') }}" class="nav-link">
+                <i class="bi bi-speedometer2 mx-2"></i>
+                Edit NFT
+            </a>
+        </li>
+    </ul>
+    
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="mb-2">
             <a href="{{ route('harvest.index') }}" class="nav-link">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Harvester
