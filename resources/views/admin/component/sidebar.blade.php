@@ -6,7 +6,7 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="mb-2">
-            <a href="{{ route('edit-nft') }}" class="nav-link">
+            <a href="{{ route('edit-nft') }}" class="nav-link {{ request()->routeIs('edit-nft*') ? 'active' : 'link-dark' }}">
                 <i class="bi bi-speedometer2 mx-2"></i>
                 Edit NFT
             </a>
