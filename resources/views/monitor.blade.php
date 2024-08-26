@@ -21,35 +21,35 @@
         </div>
     @endif
 
-    @if ($monitoring->factory)
+    @if ($craftsmanFactories->isNotEmpty())
         <div class="card mb-4">
             <div class="card-header">
-                <h2 class="h5">Factory</h2>
+                <h2 class="h5">Factories</h2>
             </div>
             <div class="card-body">
-                <p><strong>Received Date:</strong> {{ $monitoring->factory->received_date }}</p>
-                <p><strong>Initial Process:</strong> {{ $monitoring->factory->initial_process }}</p>
-                <p><strong>Semi-Finished Quantity:</strong> {{ $monitoring->factory->semi_finished_quantity }}</p>
-                <p><strong>Semi-Finished Quality:</strong> {{ $monitoring->factory->semi_finished_quality }}</p>
-                <p><strong>Factory Name:</strong> {{ $monitoring->factory->factory_name }}</p>
-                <p><strong>Factory Address:</strong> {{ $monitoring->factory->factory_address }}</p>
-                <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $monitoring->factory->image) }}" alt="Factory Image" class="img-fluid" style="height: 100px; width: auto;"></p>
-                <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $monitoring->factory->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
+                @foreach ($craftsmanFactories as $factory)
+                    <div class="mb-3">
+                        <p><strong>Factory Name:</strong> {{ $factory->factory_name }}</p>
+                        <p><strong>Factory Location:</strong> {{ $factory->factory_address }}</p>
+                        <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $factory->image) }}" alt="Factory Image" class="img-fluid" style="height: 100px; width: auto;"></p>
+                        <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $factory->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
+                    </div>
+                @endforeach
             </div>
         </div>
     @endif
 
-    @if ($monitoring->wasteManagement)
+    @if ($monitoring->craftsman)
         <div class="card mb-4">
             <div class="card-header">
-                <h2 class="h5">Waste Management</h2>
+                <h2 class="h5">Craftsman</h2>
             </div>
             <div class="card-body">
-                <p><strong>Waste Type:</strong> {{ $monitoring->wasteManagement->waste_type }}</p>
-                <p><strong>Management Method:</strong> {{ $monitoring->wasteManagement->management_method }}</p>
-                <p><strong>Management Results:</strong> {{ $monitoring->wasteManagement->management_results }}</p>
-                <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $monitoring->wasteManagement->image) }}" alt="Waste Management Image" class="img-fluid" style="height: 100px; width: auto;"></p>
-                <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $monitoring->wasteManagement->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
+                <p><strong>Production Details:</strong> {{ $monitoring->craftsman->production_details }}</p>
+                <p><strong>Finished Quantity:</strong> {{ $monitoring->craftsman->finished_quantity }}</p>
+                <p><strong>Completion Date:</strong> {{ $monitoring->craftsman->completion_date }}</p>
+                <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $monitoring->craftsman->image) }}" alt="Craftsman Image" class="img-fluid" style="height: 100px; width: auto;"></p>
+                <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $monitoring->craftsman->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
             </div>
         </div>
     @endif
@@ -69,17 +69,17 @@
         </div>
     @endif
 
-    @if ($monitoring->craftsman)
+    @if ($monitoring->wasteManagement)
         <div class="card mb-4">
             <div class="card-header">
-                <h2 class="h5">Craftsman</h2>
+                <h2 class="h5">Waste Management</h2>
             </div>
             <div class="card-body">
-                <p><strong>Production Details:</strong> {{ $monitoring->craftsman->production_details }}</p>
-                <p><strong>Finished Quantity:</strong> {{ $monitoring->craftsman->finished_quantity }}</p>
-                <p><strong>Completion Date:</strong> {{ $monitoring->craftsman->completion_date }}</p>
-                <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $monitoring->craftsman->image) }}" alt="Craftsman Image" class="img-fluid" style="height: 100px; width: auto;"></p>
-                <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $monitoring->craftsman->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
+                <p><strong>Waste Type:</strong> {{ $monitoring->wasteManagement->waste_type }}</p>
+                <p><strong>Management Method:</strong> {{ $monitoring->wasteManagement->management_method }}</p>
+                <p><strong>Management Results:</strong> {{ $monitoring->wasteManagement->management_results }}</p>
+                <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $monitoring->wasteManagement->image) }}" alt="Waste Management Image" class="img-fluid" style="height: 100px; width: auto;"></p>
+                <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $monitoring->wasteManagement->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
             </div>
         </div>
     @endif
@@ -101,5 +101,7 @@
             </div>
         </div>
     @endif
+
+
 </div>
 @endsection

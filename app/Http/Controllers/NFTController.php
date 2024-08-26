@@ -39,7 +39,6 @@ class NFTController extends Controller
         }
     }
 
-    
     public function updateNFTConfig(Request $request)
     {
         try {

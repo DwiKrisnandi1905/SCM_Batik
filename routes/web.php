@@ -16,7 +16,8 @@ use App\Http\Controllers\{
     HomeController,
     UserController,
     AdminController,
-    NFTController
+    NFTController,
+    BatikController
 };
 
 Route::get('/', function () {
@@ -146,5 +147,6 @@ Route::prefix('show')->group(function () {
     Route::get('/waste-management/{id}', [WasteManagementController::class, 'show'])->name('waste-management.show');
     Route::get('/distribution/{id}', [DistributionController::class, 'show'])->name('distribution.show');
     Route::get('/certificate/{id}', [CertificationController::class, 'generateCertificate'])->name('certificate');
+    Route::get('/batik/{id}', [BatikController::class, 'show'])->name('batik.show');
 });
 

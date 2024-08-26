@@ -38,7 +38,7 @@ class Factory extends Model
 
     public function craftsman()
     {
-        return $this->hasMany(Craftsman::class, 'factory_id');
+        return $this->hasOne(Craftsman::class, 'factory_id');
     }
 
     public function monitoring()

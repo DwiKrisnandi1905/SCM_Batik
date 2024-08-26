@@ -1,47 +1,42 @@
 <?php
-namespace App\Http\Controllers;
 
-use App\Services\NFTService;
-use App\Models\Distribution;
+namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Models\Craftsman;
-use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Str;
-use App\Models\Monitoring;
-use Illuminate\Support\Facades\DB;
-use App\Models\NFT;
+
+use App\Services\{
+    NFTService,
+    ImageService
+};
+
+use App\Models\{
+    Monitoring,
+    NFT,
+    Craftsman,
+    Distribution
+};
 
 class DistributionController extends Controller
 {
-
     protected $nftService;
-
-    public function __construct(NFTService $nftService)
+    protected $imageService;
+    public function __construct(NFTService $nftService, ImageService $imageService)
     {
         $this->nftService = $nftService;
+        $this->imageService = $imageService;
     }
     public function index()
     {
-        $userId = auth()->user()->id;
-        $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
-        $result = DB::select(DB::raw($query));
-        if (!isset($result[0])) {
-            return redirect()->route('roles.select');
-        }
-
-        $role = $result[0]->role_id;
-
-        if ($role == 1) {
-            $distribution = Distribution::all();
-        } else {
-            $distribution = Distribution::where('user_id', $userId)->get();
-        }
+        $user = auth()->user();
+        $role = $user->roles()->firstOrFail();
+    
+        $distribution = $role->id == 1 
+            ? Distribution::all() 
+            : Distribution::where('user_id', $user->id)->get();
+    
         return view('distribution.index', compact('distribution'))->with([
             'name' => 'distribution',
-            'title' => 'distribution'
+            'title' => 'Distribution'
         ]);
-
     }
 
     public function create()
@@ -57,7 +52,6 @@ class DistributionController extends Controller
     {
         $userId = auth()->user()->id;
 
-        // Validate request
         $request->validate([
             'craftsman_id' => 'required|exists:craftsmen,id',
             'destination' => 'required|string|max:255',
@@ -67,54 +61,35 @@ class DistributionController extends Controller
             'received_date' => 'required|date',
             'receiver_name' => 'required|string|max:255',
             'received_condition' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
         ]);
 
-        // Handle image upload
+        $validatedData = $request->except('image');
+        $validatedData['user_id'] = $userId;
+        $validatedData['is_ref'] = 0;
+
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $imageName);
-        } else {
-            return redirect()->back()->with('error', 'Image upload failed.');
+            $imageName = $this->imageService->handleImageUpload($request->file('image'));
+            $validatedData['image'] = $imageName;
         }
 
-        // Create new distribution record
-        $distribution = new Distribution();
-        $distribution->user_id = $userId;
-        $distribution->craftsman_id = $request->input('craftsman_id');
-        $distribution->destination = $request->input('destination');
-        $distribution->quantity = $request->input('quantity');
-        $distribution->shipment_date = $request->input('shipment_date');
-        $distribution->tracking_number = $request->input('tracking_number');
-        $distribution->received_date = $request->input('received_date');
-        $distribution->receiver_name = $request->input('receiver_name');
-        $distribution->received_condition = $request->input('received_condition');
-        $distribution->image = $imageName;
-        $distribution->is_ref = 0;
+        $distribution = Distribution::create($validatedData);
 
-        $tokenURI = url('public/images/' . $imageName);
-        $fromAddress = NFT::first()->fromAddress;
+        if (isset($imageName)) {
+            $tokenURI = url('storage/images/' . $imageName);
+            $fromAddress = NFT::first()->fromAddress;
 
-        if ($fromAddress) {
-            $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+            if ($fromAddress) {
+                $transactionHash = $this->imageService->createNftToken($tokenURI, $fromAddress, $this->nftService);
+                $distribution->nft_token_id = $transactionHash;
+            }
         }
 
-        $distribution->nft_token_id = $transactionHash;
-
-        $distribution->save(); // Save to get the ID
-
-        // Generate and save QR code
-        $url = route('distribution.show', $distribution->id);
-        $qrCode = QrCode::format('svg')->size(300)->generate($url);
-        $qrCodeName = time() . '_qrcodeDistribution.svg';
-        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+        $qrCodeName = $this->imageService->generateQrCode($distribution->id);
         $distribution->qrcode = $qrCodeName;
 
-        // Save QR code
         $distribution->save();
 
-        // Update or create monitoring record
         $craftsman = Craftsman::find($request->input('craftsman_id'));
         if ($craftsman) {
             $craftsman->is_ref = 1;
@@ -124,27 +99,23 @@ class DistributionController extends Controller
         $monitoring = Monitoring::where('craftsman_id', $distribution->craftsman_id)->first();
         if ($monitoring) {
             $monitoring->distribution_id = $distribution->id;
-            $monitoring->status = 'In distribution';
             $monitoring->last_updated = now();
-            $monitoring->is_ref = 0;
             $monitoring->save();
             $distribution->monitoring_id = $monitoring->id;
         } else {
-            $monitoring = new Monitoring();
-            $monitoring->distribution_id = $distribution->id;
-            $monitoring->status = 'In distribution';
-            $monitoring->last_updated = now();
-            $monitoring->is_ref = 0;
+            $monitoring = new Monitoring([
+                'distribution_id' => $distribution->id,
+                'last_updated' => now(),
+                'craftsman_id' => $distribution->craftsman_id,
+            ]);
             $monitoring->save();
             $distribution->monitoring_id = $monitoring->id;
         }
 
-        // Save the monitoring_id
         $distribution->save();
 
         return redirect()->route('distribution.index')->with('success', 'Distribution record created successfully.');
     }
-
 
     public function edit($id)
     {
@@ -163,39 +134,32 @@ class DistributionController extends Controller
             return redirect()->back()->with('error', 'Distribution record not found.');
         }
 
-        $oldImage = $distribution->image;
-        if ($oldImage) {
-            Storage::delete('public/images/' . $oldImage);
-        }
+        $validatedData = $request->validate([
+            'craftsman_id' => 'required|exists:craftsmen,id',
+            'destination' => 'required|string|max:255',
+            'quantity' => 'required|integer',
+            'shipment_date' => 'required|date',
+            'tracking_number' => 'required|string|max:255',
+            'received_date' => 'required|date',
+            'receiver_name' => 'required|string|max:255',
+            'received_condition' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+        ]);
 
-        $distribution->craftsman_id = $request->input('craftsman_id');
-        $distribution->destination = $request->input('destination');
-        $distribution->quantity = $request->input('quantity');
-        $distribution->shipment_date = $request->input('shipment_date');
-        $distribution->tracking_number = $request->input('tracking_number');
-        $distribution->received_date = $request->input('received_date');
-        $distribution->receiver_name = $request->input('receiver_name');
-        $distribution->received_condition = $request->input('received_condition');
+        $validatedData['user_id'] = auth()->id();
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $imageName);
-            $distribution->image = $imageName;
+            $this->imageService->deleteImage($distribution->image);
+            $imageName = $this->imageService->handleImageUpload($request->file('image'));
+            $validatedData['image'] = $imageName;
         }
 
         $url = route('distribution.show', $distribution->id);
-        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+        $qrCodeName = $this->imageService->generateQrCode($url);
+        $validatedData['qrcode'] = $qrCodeName;
+        $distribution->update($validatedData);
 
-        $qrCodeName = time() . '_qrcodeDistribution.svg';
-        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
-        $distribution->qrcode = $qrCodeName;
-
-        if ($distribution->save()) {
-            return redirect()->route('distribution.index')->with('success', 'Distribution record updated successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Failed to update distribution record.');
-        }
+        return redirect()->route('distribution.index')->with('success', 'Distribution record updated successfully.');
     }
 
     public function show($id)
@@ -207,25 +171,12 @@ class DistributionController extends Controller
     public function destroy($id)
     {
         $distribution = Distribution::find($id);
-
-        // Set the related monitoring records to null
         Monitoring::where('distribution_id', $distribution->id)->update(['distribution_id' => null]);
 
-        // Delete the associated image
-        $imagePath = 'public/images/' . $distribution->image;
-        if (Storage::exists($imagePath)) {
-            Storage::delete($imagePath);
-        }
+        $this->imageService->deleteImage($distribution->image);
+        $this->imageService->deleteImage($distribution->qrcode, 'public/qrcodes');
 
-        // Delete the associated QR code
-        $qrCodePath = 'public/qrcodes/' . $distribution->qrcode;
-        if (Storage::exists($qrCodePath)) {
-            Storage::delete($qrCodePath);
-        }
-
-        $success = $distribution->delete();
-
-        if ($success) {
+        if ($distribution->delete()) {
             return redirect()->route('distribution.index')->with('success', 'Distribution record deleted successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to delete distribution record.');

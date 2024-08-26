@@ -41,7 +41,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($factory as $factory)
+            @foreach($factories as $factory)
                 <tr>
                     <td>{{ $factory->id }}</td>
                     <td>{{ $factory->received_date }}</td>

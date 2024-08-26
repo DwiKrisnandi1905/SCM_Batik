@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-
 class LoginController extends Controller
 {
     public function showLoginForm()
@@ -28,9 +27,9 @@ class LoginController extends Controller
             if (!isset($result[0])) {
                 return redirect()->route('roles.select');
             }
-            
-            $role = $result[0]->role_id;            
-            
+
+            $role = $result[0]->role_id;
+
             if ($role == 1) {
                 auth()->user()->role = 'Admin';
                 return redirect()->route('admin.index');

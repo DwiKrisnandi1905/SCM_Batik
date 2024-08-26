@@ -12,7 +12,6 @@ class Craftsman extends Model
 
     protected $fillable = [
         'user_id',
-        'factory_id',
         'production_details',
         'finished_quantity',
         'completion_date',
@@ -28,19 +27,14 @@ class Craftsman extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function factory()
-    {
-        return $this->belongsTo(Factory::class, 'factory_id');
-    }
-
     public function certifications()
     {
-        return $this->hasMany(Certification::class, 'craftsman_id');
+        return $this->hasOne(Certification::class, 'craftsman_id');
     }
 
     public function distributions()
     {
-        return $this->hasMany(Distribution::class, 'craftsman_id');
+        return $this->hasOne(Distribution::class, 'craftsman_id');
     }
 
     public function monitoring()

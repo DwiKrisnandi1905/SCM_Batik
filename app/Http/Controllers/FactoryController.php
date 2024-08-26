@@ -1,27 +1,51 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Services\NFTService;
 use Illuminate\Http\Request;
-use App\Models\Factory;
-use App\Models\Harvest;
-use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Str;
-use App\Models\Monitoring;
-use Illuminate\Support\Facades\DB;
-use App\Models\NFT;
+
+use App\Services\{
+    NFTService,
+    ImageService
+};
+
+use App\Models\{
+    Harvest,
+    Monitoring,
+    NFT,
+    Factory,
+    CraftsmanFactory
+};
 
 class FactoryController extends Controller
 {
-
     protected $nftService;
-
-    public function __construct(NFTService $nftService)
+    protected $imageService;
+    public function __construct(NFTService $nftService, ImageService $imageService)
     {
         $this->nftService = $nftService;
+        $this->imageService = $imageService;
     }
+
+    public function index()
+    {
+        $user = auth()->user();
+        $role = $user->roles()->firstOrFail();
+        $factories = $role->id == 1 ? Factory::all() : Factory::where('user_id', $user->id)->get();
+        return view('factory.index', compact('factories'))->with([
+            'name' => 'factory',
+            'title' => 'Factory'
+        ]);
+    }
+
+    public function create()
+    {
+        $harvests = Harvest::all();
+        return view('factory.create', compact('harvests'))->with([
+            'title' => 'Factory',
+            'name' => 'Factory'
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -32,98 +56,63 @@ class FactoryController extends Controller
             'semi_finished_quality' => 'required|string|max:255',
             'factory_name' => 'required|string|max:255',
             'factory_address' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
         ]);
 
         $factory = new Factory($validated);
         $factory->user_id = auth()->id();
 
-        $image = $request->file('image');
-        if ($image) {
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $imageName);
+        if ($request->hasFile('image')) {
+            $imageName = $this->imageService->handleImageUpload($request->file('image'));
             $factory->image = $imageName;
-        } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
-        }
+        } 
 
-         $tokenURI = url('public/images/' . $imageName); 
+        $tokenURI = url('storage/images/' . $imageName);
         $fromAddress = NFT::first()->fromAddress;
-        
-        if ($fromAddress) {
-            $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
-        }
 
-         $factory->nft_token_id = $transactionHash;
+        if ($fromAddress) {
+            $transactionHash = $this->imageService->createNftToken($tokenURI, $fromAddress, $this->nftService);
+            $factory->nft_token_id = $transactionHash;
+        }
 
         $factory->is_ref = 0;
         $factory->save();
 
-        $url = route('factory.show', $factory->id);
-        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+        $factory->qrcode = $this->imageService->generateQrCode($factory->id);
+        $factory->save();
 
-        $qrCodeName = time() . '_qrcodeFactory.svg';
-        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
-        $factory->qrcode = $qrCodeName;
-
-        if ($factory->save()) {
-            $harvest = Harvest::find($validated['harvest_id']);
+        $harvest = Harvest::find($validated['harvest_id']);
+        if ($harvest) {
             $harvest->is_ref = 1;
             $harvest->save();
+        }
 
-            $monitoring = Monitoring::where('harvest_id', $factory->harvest_id)->first();
-            if ($monitoring) {
-                $monitoring->factory_id = $factory->id;
-                $monitoring->status = 'In factory';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->save();
-                $factory->monitoring_id = $monitoring->id; // Add monitoring_id to factory data
-                $factory->save();
-            } else {
-                $monitoring = new Monitoring();
-                $monitoring->factory_id = $factory->id;
-                $monitoring->status = 'In factory';
-                $monitoring->last_updated = now();
-                $monitoring->is_ref = 0;
-                $monitoring->harvest_id = $factory->harvest_id;
-                $monitoring->save();
-                $factory->monitoring_id = $monitoring->id; // Add monitoring_id to factory data
-                $factory->save();
-            }
-
-            return redirect()->route('factory.index')->with('success', 'Factory created successfully');
+        $monitoring = Monitoring::where('harvest_id', $factory->harvest_id)->first();
+        if ($monitoring) {
+            $monitoring->last_updated = now();
+            $monitoring->save();
         } else {
-            return redirect()->back()->with('error', 'Failed to create factory');
-        }
-    }
-
-    public function index()
-    {
-        $userId = auth()->id();
-        $query = "SELECT role_id FROM role_user WHERE user_id = $userId";
-        $result = DB::select(DB::raw($query));
-        if (!isset($result[0])) {
-            return redirect()->route('roles.select');
+            $monitoring = new Monitoring([
+                'last_updated' => now(),
+                'harvest_id' => $factory->harvest_id,
+            ]);
+            $monitoring->save();
         }
 
-        $role = $result[0]->role_id;
+        $factory->monitoring_id = $monitoring->id;
+        $factory->save();
 
-        if ($role == 1) {
-            $factory = Factory::all();
-        } else {
-            $factory = Factory::where('user_id', $userId)->get();
-        }
-
-        return view('factory.index', compact('factory'))->with([
-            'name' => 'factory',
-            'title' => 'factory'
+        CraftsmanFactory::create([
+            'factory_id' => $factory->id, 
         ]);
-    }
 
-    public function create()
+        return redirect()->route('factory.index')->with('success', 'Factory created successfully');
+    }
+    public function edit($id)
     {
         $harvests = Harvest::all();
-        return view('factory.create', compact('harvests'))->with([
+        $factory = Factory::findOrFail($id);
+        return view('factory.edit', compact('factory', 'harvests'))->with([
             'title' => 'Factory',
             'name' => 'Factory'
         ]);
@@ -140,32 +129,21 @@ class FactoryController extends Controller
             'semi_finished_quality' => 'sometimes|required|string',
             'factory_name' => 'sometimes|required|string|max:255',
             'factory_address' => 'sometimes|required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
         ]);
 
-        $image = $request->file('image');
-        if ($image) {
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $imageName);
+        if ($request->hasFile('image')) {
+            $imageName = $this->imageService->handleImageUpload($request->file('image'));
+            $this->imageService->deleteImage($factory->image);
             $validated['image'] = $imageName;
-
-            $oldImagePath = 'public/images/' . $factory->image;
-            if (Storage::exists($oldImagePath)) {
-                Storage::delete($oldImagePath);
-            }
         }
 
         $url = route('factory.show', $factory->id);
-        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+        $qrCodeName = $this->imageService->generateQrCode($url);
+        $validated['qrcode'] = $qrCodeName;
+        $factory->update($validated);
 
-        $qrCodeName = time() . '_qrcodeFactory.svg';
-        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
-        $factory->qrcode = $qrCodeName;
-
-        if ($factory->update($validated)) {
-            return redirect()->route('factory.index')->with('success', 'Factory updated successfully');
-        } else {
-            return redirect()->back()->with('error', 'Failed to update factory');
-        }
+        return redirect()->route('factory.index')->with('success', 'Factory updated successfully.');
     }
 
     public function show($id)
@@ -174,34 +152,13 @@ class FactoryController extends Controller
         return view('factory.show', compact('factory'));
     }
 
-    public function edit($id)
-    {
-        $harvests = Harvest::all();
-        $factory = Factory::findOrFail($id);
-        return view('factory.edit', compact('factory', 'harvests'))->with([
-            'title' => 'Factory',
-            'name' => 'Factory'
-        ]);
-    }
-
     public function destroy($id)
     {
         $factory = Factory::findOrFail($id);
+        // Monitoring::where('factory_id', $factory->id)->update(['factory_id' => null]);
 
-        // Set the related monitoring records to null
-        Monitoring::where('factory_id', $factory->id)->update(['factory_id' => null]);
-
-        // Delete the associated image
-        $imagePath = 'public/images/' . $factory->image;
-        if (Storage::exists($imagePath)) {
-            Storage::delete($imagePath);
-        }
-
-        // Delete the associated QR code
-        $qrCodePath = 'public/qrcodes/' . $factory->qrcode;
-        if (Storage::exists($qrCodePath)) {
-            Storage::delete($qrCodePath);
-        }
+        $this->imageService->deleteImage($factory->image);
+        $this->imageService->deleteImage($factory->qrcode, 'public/qrcodes');
 
         if ($factory->delete()) {
             return redirect()->route('factory.index')->with('success', 'Factory deleted successfully');

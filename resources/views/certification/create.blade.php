@@ -13,7 +13,7 @@
             @csrf
 
             <div class="form-group mb-3">
-                <label for="craftsman_id">Option ID:</label>
+                <label for="craftsman_id">Craftsman :</label>
                 <select id="craftsman_id" name="craftsman_id" class="form-control" required>
                     @foreach($craftsmen as $craftsman)
                         <option value="{{ $craftsman->id }}">{{ $craftsman->production_details }} - {{$craftsman->finished_quantity}} - {{$craftsman->completion_date}}</option>

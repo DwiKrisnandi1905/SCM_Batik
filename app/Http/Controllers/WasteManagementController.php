@@ -1,33 +1,42 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Services\NFTService;
-use App\Models\WasteManagement;
 use Illuminate\Http\Request;
-use App\Models\Craftsman;
-use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Str;
-use App\Models\Monitoring;
-use Illuminate\Support\Facades\DB;
-use App\Models\NFT;
+
+use App\Services\{
+    NFTService,
+    ImageService
+};
+
+use App\Models\{
+    Monitoring,
+    NFT,
+    Craftsman,
+    WasteManagement
+};
 
 class WasteManagementController extends Controller
 {
-
     protected $nftService;
-
-    public function __construct(NFTService $nftService)
+    protected $imageService;
+    public function __construct(NFTService $nftService, ImageService $imageService)
     {
         $this->nftService = $nftService;
+        $this->imageService = $imageService;
     }
+
     public function index()
     {
-        $wasteManagements = WasteManagement::all();
+        $user = auth()->user();
+        $role = $user->roles()->firstOrFail();
+
+        $wasteManagements = $role->id == 1
+            ? WasteManagement::all()
+            : WasteManagement::where('user_id', $user->id)->get();
+
         return view('waste-management.index', compact('wasteManagements'))->with([
             'name' => 'waste management',
-            'title' => 'waste management'
+            'title' => 'Waste Management'
         ]);
     }
 
@@ -47,70 +56,60 @@ class WasteManagementController extends Controller
             'management_method' => 'required|string',
             'management_results' => 'required|string',
             'craftsman_id' => 'required|exists:craftsmen,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:4096',
         ]);
-    
-        $validated['user_id'] = auth()->id(); // or auth()->user()->id
+
+        $validated['user_id'] = auth()->id();
         $validated['is_ref'] = 0;
-    
+
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $imageName);
+            $imageName = $this->imageService->handleImageUpload($request->file('image'));
             $validated['image'] = $imageName;
         }
-    
+
         $wasteManagement = WasteManagement::create($validated);
-    
-        $tokenURI = url('public/images/' . $imageName); 
-        $fromAddress = NFT::first()->fromAddress;
-        
-        if ($fromAddress) {
-            $transactionHash = $this->nftService->createToken($tokenURI, $fromAddress);
+
+        if (isset($imageName)) {
+            $tokenURI = url('storage/images/' . $imageName);
+            $fromAddress = NFT::first()->fromAddress;
+
+            if ($fromAddress) {
+                $transactionHash = $this->imageService->createNftToken($tokenURI, $fromAddress, $this->nftService);
+                $wasteManagement->nft_token_id = $transactionHash;
+            }
         }
 
-        $wasteManagement->nft_token_id = $transactionHash;
-    
         $wasteManagement->save();
-    
-        $url = route('waste-management.show', $wasteManagement->id);
-        $qrCode = QrCode::format('svg')->size(300)->generate($url);
-    
-        $qrCodeName = time() . '_qrcodeWasteManagement.svg';
-        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
+
+        $qrCodeName = $this->imageService->generateQrCode($wasteManagement->id);
         $wasteManagement->qrcode = $qrCodeName;
-    
-        // Save the record before updating the monitoring data
         $wasteManagement->save();
-    
-        // Update or create monitoring record
+
         $craftsman = Craftsman::find($validated['craftsman_id']);
         $craftsman->is_ref = 1;
         $craftsman->save();
-    
-        $monitoring = Monitoring::where('craftsman_id', $wasteManagement->craftsman_id)->first();
 
+        $monitoring = Monitoring::where('craftsman_id', $wasteManagement->craftsman_id)->first();
         if ($monitoring) {
             $monitoring->waste_id = $wasteManagement->id;
-            $monitoring->status = 'In waste management';
             $monitoring->last_updated = now();
-            $monitoring->is_ref = 0;
             $monitoring->save();
             $wasteManagement->monitoring_id = $monitoring->id;
         } else {
-            $monitoring = new Monitoring();
-            $monitoring->waste_id = $wasteManagement->id;
-            $monitoring->status = 'In waste management';
-            $monitoring->last_updated = now();
-            $monitoring->is_ref = 0;
+            $monitoring = new Monitoring([
+                'waste_id' => $wasteManagement->id,
+                'last_updated' => now(),
+                'craftsman_id' => $wasteManagement->craftsman_id,
+            ]);
             $monitoring->save();
             $wasteManagement->monitoring_id = $monitoring->id;
         }
-    
+
         $wasteManagement->save(); // Save the monitoring_id
-    
+
         return redirect()->route('waste.index')->with('success', 'Waste Management record created successfully.');
     }
-    
+
     public function edit($id)
     {
         $craftsmen = Craftsman::all();
@@ -127,28 +126,21 @@ class WasteManagementController extends Controller
             'waste_type' => 'required|string',
             'management_method' => 'required|string',
             'management_results' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096', // Optional image validation
         ]);
         $validatedData['user_id'] = auth()->user()->id;
-        $wasteManagement = WasteManagement::findOrFail($id);
 
+        $wasteManagement = WasteManagement::findOrFail($id);
         if ($request->hasFile('image')) {
-            if ($wasteManagement->image) {
-                Storage::delete('public/images/' . $wasteManagement->image);
-            }
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/images', $imageName);
+            $this->imageService->deleteImage($wasteManagement->image);
+            $imageName = $this->imageService->handleImageUpload($request->file('image'));
             $validatedData['image'] = $imageName;
-        } else {
-            return response()->json(['success' => false, 'message' => 'Image upload failed']);
         }
 
         $url = route('waste-management.show', $wasteManagement->id);
-        $qrCode = QrCode::format('svg')->size(300)->generate($url);
+        $qrCodeName = $this->imageService->generateQrCode($url);
 
-        $qrCodeName = time() . '_qrcodeWasteManagement.svg';
-        Storage::disk('public')->put('qrcodes/' . $qrCodeName, $qrCode);
-        $wasteManagement->qrcode = $qrCodeName;
+        $validatedData['qrcode'] = $qrCodeName;
 
         if ($wasteManagement->update($validatedData)) {
             return redirect()->route('waste.index')->with('success', 'Waste Management record updated successfully.');
@@ -166,25 +158,12 @@ class WasteManagementController extends Controller
     public function destroy($id)
     {
         $wasteManagement = WasteManagement::findOrFail($id);
-
-        // Set the related monitoring records to null
         Monitoring::where('waste_id', $wasteManagement->id)->update(['waste_id' => null]);
-    
-        // Delete the associated image
-        $imagePath = 'public/images/' . $wasteManagement->image;
-        if (Storage::exists($imagePath)) {
-            Storage::delete($imagePath);
-        }
-    
-        // Delete the associated QR code
-        $qrCodePath = 'public/qrcodes/' . $wasteManagement->qrcode;
-        if (Storage::exists($qrCodePath)) {
-            Storage::delete($qrCodePath);
-        }
 
-        $success = $wasteManagement->delete();
-        
-        if ($success) {
+        $this->imageService->deleteImage($wasteManagement->image);
+        $this->imageService->deleteImage($wasteManagement->qrcode, 'public/qrcodes');
+
+        if ($wasteManagement->delete()) {
             return redirect()->route('waste.index')->with('success', 'Waste Management record deleted successfully.');
         } else {
             return redirect()->route('waste.index')->with('error', 'Failed to delete Waste Management record.');

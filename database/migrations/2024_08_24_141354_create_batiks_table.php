@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('nft_config', function (Blueprint $table) {
+        Schema::create('batiks', function (Blueprint $table) {
             $table->id();
-            $table->string('fromAddress')->nullable();
-            $table->string('contractAddress')->nullable();
-            $table->longText('abi')->nullable();
+            $table->string('name');
+            $table->text('description');
+            $table->string('image');
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('nft_config');
+        Schema::dropIfExists('batiks');
     }
 };

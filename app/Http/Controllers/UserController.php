@@ -38,7 +38,7 @@ class UserController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $user = $request->user(); // Using dependency injection for the authenticated user
+        $user = $request->user(); 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
 

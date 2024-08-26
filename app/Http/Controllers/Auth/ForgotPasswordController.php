@@ -66,8 +66,8 @@ class ForgotPasswordController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        DB::table('password_resets')->where(['email'=> $request->email])->delete();
+        DB::table('password_resets')->where(['email' => $request->email])->delete();
 
         return redirect()->route('login')->with('status', 'Password has been successfully reset!');
-    }   
+    }
 }

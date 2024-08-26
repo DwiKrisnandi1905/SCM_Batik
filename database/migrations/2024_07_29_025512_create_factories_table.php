@@ -6,11 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('factories', function (Blueprint $table) {
@@ -29,16 +24,12 @@ return new class extends Migration
             $table->string('nft_token_id')->nullable();
             $table->string('qrcode')->nullable();
             $table->timestamps();
+
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('harvest_id')->references('id')->on('harvests');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('factories');

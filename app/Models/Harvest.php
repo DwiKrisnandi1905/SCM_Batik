@@ -31,7 +31,7 @@ class Harvest extends Model
 
     public function factories()
     {
-        return $this->hasMany(Factory::class, 'harvest_id');
+        return $this->hasOne(Factory::class, 'harvest_id');
     }
 
     public function monitoring()

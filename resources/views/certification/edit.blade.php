@@ -14,7 +14,7 @@
         @method('PUT')
 
         <div class="form-group mb-3">
-            <label for="craftsman_id">Option ID:</label>
+            <label for="craftsman_id">Craftsman :</label>
             <select id="craftsman_id" name="craftsman_id" class="form-control" required>
                 @foreach($craftsmen as $craftsman)
                     <option value="{{ $craftsman->id }}">{{ $craftsman->production_details }} -
@@ -29,7 +29,7 @@
                 value="{{ $certification->batik_type }}" required>
         </div>
         <div class="form-group mb-3">
-            <label for="test_results">Certificate test_results:</label>
+            <label for="test_results">Certificate Test Results:</label>
             <input type="text" id="test_results" name="test_results" class="form-control"
                 value="{{ $certification->test_results }}" required>
         </div>

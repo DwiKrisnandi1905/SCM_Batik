@@ -28,7 +28,6 @@
         <thead class="thead-dark">
             <tr>
                 <th>ID</th>
-                <th>Factory</th>
                 <th>Production Details</th>
                 <th>Finished Quantity</th>
                 <th>Completion Date</th>
@@ -42,7 +41,6 @@
             @foreach($craftsmen as $craftsman)
                 <tr>
                     <td>{{ $craftsman->id }}</td>
-                    <td>{{ $craftsman->factory->factory_name }}</td>
                     <td>{{ $craftsman->production_details }}</td>
                     <td>{{ $craftsman->finished_quantity }}</td>
                     <td>{{ $craftsman->completion_date }}</td>
