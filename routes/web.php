@@ -64,6 +64,8 @@ Route::middleware(['auth', 'craftsman'])->group(function () {
     Route::prefix('craftsman')->group(function () {
         Route::get('/', [CraftsmanController::class, 'index'])->name('craftsman.index');
         Route::get('/create', [CraftsmanController::class, 'create'])->name('craftsman.create');
+        Route::get('/ref/{id}', [CraftsmanController::class, 'createfacref'])->name('craftsman.ref.create');
+        Route::post('/ref', [CraftsmanController::class, 'storefacref'])->name('craftsman.ref.store');
         Route::post('/', [CraftsmanController::class, 'store'])->name('craftsman.store');
         Route::get('/{id}/edit', [CraftsmanController::class, 'edit'])->name('craftsman.edit');
         Route::put('/{id}', [CraftsmanController::class, 'update'])->name('craftsman.update');

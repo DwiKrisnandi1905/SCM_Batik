@@ -155,7 +155,6 @@ class FactoryController extends Controller
     public function destroy($id)
     {
         $factory = Factory::findOrFail($id);
-        // Monitoring::where('factory_id', $factory->id)->update(['factory_id' => null]);
 
         $this->imageService->deleteImage($factory->image);
         $this->imageService->deleteImage($factory->qrcode, 'public/qrcodes');

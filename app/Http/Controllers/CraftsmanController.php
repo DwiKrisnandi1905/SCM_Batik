@@ -173,4 +173,22 @@ class CraftsmanController extends Controller
         }
     }
 
+    public function createfacref($id){
+        $factories = Factory::all();
+        $craftsman = Craftsman::findOrFail($id);
+        return view('craftsman.facref', compact('factories', 'craftsman'))->with([
+            'title' => 'Craftsman',
+            'name' => 'Craftsman'
+        ]);
+    }
+
+    public function storefacref(Request $request) {
+        CraftsmanFactory::create([
+            'factory_id' => $request->factory_id, 
+            'craftsman_id' => $request->craftsman_id
+        ]);
+
+        return redirect()->route('craftsman.index')->with('success', 'Ref add successfully.');
+    }    
+
 }

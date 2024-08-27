@@ -11,14 +11,14 @@
 
 @if(session('success'))
     <div class="alert success">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
         {{ session('success') }}
     </div>
 @endif
 
 @if(session('error'))
     <div class="alert">
-        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
         {{ session('error') }}
     </div>
 @endif
@@ -28,6 +28,7 @@
         <thead class="thead-dark">
             <tr>
                 <th>ID</th>
+                <th>Factory</th>
                 <th>Production Details</th>
                 <th>Finished Quantity</th>
                 <th>Completion Date</th>
@@ -41,18 +42,20 @@
             @foreach($craftsmen as $craftsman)
                 <tr>
                     <td>{{ $craftsman->id }}</td>
+                    <td> <a href="{{ route('craftsman.ref.create', $craftsman->id) }}">ref</a></td>
                     <td>{{ $craftsman->production_details }}</td>
                     <td>{{ $craftsman->finished_quantity }}</td>
                     <td>{{ $craftsman->completion_date }}</td>
                     <td>
                         @if($craftsman->image)
-                            <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="{{ asset('storage/images/' . $craftsman->image) }}">View Image</span>
+                            <span class="img-link" data-bs-toggle="modal" data-bs-target="#imageModal"
+                                data-bs-image="{{ asset('storage/images/' . $craftsman->image) }}">View Image</span>
                         @else
                             No Image
                         @endif
                     </td>
                     <td>
-                    <a href="{{ route('monitoring.show', $craftsman->monitoring_id) }}" class="monitor-link">Monitor</a>
+                        <a href="{{ route('monitoring.show', $craftsman->monitoring_id) }}" class="monitor-link">Monitor</a>
                     </td>
                     <td>
                         @if($craftsman->qrcode)
@@ -66,7 +69,8 @@
                             <a href="{{ route('craftsman.edit', $craftsman->id) }}" class="btn btn-warning btn-sm btn-icon">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <form action="{{ route('craftsman.destroy', $craftsman->id) }}" method="POST" class="d-inline delete-form">
+                            <form action="{{ route('craftsman.destroy', $craftsman->id) }}" method="POST"
+                                class="d-inline delete-form">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="btn btn-danger btn-sm btn-icon delete-button">
@@ -74,7 +78,7 @@
                                 </button>
                             </form>
                         @else
-                        <span class="disabled-button">Disabled</span>
+                            <span class="disabled-button">Disabled</span>
                         @endif
                     </td>
                     </td>
