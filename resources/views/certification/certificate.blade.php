@@ -151,6 +151,11 @@
         <div class="footer">
             Date: {{ $issue_date }}
         </div>        
+
+        <div>
+        <h3>Scan the QR Code for more information:</h3>
+        {!! $qr_code_url !!}
+    </div>
     </div>
 </body>
 </html>
