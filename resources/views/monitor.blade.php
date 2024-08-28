@@ -1,11 +1,11 @@
 @extends('layout.app')
 
 @section('content')
-<div class="container mt-5">
+<div class="container">
     <h1 class="mb-4">Monitoring Details</h1>
 
     @if ($monitoring->harvest)
-        <div class="card mb-4">
+        <div class="card mb-4" style="background-color: #f0f0f0;">
             <div class="card-header">
                 <h2 class="h5">Harvest</h2>
             </div>
@@ -28,11 +28,13 @@
             </div>
             <div class="card-body">
                 @foreach ($craftsmanFactories as $factory)
-                    <div class="mb-3">
-                        <p><strong>Factory Name:</strong> {{ $factory->factory_name }}</p>
-                        <p><strong>Factory Location:</strong> {{ $factory->factory_address }}</p>
-                        <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $factory->image) }}" alt="Factory Image" class="img-fluid" style="height: 100px; width: auto;"></p>
-                        <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $factory->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
+                    <div class="card mb-3" style="background-color: #f0f0f0;">
+                        <div class="card-body">
+                            <p><strong>Factory Name:</strong> {{ $factory->factory_name }}</p>
+                            <p><strong>Factory Location:</strong> {{ $factory->factory_address }}</p>
+                            <p><strong>Image:</strong> <img src="{{ asset('storage/images/' . $factory->image) }}" alt="Factory Image" class="img-fluid" style="height: 100px; width: auto;"></p>
+                            <p><strong>QR Code:</strong> <img src="{{ asset('storage/qrcodes/'. $factory->qrcode )}}" alt="QR Code" class="img-fluid" style="height: 100px; width: auto;"></p>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -40,7 +42,7 @@
     @endif
 
     @if ($monitoring->craftsman)
-        <div class="card mb-4">
+        <div class="card mb-4" style="background-color: #f0f0f0;">
             <div class="card-header">
                 <h2 class="h5">Craftsman</h2>
             </div>
@@ -55,7 +57,7 @@
     @endif
 
     @if ($monitoring->certification)
-        <div class="card mb-4">
+        <div class="card mb-4" style="background-color: #f0f0f0;">
             <div class="card-header">
                 <h2 class="h5">Certification</h2>
             </div>
@@ -70,7 +72,7 @@
     @endif
 
     @if ($monitoring->wasteManagement)
-        <div class="card mb-4">
+        <div class="card mb-4" style="background-color: #f0f0f0;">
             <div class="card-header">
                 <h2 class="h5">Waste Management</h2>
             </div>
@@ -85,7 +87,7 @@
     @endif
 
     @if ($monitoring->distribution)
-        <div class="card mb-4">
+        <div class="card mb-4" style="background-color: #f0f0f0;">
             <div class="card-header">
                 <h2 class="h5">Distribution</h2>
             </div>
@@ -101,7 +103,6 @@
             </div>
         </div>
     @endif
-
 
 </div>
 @endsection
