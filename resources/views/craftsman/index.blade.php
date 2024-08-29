@@ -42,7 +42,11 @@
             @foreach($craftsmen as $craftsman)
                 <tr>
                     <td>{{ $craftsman->id }}</td>
-                    <td> <a href="{{ route('craftsman.ref.create', $craftsman->id) }}">ref</a></td>
+                    <td>
+                        <a href="{{ route('craftsman.ref.create', $craftsman->id) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-link"></i>
+                        </a>
+                    </td>
                     <td>{{ $craftsman->production_details }}</td>
                     <td>{{ $craftsman->finished_quantity }}</td>
                     <td>{{ $craftsman->completion_date }}</td>
