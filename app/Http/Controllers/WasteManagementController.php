@@ -27,13 +27,7 @@ class WasteManagementController extends Controller
 
     public function index()
     {
-        $user = auth()->user();
-        $role = $user->roles()->firstOrFail();
-
-        $wasteManagements = $role->id == 1
-            ? WasteManagement::all()
-            : WasteManagement::where('user_id', $user->id)->get();
-
+        $wasteManagements = WasteManagement::all();
         return view('waste-management.index', compact('wasteManagements'))->with([
             'name' => 'waste management',
             'title' => 'Waste Management'

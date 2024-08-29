@@ -26,10 +26,7 @@ class HarvestController extends Controller
 
     public function index()
     {
-        $user = auth()->user();
-        $role = $user->roles()->firstOrFail();
-
-        $harvests = $role->id == 1 ? Harvest::all() : Harvest::where('user_id', $user->id)->get();
+        $harvests = Harvest::all();
         return view('harvests.index', compact('harvests'))->with([
             'name' => 'harvest',
             'title' => 'Harvest'

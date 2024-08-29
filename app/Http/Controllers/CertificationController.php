@@ -188,7 +188,6 @@ class CertificationController extends Controller
     public function generateCertificate($id)
     {
         $certification = Certification::findOrFail($id);
-        
         $qrCodeImage = base64_encode(QrCode::format('png')->size(150)->generate(route('batik.show', ['id' => $certification->monitoring_id])));
 
         $html = '

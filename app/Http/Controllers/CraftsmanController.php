@@ -29,10 +29,7 @@ class CraftsmanController extends Controller
 
     public function index()
     {
-        $user = auth()->user();
-        $role = $user->roles()->firstOrFail();
-        $craftsmen = $role->id == 1 ? Craftsman::all() : Craftsman::where('user_id', $user->id)->get();
-
+        $craftsmen =Craftsman::all();
         return view('craftsman.index', compact('craftsmen'))->with([
             'name' => 'craftsman',
             'title' => 'Craftsman'
