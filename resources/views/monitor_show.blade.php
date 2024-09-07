@@ -39,9 +39,10 @@
                                                         {{ $monitoring->harvest->quality }}, with the following delivery
                                                         information: {{ $monitoring->harvest->delivery_info }}.
                                                     </p>
-                                                    @if ($monitoring->harvest->image)
-                                                        <img src="{{ $monitoring->harvest->image }}" alt="Harvest Image" class="img-fluid mt-3">
-                                                    @endif
+          @if ($monitoring->harvest->image)
+    <img src="{{ asset('storage/images/' . $monitoring->harvest->image) }}" alt="Harvest Image" class="img-fluid mt-3">
+@endif
+
                                                 </div>
                                             </div>
                                         </div>
@@ -67,9 +68,10 @@
                                                             {{ $factory->semi_finished_quantity }} units
                                                             with a quality rating of {{ $factory->semi_finished_quality }}.
                                                         </p>
-                                                        @if ($factory->image)
-                                                            <img src="{{ $factory->image }}" alt="Factory Image" class="img-fluid mt-3">
-                                                        @endif
+@if ($factory->image)
+    <img src="{{ asset('storage/images/' . $factory->image) }}" alt="Factory Image" class="img-fluid mt-3">
+@endif
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -95,9 +97,10 @@
                                                         following production details:
                                                         {{ $monitoring->craftsman->production_details }}.
                                                     </p>
-                                                    @if ($monitoring->craftsman->image)
-                                                        <img src="{{ $monitoring->craftsman->image }}" alt="Craftsman Image" class="img-fluid mt-3">
-                                                    @endif
+@if ($monitoring->craftsman->image)
+    <img src="{{ asset('storage/images/' . $monitoring->craftsman->image) }}" alt="Craftsman Image" class="img-fluid mt-3">
+@endif
+
                                                 </div>
                                             </div>
                                         </div>
@@ -121,9 +124,10 @@
                                                         {{ $monitoring->certification->issue_date }}, with the following
                                                         test results: {{ $monitoring->certification->test_results }}.
                                                     </p>
-                                                    @if ($monitoring->certification->image)
-                                                        <img src="{{ $monitoring->certification->image }}" alt="Certification Image" class="img-fluid mt-3">
-                                                    @endif
+@if ($monitoring->certification->image)
+    <img src="{{ asset('storage/images/' . $monitoring->certification->image) }}" alt="Certification Image" class="img-fluid mt-3">
+@endif
+
                                                 </div>
                                             </div>
                                         </div>
@@ -144,9 +148,10 @@
                                                         {{ $monitoring->wasteManagement->management_method }}, which
                                                         resulted in {{ $monitoring->wasteManagement->management_results }}."
                                                     </p>
-                                                    @if ($monitoring->wasteManagement->image)
-                                                        <img src="{{ $monitoring->wasteManagement->image }}" alt="Waste Management Image" class="img-fluid mt-3">
-                                                    @endif
+@if ($monitoring->wasteManagement->image)
+    <img src="{{ asset('storage/images/' . $monitoring->wasteManagement->image) }}" alt="Waste Management Image" class="img-fluid mt-3">
+@endif
+
                                                 </div>
                                             </div>
                                         </div>
@@ -172,9 +177,10 @@
                                                         {{ $monitoring->distribution->received_date }} in
                                                         {{ $monitoring->distribution->received_condition }} condition.
                                                     </p>
-                                                    @if ($monitoring->distribution->image)
-                                                        <img src="{{ $monitoring->distribution->image }}" alt="Distribution Image" class="img-fluid mt-3">
-                                                    @endif
+@if ($monitoring->distribution->image)
+    <img src="{{ asset('storage/images/' . $monitoring->distribution->image) }}" alt="Distribution Image" class="img-fluid mt-3">
+@endif
+
                                                 </div>
                                             </div>
                                         </div>
